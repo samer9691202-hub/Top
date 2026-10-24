@@ -1,0 +1,14 @@
+--- a/index.html
++++ b/index.html
+@@
+-<link rel="icon" href="icons/icon-192.png">
+-<link rel="apple-touch-icon" href="icons/icon-192.png">
++<link rel="icon" href="icon.png">
++<link rel="apple-touch-icon" href="icon.png">
+@@
+-    if(lastDay !== d.getDate()){
++    $('#greetText').textContent = h < 17 ? 'صباح الخير' : 'مساء الخير';
++    if(lastDay !== d.getDate()){
+       lastDay = d.getDate();
+-      $('#greetText').textContent = h<5 ? 'ليلة هادئة' : h<12 ? 'صباح الخير' : h<17 ? 'نهارك سعيد' : h<21 ? 'مساء الخير' : 'ليلة سعيدة';
+       $('#wk').textContent = fWk.format(d);
