@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B1020">
-<title>NEXORA</title>
+<title>NEXORA | نكسورا</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -13,36 +13,36 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F8FAFC; --surface:#FFFFFF; --surface-2:#F1F5F9; --line:#E2E8F0;
-  --ink:#0F172A; --muted:#64748B;
-  --accent:#0284C7; --accent-ink:#FFFFFF; --accent-soft:rgba(2,132,199,.10);
-  --sky:#0284C7; --digit:#0F172A;
-  --clock1:#FFFFFF; --clock2:#F1F5F9; --halo1:rgba(2,132,199,.07); --halo2:rgba(139,92,246,.05); --glow:none;
-  --amber:#B45309; --amber-soft:#FEF3C7; --rose:#BE123C; --rose-soft:#FFE4E6; --ok:#047857; --ok-soft:#D1FAE5;
-  --shadow:0 6px 24px rgba(15,23,42,.06);
+  --bg:#F2F8F8; --surface:#FFFFFF; --surface-2:#EAF4F4; --line:#D9E7E8;
+  --ink:#17313A; --muted:#657D83;
+  --accent:#087E8B; --accent-ink:#FFFFFF; --accent-soft:#DDF3F2;
+  --sky:#087E8B; --digit:#17313A;
+  --clock1:#FFFFFF; --clock2:#EAF4F4; --halo1:rgba(8,126,139,.09); --halo2:rgba(21,153,154,.06); --glow:none;
+  --amber:#B96519; --amber-soft:#FFF0E1; --rose:#C44562; --rose-soft:#FCE7ED; --ok:#25856B; --ok-soft:#DDF6ED;
+  --shadow:0 8px 28px rgba(15,55,65,.08);
   --radius:14px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0B1020; --surface:#111827; --surface-2:#172033; --line:rgba(148,163,184,.18);
-    --ink:#F8FAFC; --muted:#94A3B8;
-    --accent:#8B5CF6; --accent-ink:#FFFFFF; --accent-soft:rgba(139,92,246,.16);
-    --sky:#38BDF8; --digit:#F8FAFC;
-    --clock1:#131C30; --clock2:#111827; --halo1:rgba(56,189,248,.10); --halo2:rgba(139,92,246,.10); --glow:0 0 28px rgba(56,189,248,.22);
-    --amber:#FBBF24; --amber-soft:rgba(251,191,36,.14); --rose:#FB7185; --rose-soft:rgba(251,113,133,.14); --ok:#34D399; --ok-soft:rgba(52,211,153,.14);
-    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --bg:#101F25; --surface:#172B32; --surface-2:#203840; --line:#34515A;
+    --ink:#EDF8F8; --muted:#A4BEC2;
+    --accent:#43C2C0; --accent-ink:#10282D; --accent-soft:#234C51;
+    --sky:#43C2C0; --digit:#EDF8F8;
+    --clock1:#172B32; --clock2:#203840; --halo1:rgba(67,194,192,.10); --halo2:rgba(21,153,154,.08); --glow:0 0 24px rgba(67,194,192,.12);
+    --amber:#F1B56E; --amber-soft:#493321; --rose:#F08A82; --rose-soft:#3C1D1B; --ok:#6FCB92; --ok-soft:#183626;
+    --shadow:0 10px 30px rgba(0,0,0,.28);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0B1020; --surface:#111827; --surface-2:#172033; --line:rgba(148,163,184,.18);
-  --ink:#F8FAFC; --muted:#94A3B8;
-  --accent:#8B5CF6; --accent-ink:#FFFFFF; --accent-soft:rgba(139,92,246,.16);
-  --sky:#38BDF8; --digit:#F8FAFC;
-  --clock1:#131C30; --clock2:#111827; --halo1:rgba(56,189,248,.10); --halo2:rgba(139,92,246,.10); --glow:0 0 28px rgba(56,189,248,.22);
-  --amber:#FBBF24; --amber-soft:rgba(251,191,36,.14); --rose:#FB7185; --rose-soft:rgba(251,113,133,.14); --ok:#34D399; --ok-soft:rgba(52,211,153,.14);
-  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --bg:#101F25; --surface:#172B32; --surface-2:#203840; --line:#34515A;
+  --ink:#EDF8F8; --muted:#A4BEC2;
+  --accent:#43C2C0; --accent-ink:#10282D; --accent-soft:#234C51;
+  --sky:#43C2C0; --digit:#EDF8F8;
+  --clock1:#172B32; --clock2:#203840; --halo1:rgba(67,194,192,.10); --halo2:rgba(21,153,154,.08); --glow:0 0 24px rgba(67,194,192,.12);
+  --amber:#F1B56E; --amber-soft:#493321; --rose:#F08A82; --rose-soft:#3C1D1B; --ok:#6FCB92; --ok-soft:#183626;
+  --shadow:0 10px 30px rgba(0,0,0,.28);
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -64,7 +64,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 /* ========== الشريط الجانبي ========== */
 .sidebar{
   position:fixed;inset-block:0;inset-inline-start:0;z-index:40;
-  width:min(300px,86vw);background:var(--surface);border-inline-end:1px solid var(--line);
+  width:min(300px,86vw);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);border-inline-end:1px solid var(--line);box-shadow:0 12px 35px rgba(15,55,65,.08);
   display:flex;flex-direction:column;gap:10px;padding:14px 12px;
   transition:width .22s ease,transform .25s ease;
 }
@@ -547,7 +547,7 @@ textarea.field{resize:vertical;min-height:110px;line-height:1.7}
       s_data:'البيانات', s_backup:'نسخة احتياطية', s_backup_s:'تحميل ملف ببياناتك', s_download:'تحميل',
       s_restore:'استعادة نسخة', s_restore_s:'من ملف حفظته سابقًا', s_choose:'اختيار ملف',
       s_wipe:'مسح كل البيانات', s_wipe_s:'المهام والملاحظات والقاعدة', wipe:'مسح', wipeConfirm:'تأكيد المسح', wiped:'تم مسح البيانات',
-      restored:'تمت استعادة النسخة ✓', badFile:'الملف غير صالح', about:'الإصدار 9 • تُحفظ بياناتك تلقائيًا على هذا الجهاز.'
+      restored:'تمت استعادة النسخة ✓', badFile:'الملف غير صالح', about:'NEXORA • نسخة مطوّرة تجمع التصميم الهادئ مع أدوات الإنتاجية.'
     },
     en:{
       skip:'Skip to content', navLabel:'Main navigation', menu:'Open menu', menuClose:'Close menu',
@@ -580,7 +580,7 @@ textarea.field{resize:vertical;min-height:110px;line-height:1.7}
       s_data:'Data', s_backup:'Backup', s_backup_s:'Download your data as a file', s_download:'Download',
       s_restore:'Restore backup', s_restore_s:'From a file you saved earlier', s_choose:'Choose file',
       s_wipe:'Erase all data', s_wipe_s:'Tasks, notes and base', wipe:'Erase', wipeConfirm:'Confirm erase', wiped:'Data erased',
-      restored:'Backup restored ✓', badFile:'Invalid file', about:'Version 9 • Your data is saved automatically on this device.'
+      restored:'Backup restored ✓', badFile:'Invalid file', about:'NEXORA • Refined design with productivity tools.'
     }
   };
   let lang = 'ar';
