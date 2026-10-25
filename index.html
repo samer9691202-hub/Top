@@ -675,7 +675,10 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     if(btn.dataset.a==='toggle') t.done = !t.done;
     if(btn.dataset.a==='edit'){ const next = window.prompt('تعديل نص المهمة', t.text); if(next===null) return; if(!next.trim()){ window.alert('لا يمكن أن تكون المهمة فارغة.'); return; } t.text=next.trim(); }
     if(btn.dataset.a==='prio') t.prio = (t.prio+1)%3;
-    if(btn.dataset.a==='del') state.tasks = state.tasks.filter(x=>x!==t);
+    if(btn.dataset.a==='del'){
+      // المهام المضافة من الإعدادات مرتبطة بمعرّف رئيسي؛ حذف أي نسخة يحذفها من كل الأيام.
+      state.tasks = t.mainId ? state.tasks.filter(x=>x.mainId!==t.mainId) : state.tasks.filter(x=>x!==t);
+    }
     renderTasks(); renderCal(); save();
   });
 
@@ -841,7 +844,12 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   $('#mainTaskInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#mainTaskAdd').click();});
   $('#mainTaskList').addEventListener('click',e=>{
     const b=e.target.closest('[data-main-action]');if(!b)return;const el=b.closest('[data-main-id]'),t=(state.mainTasks||[]).find(x=>x.id===el.dataset.mainId);if(!t)return;
-    if(b.dataset.mainAction==='delete'){state.mainTasks=state.mainTasks.filter(x=>x.id!==t.id);renderMainTasks();save();return;}
+    if(b.dataset.mainAction==='delete'){
+      // حذف المهمة الرئيسية يحذف كل النسخ اليومية المرتبطة بها كذلك.
+      state.mainTasks=state.mainTasks.filter(x=>x.id!==t.id);
+      state.tasks=state.tasks.filter(x=>x.mainId!==t.id);
+      renderAll();save();return;
+    }
     const scope=el.querySelector('.main-scope')?.value||'day';
     const dates=[];
     if(scope==='month'){
