@@ -281,6 +281,8 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
 .install-app[hidden]{display:none}
 @media(max-width:700px){.app-tools{top:8px;left:8px;gap:5px}.net-status,.install-app{padding:6px 9px;font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+  .central-day-open{outline:3px solid rgba(13,126,135,.28);outline-offset:3px;transition:outline-color .3s;border-radius:18px}
 </style>
 </head>
 <body>
@@ -671,7 +673,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     const el = $('#taskInput'), text = el.value.trim();
     if(!text){ el.focus(); return; }
     state.tasks.push({id:uid(), text, done:false, prio:0, date:ui.sel});
-    el.value=''; el.focus(); renderTasks(); renderCal(); save();
+    el.value=''; el.focus(); renderTasks(); renderCal(); renderBase(); save();
   }
   $('#taskAdd').onclick = addTask;
   $('#taskInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
@@ -691,7 +693,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       // المهام المضافة من الإعدادات مرتبطة بمعرّف رئيسي؛ حذف أي نسخة يحذفها من كل الأيام.
       state.tasks = t.mainId ? state.tasks.filter(x=>x.mainId!==t.mainId) : state.tasks.filter(x=>x!==t);
     }
-    renderTasks(); renderCal(); save();
+    renderTasks(); renderCal(); renderBase(); save();
   });
 
   /* ---------- الملاحظات ---------- */
@@ -746,7 +748,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       state.notes.push({id:uid(), title, text, date:ui.sel, created:Date.now()});
     }
     const wasEditing = !!ui.editing;
-    clearEditor(); renderNotes(); renderCal(); save();
+    clearEditor(); renderNotes(); renderCal(); renderBase(); save();
     flash(wasEditing ? 'تم حفظ التعديل ✓' : 'تم حفظ الملاحظة ✓');
   };
   $('#noteCancel').onclick = ()=>{ clearEditor(); renderNotes(); };
@@ -778,7 +780,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       }
       state.notes = state.notes.filter(x=>x!==n);
       if(ui.editing===n.id) clearEditor();
-      renderNotes(); renderCal(); save();
+      renderNotes(); renderCal(); renderBase(); save();
     }
   });
 
@@ -826,7 +828,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   });
   $('#baseView').addEventListener('click', e=>{
     const dayBtn = e.target.closest('[data-central-date]');
-    if(dayBtn){ const date=dayBtn.dataset.centralDate; const d=dparse(date); ui.sel=date; ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    if(dayBtn){ const date=dayBtn.dataset.centralDate; const d=dparse(date); ui.sel=date; ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); const dailyPanels=document.querySelector('#tasks')?.parentElement || document.querySelector('#tasks'); if(dailyPanels){ dailyPanels.scrollIntoView({behavior:'smooth',block:'start'}); dailyPanels.classList.add('central-day-open'); setTimeout(()=>dailyPanels.classList.remove('central-day-open'),1600); } const taskInput=document.querySelector('#taskInput'); if(taskInput) taskInput.setAttribute('aria-label','مهمة جديدة ليوم '+date); return; }
     const btn = e.target.closest('[data-a]'); if(!btn) return;
     const el = btn.closest('[data-id]'); const b = state.base.find(x=>x.id===el.dataset.id); if(!b) return;
     if(btn.dataset.a==='status') b.status = (b.status+1)%3;

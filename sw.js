@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v23-central-table';
+const CACHE = 'nexora-v24-auto-index';
 const BASE = self.registration.scope;
 const FILES = [
   './',
@@ -6,6 +6,10 @@ const FILES = [
   './manifest.json',
   './manifest.webmanifest',
   './sw.js',
+  './app.js',
+  './check.js',
+  './app.js',
+  './check.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png'
@@ -41,7 +45,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE).then(cache => cache.put(request, copy));
         }
         return response;
-      }).catch(async () => (await caches.match(request)) || (await caches.match(new URL('./index.html', BASE).toString()))
+      }).catch(async () => (await caches.match(request)) || (await caches.match(new URL('./index.html', BASE).toString())))
     );
     return;
   }

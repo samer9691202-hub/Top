@@ -211,7 +211,7 @@
     const el = $('#taskInput'), text = el.value.trim();
     if(!text){ el.focus(); return; }
     state.tasks.push({id:uid(), text, done:false, prio:0, date:ui.sel});
-    el.value=''; el.focus(); renderTasks(); renderCal(); save();
+    el.value=''; el.focus(); renderTasks(); renderCal(); renderBase(); save();
   }
   $('#taskAdd').onclick = addTask;
   $('#taskInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
@@ -232,7 +232,7 @@
       if(t.mainId){ state.tasks = state.tasks.filter(x=>x.mainId!==t.mainId); }
       else { state.tasks = state.tasks.filter(x=>x!==t); }
     }
-    renderTasks(); renderCal(); save();
+    renderTasks(); renderCal(); renderBase(); save();
   });
 
   /* ---------- الملاحظات ---------- */
@@ -287,7 +287,7 @@
       state.notes.push({id:uid(), title, text, date:ui.sel, created:Date.now()});
     }
     const wasEditing = !!ui.editing;
-    clearEditor(); renderNotes(); renderCal(); save();
+    clearEditor(); renderNotes(); renderCal(); renderBase(); save();
     flash(wasEditing ? 'تم حفظ التعديل ✓' : 'تم حفظ الملاحظة ✓');
   };
   $('#noteCancel').onclick = ()=>{ clearEditor(); renderNotes(); };
@@ -319,7 +319,7 @@
       }
       state.notes = state.notes.filter(x=>x!==n);
       if(ui.editing===n.id) clearEditor();
-      renderNotes(); renderCal(); save();
+      renderNotes(); renderCal(); renderBase(); save();
     }
   });
 
@@ -329,40 +329,25 @@
     const q = ui.q.trim().toLowerCase();
     const items = state.base.filter(b =>
       (ui.st==='all' || String(b.status)===ui.st) &&
-      (!q || b.name.toLowerCase().includes(q) || (b.cat||'').toLowerCase().includes(q)));
-    $('#baseSub').textContent = state.base.length ? state.base.length+' عنصر' : '';
+      (!q || String(b.name||'').toLowerCase().includes(q) || String(b.cat||'').toLowerCase().includes(q)));
+    $('#baseSub').textContent = (new Set([...state.tasks.map(t=>t.date),...state.notes.map(n=>n.date)]).size)+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة';
     $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
-    if(!items.length){
-      $('#baseView').innerHTML = '<div class="empty">'+(state.base.length?'لا توجد نتائج مطابقة.':'القاعدة فارغة. أضف أول عنصر من النموذج أعلاه.')+'</div>';
-      return;
-    }
-    if(ui.view==='table'){
-      $('#baseView').innerHTML =
-        '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div>'+
-        '<div class="rows">'+items.map(b=>`
-          <div class="row" data-id="${b.id}">
-            <span class="r-name">${esc(b.name)}</span>
-            <span class="r-meta">${esc(b.cat||'بدون تصنيف')}</span>
-            <span class="r-meta">${fD(b.date)}</span>
-            <button class="chip s${b.status}" data-a="status" title="اضغط لتغيير الحالة">${STATUS[b.status]}</button>
-            <button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button>
-          </div>`).join('')+'</div>';
-    }else{
-      $('#baseView').innerHTML = '<div class="board">'+STATUS.map((s,i)=>{
-        const col = items.filter(b=>b.status===i);
-        return '<div class="col"><h3>'+s+'<span>'+col.length+'</span></h3>'+
-          (col.map(b=>`
-            <div class="kcard" data-id="${b.id}">
-              <b>${esc(b.name)}</b>
-              <span class="r-meta">${esc(b.cat||'بدون تصنيف')} • ${fD(b.date)}</span>
-              <div class="kfoot">
-                <button class="chip s${b.status}" data-a="status">${i<2?'انقل للتالي':'أعد للبداية'}</button>
-                <button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button>
-              </div>
-            </div>`).join('') || '<div class="r-meta" style="padding:6px 4px">فارغ</div>')+'</div>';
-      }).join('')+'</div>';
-    }
+    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
+    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    const matchedDays = days.map(date=>({date,tasks:state.tasks.filter(t=>t.date===date),notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
+      if(!q) return true;
+      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
+    });
+    let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
+    if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
+    else html += '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+matchedDays.map(d=>'<tr><td class="date-cell">'+esc(fShortBase(d.date))+'<br><span class="muted-cell">'+esc(d.date)+'</span></td><td class="content-cell">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td><td class="content-cell">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc(n.title||n.text).slice(0,240)+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td><td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
+    html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
+    if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
+    else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
+    else html += '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel">✕</button></div></div>').join('')+'</div>').join('')+'</div>';
+    $('#baseView').innerHTML = html;
   }
+  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
   function addBase(){
     const n = $('#bName'), name = n.value.trim();
     if(!name){ n.focus(); return; }
@@ -382,7 +367,15 @@
   });
   $('#baseView').addEventListener('click', e=>{
     const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const el = btn.closest('[data-id]'); const b = state.base.find(x=>x.id===el.dataset.id); if(!b) return;
+    const el = btn.closest('[data-id]'); if(!el) return;
+    if(btn.dataset.a==='open-record'){
+      const [type, id] = el.dataset.id.split(':');
+      const record = type==='task' ? state.tasks.find(x=>String(x.id)===id) : type==='note' ? state.notes.find(x=>String(x.id)===id) : null;
+      const date = record && record.date;
+      if(date){ ui.sel=date; renderCal(); renderTasks(); renderNotes(); renderStats(); const target=document.getElementById(type==='task'?'tasks':type==='note'?'notes':'calendar'); if(target) target.scrollIntoView({behavior:'smooth',block:'start'}); }
+      return;
+    }
+    const b = state.base.find(x=>String(x.id)===el.dataset.id); if(!b) return;
     if(btn.dataset.a==='status') b.status = (b.status+1)%3;
     if(btn.dataset.a==='bdel') state.base = state.base.filter(x=>x!==b);
     renderBase(); save();
