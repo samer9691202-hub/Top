@@ -394,7 +394,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     </div>
     <div class="tools">
       <label class="sr" for="search">بحث</label>
-      <input class="field" id="search" type="search" placeholder="ابحث بالاسم أو التصنيف">
+      <input class="field" id="search" type="search" placeholder="ابحث عن يوم أو مهمة أو ملاحظة أو عنصر">
       <label class="sr" for="statusFilter">تصفية بالحالة</label>
       <select class="select" id="statusFilter" style="width:auto;min-width:140px">
         <option value="all">كل الحالات</option>
@@ -776,40 +776,25 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     const q = ui.q.trim().toLowerCase();
     const items = state.base.filter(b =>
       (ui.st==='all' || String(b.status)===ui.st) &&
-      (!q || b.name.toLowerCase().includes(q) || (b.cat||'').toLowerCase().includes(q)));
-    $('#baseSub').textContent = state.base.length ? state.base.length+' عنصر' : '';
+      (!q || String(b.name||'').toLowerCase().includes(q) || String(b.cat||'').toLowerCase().includes(q)));
+    $('#baseSub').textContent = (new Set([...state.tasks.map(t=>t.date),...state.notes.map(n=>n.date)]).size)+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة';
     $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
-    if(!items.length){
-      $('#baseView').innerHTML = '<div class="empty">'+(state.base.length?'لا توجد نتائج مطابقة.':'القاعدة فارغة. أضف أول عنصر من النموذج أعلاه.')+'</div>';
-      return;
-    }
-    if(ui.view==='table'){
-      $('#baseView').innerHTML =
-        '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div>'+
-        '<div class="rows">'+items.map(b=>`
-          <div class="row" data-id="${b.id}">
-            <span class="r-name">${esc(b.name)}</span>
-            <span class="r-meta">${esc(b.cat||'بدون تصنيف')}</span>
-            <span class="r-meta">${fD(b.date)}</span>
-            <button class="chip s${b.status}" data-a="status" title="اضغط لتغيير الحالة">${STATUS[b.status]}</button>
-            <button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button>
-          </div>`).join('')+'</div>';
-    }else{
-      $('#baseView').innerHTML = '<div class="board">'+STATUS.map((s,i)=>{
-        const col = items.filter(b=>b.status===i);
-        return '<div class="col"><h3>'+s+'<span>'+col.length+'</span></h3>'+
-          (col.map(b=>`
-            <div class="kcard" data-id="${b.id}">
-              <b>${esc(b.name)}</b>
-              <span class="r-meta">${esc(b.cat||'بدون تصنيف')} • ${fD(b.date)}</span>
-              <div class="kfoot">
-                <button class="chip s${b.status}" data-a="status">${i<2?'انقل للتالي':'أعد للبداية'}</button>
-                <button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button>
-              </div>
-            </div>`).join('') || '<div class="r-meta" style="padding:6px 4px">فارغ</div>')+'</div>';
-      }).join('')+'</div>';
-    }
+    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
+    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    const matchedDays = days.map(date=>({date,tasks:state.tasks.filter(t=>t.date===date),notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
+      if(!q) return true;
+      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
+    });
+    let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
+    if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
+    else html += '<div class="rows">'+matchedDays.map(d=>'<div class="row" style="grid-template-columns:1fr auto;gap:8px;align-items:start"><div><b>'+esc(fShortBase(d.date))+' ('+esc(d.date)+')</b><div class="r-meta" style="white-space:normal;margin-top:5px">'+(d.tasks.length?'<b>المهام:</b> '+d.tasks.map(t=>esc(t.text)+(t.done?' ✓':'')).join('، '):'لا مهام')+'<br>'+(d.notes.length?'<b>الملاحظات:</b> '+d.notes.map(n=>esc(n.title||n.text).slice(0,160)).join(' • '):'لا ملاحظات')+'</div></div><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></div>').join('')+'</div>';
+    html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
+    if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
+    else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
+    else html += '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel">✕</button></div></div>').join('')+'</div>').join('')+'</div>';
+    $('#baseView').innerHTML = html;
   }
+  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
   function addBase(){
     const n = $('#bName'), name = n.value.trim();
     if(!name){ n.focus(); return; }
@@ -828,6 +813,8 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     renderBase();
   });
   $('#baseView').addEventListener('click', e=>{
+    const dayBtn = e.target.closest('[data-central-date]');
+    if(dayBtn){ const date=dayBtn.dataset.centralDate; const d=dparse(date); ui.sel=date; ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); window.scrollTo({top:0,behavior:'smooth'}); return; }
     const btn = e.target.closest('[data-a]'); if(!btn) return;
     const el = btn.closest('[data-id]'); const b = state.base.find(x=>x.id===el.dataset.id); if(!b) return;
     if(btn.dataset.a==='status') b.status = (b.status+1)%3;

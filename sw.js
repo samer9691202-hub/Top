@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v19';
+const CACHE = 'nexora-v22-central-search';
 const BASE = self.registration.scope;
 const FILES = [
   './',
