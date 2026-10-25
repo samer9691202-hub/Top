@@ -200,6 +200,18 @@ textarea.field{resize:vertical;min-height:110px;line-height:1.7}
 .base-add{display:grid;gap:8px;grid-template-columns:1fr;margin:12px 0 16px}
 @media(min-width:720px){.base-add{grid-template-columns:2fr 1.2fr 1fr auto}}
 .rows{display:grid;gap:6px}
+.base-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.base-day-table{width:100%;border-collapse:separate;border-spacing:0;min-width:640px;background:var(--surface);text-align:right}
+.base-day-table th{background:var(--surface-2);color:var(--muted);font-size:.88rem;font-weight:700;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.base-day-table td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.65}
+.base-day-table tbody tr:last-child td{border-bottom:0}
+.base-day-table tbody tr:hover{background:var(--accent-soft)}
+.base-day-table .date-cell{font-weight:700;white-space:nowrap;min-width:145px}
+.base-day-table .content-cell{min-width:190px;white-space:normal;overflow-wrap:anywhere}
+.base-day-table .task-line,.base-day-table .note-line{display:block;margin:0 0 5px}
+.base-day-table .task-line:last-child,.base-day-table .note-line:last-child{margin-bottom:0}
+.base-day-table .muted-cell{color:var(--muted);font-size:.9rem}
+.base-day-table .open-cell{white-space:nowrap;text-align:center}
 .row{display:grid;gap:8px 12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);grid-template-columns:1fr auto}
 .row .r-name{font-weight:600;grid-column:1/-1;overflow-wrap:anywhere}
 .row .r-meta{color:var(--muted);font-size:.88rem}
@@ -787,7 +799,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     });
     let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
     if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
-    else html += '<div class="rows">'+matchedDays.map(d=>'<div class="row" style="grid-template-columns:1fr auto;gap:8px;align-items:start"><div><b>'+esc(fShortBase(d.date))+' ('+esc(d.date)+')</b><div class="r-meta" style="white-space:normal;margin-top:5px">'+(d.tasks.length?'<b>المهام:</b> '+d.tasks.map(t=>esc(t.text)+(t.done?' ✓':'')).join('، '):'لا مهام')+'<br>'+(d.notes.length?'<b>الملاحظات:</b> '+d.notes.map(n=>esc(n.title||n.text).slice(0,160)).join(' • '):'لا ملاحظات')+'</div></div><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></div>').join('')+'</div>';
+    else html += '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+matchedDays.map(d=>'<tr><td class="date-cell">'+esc(fShortBase(d.date))+'<br><span class="muted-cell">'+esc(d.date)+'</span></td><td class="content-cell">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td><td class="content-cell">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc(n.title||n.text).slice(0,240)+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td><td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
     html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
     if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
     else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
