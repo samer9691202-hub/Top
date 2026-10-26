@@ -486,6 +486,37 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 @media(max-width:650px){.month-panel .month-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.month-panel .cal-grid .wd{min-height:32px;font-size:.7rem}.month-panel .cal-grid .cell,.month-panel .cal-grid button{min-height:52px;padding:5px 4px}.month-panel .cal-grid .cell>span:first-child,.month-panel .cal-grid button>span:first-child{min-width:24px;height:24px;font-size:.78rem}.month-panel .cal-nav{gap:5px;padding:7px}.month-panel .cal-nav .nav-btn{width:34px;height:34px;flex-basis:34px}.month-panel #monthToday{padding:6px 8px;font-size:.76rem}}
 @media(max-width:380px){.month-panel .cal-grid .cell,.month-panel .cal-grid button{min-height:44px;padding:3px 2px}.month-panel .cal-grid .dots{gap:3px}.month-panel .cal-grid .dots i{width:5px;height:5px}.month-panel .cal-grid .wd{font-size:.64rem}}
 
+
+/* NEXORA v33 — unified palettes and truly glass light theme */
+:root[data-theme="dark"]{
+ --bg:#171316;--surface:rgba(40,31,35,.66);--surface-2:rgba(54,42,47,.58);
+ --line:rgba(255,244,239,.18);--ink:#fff8f4;--muted:#c9b9b7;
+ --accent:#d58f68;--accent-2:#edb18d;--ov1:rgba(255,255,255,.075);--ov4:rgba(255,255,255,.045);
+ color-scheme:dark
+}
+:root[data-theme="light"]{
+ --bg:#e9e8e4;--surface:rgba(255,255,255,.34);--surface-2:rgba(255,255,255,.23);
+ --line:rgba(255,255,255,.62);--ink:#292b2c;--muted:#62676a;
+ --accent:#477e82;--accent-2:#60999c;--ov1:rgba(255,255,255,.34);--ov4:rgba(255,255,255,.18);
+ color-scheme:light
+}
+:root[data-theme="light"] body{
+ background:radial-gradient(ellipse at 12% 8%,rgba(255,255,255,.72),transparent 40%),radial-gradient(ellipse at 88% 88%,rgba(155,190,190,.25),transparent 42%),linear-gradient(135deg,#e8e8e5,#d8dedc)!important;color:var(--ink)
+}
+:root[data-theme="light"] .hero,:root[data-theme="light"] .datepanel,:root[data-theme="light"] .daybox,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .base-card,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .central-add{
+ color:var(--ink)!important;background:linear-gradient(135deg,rgba(255,255,255,.48),rgba(255,255,255,.22))!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 16px 42px rgba(45,61,62,.10),inset 0 1px 0 rgba(255,255,255,.72)!important;backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)
+}
+:root[data-theme="light"] .side-nav{background:linear-gradient(145deg,rgba(255,255,255,.48),rgba(255,255,255,.24))!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 16px 40px rgba(45,61,62,.12)!important;backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
+:root[data-theme="light"] .side-nav button,:root[data-theme="light"] .card h2,:root[data-theme="light"] .month-panel .title,:root[data-theme="light"] .daybar,:root[data-theme="light"] .day-pick button{color:#292b2c!important}
+:root[data-theme="light"] .field,:root[data-theme="light"] .select,:root[data-theme="light"] input,:root[data-theme="light"] textarea{background:rgba(255,255,255,.42)!important;color:#292b2c!important;border-color:rgba(255,255,255,.72)!important}
+:root[data-theme="light"] .cal-grid .cell,:root[data-theme="light"] .cal-grid button{background:rgba(255,255,255,.22)!important;color:#292b2c!important;border-color:rgba(255,255,255,.42)!important}
+:root[data-theme="light"] .cal-grid .wd{background:rgba(255,255,255,.22)!important;color:#555c5d!important}
+:root[data-theme="light"] .cal-grid .selected,:root[data-theme="light"] .cal-grid [aria-pressed="true"],:root[data-theme="light"] .cal-grid .sel{background:rgba(71,126,130,.22)!important;border-color:rgba(71,126,130,.58)!important;color:#214f52!important}
+:root[data-theme="light"] .btn{background:linear-gradient(135deg,#477e82,#60999c)!important;color:#fff!important;border-color:rgba(71,126,130,.35)!important}
+:root[data-theme="light"] .btn.ghost,:root[data-theme="light"] .chip,:root[data-theme="light"] .nav-btn{background:rgba(255,255,255,.3)!important;color:#303637!important;border-color:rgba(255,255,255,.65)!important}
+:root[data-theme="light"] .sub,:root[data-theme="light"] .muted,:root[data-theme="light"] .label,:root[data-theme="light"] .legend{color:#62676a!important}
+:root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active{background:rgba(71,126,130,.17)!important;border-color:rgba(71,126,130,.34)!important}
+
 </style>
 </head>
 <body>
@@ -668,9 +699,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <div class="srow"><div><b>إظهار الثواني</b></div><button type="button" class="sw" role="switch" data-setting="showSec" aria-label="إظهار الثواني"></button></div>
     <div class="srow"><div><b>التاريخ الهجري</b></div><button type="button" class="sw" role="switch" data-setting="showHijri" aria-label="إظهار التاريخ الهجري"></button></div>
 
-    <h3>المهام الرئيسية</h3>
-    <div class="srow"><div><b>إدارة المهام الرئيسية</b><p class="sub">أصبحت في القاعدة الرئيسية، تبويب «المهام الرئيسية»</p></div><button type="button" class="abtn" id="goMains">فتح</button></div>
-
     <h3>التقويم والمظهر</h3>
     <div class="srow"><div><b>بداية الأسبوع</b></div>
       <div class="seg" data-setting="weekStart" role="group" aria-label="بداية الأسبوع"><button type="button" data-val="6">السبت</button><button type="button" data-val="0">الأحد</button><button type="button" data-val="1">الاثنين</button></div></div>
@@ -793,9 +821,25 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     }catch(e){}
   }
   function saveSettings(){ store.set('plan-settings-v1', JSON.stringify(settings)); }
+  function updateThemeIcons(theme){
+    const light = theme === 'light';
+    const bg = light ? '#477e82' : '#d58f68';
+    const fg = light ? '#ffffff' : '#21191d';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="18" fill="${bg}"/><path d="M32 11 49 21v22L32 53 15 43V21Z" fill="none" stroke="${fg}" stroke-width="3.5" stroke-linejoin="round"/><path d="M23 40V25l18 15V25" fill="none" stroke="${fg}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(link=>{ link.href=href; });
+    const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content=bg;
+  }
+  if(window.matchMedia){
+    const scheme=window.matchMedia('(prefers-color-scheme: dark)');
+    const onSchemeChange=()=>{ if(settings.theme==='auto') applySettings(); };
+    if(scheme.addEventListener) scheme.addEventListener('change',onSchemeChange); else if(scheme.addListener) scheme.addListener(onSchemeChange);
+  }
   function applySettings(){
     const r = document.documentElement;
-    if(settings.theme==='auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', settings.theme);
+    const effectiveTheme = settings.theme==='auto' ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light') : settings.theme;
+    r.setAttribute('data-theme', effectiveTheme);
+    updateThemeIcons(effectiveTheme);
     document.querySelectorAll('#settings [data-setting]').forEach(g=>{
       const k = g.dataset.setting;
       if(g.classList.contains('sw')) g.setAttribute('aria-checked', String(!!settings[k]));
@@ -1255,7 +1299,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   };
   $('#centralText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#centralAddSave').click();}});
 
-  $('#goMains').onclick = ()=>{ closeSettings(); ui.baseTab = 'mains'; renderBase(); $('#base').scrollIntoView({behavior:'smooth',block:'start'}); };
   function addMain(){
     const i = $('#mtName'), name = i.value.trim();
     if(!name){ i.focus(); return; }
