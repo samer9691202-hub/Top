@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v42-main-database';
+const CACHE = 'nexora-v43-polished';
 const BASE = self.registration.scope;
 const FILES = [
   './',
@@ -7,9 +7,6 @@ const FILES = [
   './manifest.webmanifest',
   './sw.js',
   './app.js',
-  './check.js',
-  './app.js',
-  './check.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png'
