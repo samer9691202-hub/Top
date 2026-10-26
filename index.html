@@ -566,10 +566,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   color-scheme:light;
   --bg:#FFFFFF;--surface:rgba(255,255,255,.94);--surface-2:#F5F7F9;
   --line:#E2E8F0;--ink:#17212B;--muted:#64748B;
-  --accent:#0284C7;--accent-ink:#FFFFFF;--accent-soft:rgba(2,132,199,.10);
-  --amber:#0284C7;--amber-soft:rgba(2,132,199,.10);
-  --rose:#0284C7;--rose-soft:rgba(2,132,199,.10);
-  --ok:#0284C7;--ok-soft:rgba(2,132,199,.10);
+  --accent:#087E8B;--accent-ink:#FFFFFF;--accent-soft:rgba(8,126,139,.10);
+  --amber:#087E8B;--amber-soft:rgba(8,126,139,.10);
+  --rose:#087E8B;--rose-soft:rgba(8,126,139,.10);
+  --ok:#087E8B;--ok-soft:rgba(8,126,139,.10);
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -584,26 +584,55 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="dark"] body{background:#121212!important;color:var(--ink)!important}
 :root[data-theme="light"] .side-nav,:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .daybox,:root[data-theme="light"] .daybar,:root[data-theme="light"] .base-card,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .central-add,:root[data-theme="light"] .ncard,:root[data-theme="light"] .row,:root[data-theme="light"] .col,:root[data-theme="light"] .kcard,:root[data-theme="light"] .task,:root[data-theme="light"] .main-task{background:rgba(255,255,255,.96)!important;border-color:var(--line)!important;color:var(--ink)!important;box-shadow:0 8px 28px rgba(15,23,42,.055),inset 0 1px 0 #fff!important}
 :root[data-theme="dark"] .side-nav,:root[data-theme="dark"] .card,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .month-panel,:root[data-theme="dark"] .daybox,:root[data-theme="dark"] .daybar,:root[data-theme="dark"] .base-card,:root[data-theme="dark"] .mcard,:root[data-theme="dark"] .settings-panel,:root[data-theme="dark"] .modal-card,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .central-add,:root[data-theme="dark"] .ncard,:root[data-theme="dark"] .row,:root[data-theme="dark"] .col,:root[data-theme="dark"] .kcard,:root[data-theme="dark"] .task,:root[data-theme="dark"] .main-task{background:#1C1C1E!important;border-color:var(--line)!important;color:var(--ink)!important;box-shadow:0 8px 24px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
-:root[data-theme="light"] .hero{background:linear-gradient(135deg,#0284C7,#38A3D8)!important;color:#fff!important;border-color:rgba(2,132,199,.2)!important}
+:root[data-theme="light"] .hero{background:linear-gradient(135deg,#087E8B,#15999A)!important;color:#fff!important;border-color:rgba(8,126,139,.2)!important}
 :root[data-theme="dark"] .hero{background:linear-gradient(135deg,#1C1C1E,#262629)!important;color:#F5F5F7!important;border-color:#3A3A3C!important}
 :root[data-theme="light"] .field,:root[data-theme="light"] .select,:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select,:root[data-theme="light"] .search-hit,:root[data-theme="light"] .base-day-table{background:#FFFFFF!important;color:var(--ink)!important;border-color:var(--line)!important}
 :root[data-theme="dark"] .field,:root[data-theme="dark"] .select,:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .search-hit,:root[data-theme="dark"] .base-day-table{background:#171719!important;color:var(--ink)!important;border-color:var(--line)!important}
 :root[data-theme="light"] .cal-grid .cell,:root[data-theme="light"] .cal-grid button,:root[data-theme="light"] .month-panel .cal-grid .cell,:root[data-theme="light"] .month-panel .cal-grid button,:root[data-theme="light"] .month-panel .cal-grid .wd{background:#F8FAFC!important;color:var(--ink)!important;border-color:var(--line)!important}
 :root[data-theme="dark"] .cal-grid .cell,:root[data-theme="dark"] .cal-grid button,:root[data-theme="dark"] .month-panel .cal-grid .cell,:root[data-theme="dark"] .month-panel .cal-grid button,:root[data-theme="dark"] .month-panel .cal-grid .wd{background:#222225!important;color:var(--ink)!important;border-color:#3A3A3C!important}
-:root[data-theme="light"] .cal-grid .cell.sel,:root[data-theme="light"] .cal-grid .sel,:root[data-theme="light"] .cal-grid [aria-pressed="true"]{background:#0284C7!important;color:#fff!important;border-color:#0284C7!important}
+:root[data-theme="light"] .cal-grid .cell.sel,:root[data-theme="light"] .cal-grid .sel,:root[data-theme="light"] .cal-grid [aria-pressed="true"]{background:#087E8B!important;color:#fff!important;border-color:#087E8B!important}
 :root[data-theme="dark"] .cal-grid .cell.sel,:root[data-theme="dark"] .cal-grid .sel,:root[data-theme="dark"] .cal-grid [aria-pressed="true"]{background:#D1D1D6!important;color:#171719!important;border-color:#D1D1D6!important}
-:root[data-theme="light"] .btn,:root[data-theme="light"] .install-app{background:#0284C7!important;color:#fff!important;border-color:#0284C7!important}
+:root[data-theme="light"] .btn,:root[data-theme="light"] .install-app{background:#087E8B!important;color:#fff!important;border-color:#087E8B!important}
 :root[data-theme="dark"] .btn,:root[data-theme="dark"] .install-app{background:#D1D1D6!important;color:#171719!important;border-color:#D1D1D6!important}
 :root[data-theme="light"] .btn.ghost,:root[data-theme="light"] .abtn,:root[data-theme="light"] .nav-btn,:root[data-theme="light"] .chip{background:#F5F7F9!important;color:#17212B!important;border-color:#E2E8F0!important}
 :root[data-theme="dark"] .btn.ghost,:root[data-theme="dark"] .abtn,:root[data-theme="dark"] .nav-btn,:root[data-theme="dark"] .chip{background:#262629!important;color:#F5F5F7!important;border-color:#3A3A3C!important}
-:root[data-theme="light"] .chip.p1,:root[data-theme="light"] .chip.s1,:root[data-theme="light"] .priority-tag.p1,:root[data-theme="light"] .priority-tag.p2{background:rgba(2,132,199,.10)!important;color:#0284C7!important;border-color:rgba(2,132,199,.22)!important}
+:root[data-theme="light"] .chip.p1,:root[data-theme="light"] .chip.s1,:root[data-theme="light"] .priority-tag.p1,:root[data-theme="light"] .priority-tag.p2{background:rgba(8,126,139,.10)!important;color:#087E8B!important;border-color:rgba(8,126,139,.22)!important}
 :root[data-theme="dark"] .chip.p1,:root[data-theme="dark"] .chip.s1,:root[data-theme="dark"] .priority-tag.p1,:root[data-theme="dark"] .priority-tag.p2{background:#2A2A2D!important;color:#D1D1D6!important;border-color:#454549!important}
 :root[data-theme="dark"] .dots i.n,:root[data-theme="dark"] .legend .l2::before{background:#D1D1D6!important}
-:root[data-theme="light"] .dots i.n,:root[data-theme="light"] .legend .l2::before{background:#0284C7!important}
-:root[data-theme="light"] .task.p1{border-inline-start-color:#0284C7!important}
+:root[data-theme="light"] .dots i.n,:root[data-theme="light"] .legend .l2::before{background:#087E8B!important}
+:root[data-theme="light"] .task.p1{border-inline-start-color:#087E8B!important}
 :root[data-theme="dark"] .task.p1{border-inline-start-color:#D1D1D6!important}
 :root[data-theme="dark"] .side-nav button[aria-current="page"],:root[data-theme="dark"] .side-nav button.active{background:#2A2A2D!important;color:#F5F5F7!important;border-color:#454549!important}
-:root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active{background:rgba(2,132,199,.10)!important;color:#0284C7!important;border-color:rgba(2,132,199,.22)!important}
+:root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active{background:rgba(8,126,139,.10)!important;color:#087E8B!important;border-color:rgba(8,126,139,.22)!important}
+
+
+/* NEXORA v36 — restore original teal accent in Light Mode; neutral monochrome Dark Mode */
+:root[data-theme="light"]{
+ color-scheme:light;
+ --bg:#FFFFFF; --surface:rgba(255,255,255,.96); --surface-2:#F5F7F9;
+ --line:#E2E8F0; --ink:#17212B; --muted:#64748B;
+ --accent:#087E8B; --accent-ink:#FFFFFF; --accent-soft:rgba(8,126,139,.11);
+ --amber:#087E8B; --amber-soft:rgba(8,126,139,.10);
+ --rose:#087E8B; --rose-soft:rgba(8,126,139,.10);
+ --ok:#087E8B; --ok-soft:rgba(8,126,139,.10);
+}
+:root[data-theme="light"] .hero{background:linear-gradient(135deg,#087E8B,#15999A)!important;color:#FFFFFF!important;border-color:rgba(8,126,139,.20)!important}
+:root[data-theme="light"] .btn,:root[data-theme="light"] .install-app{background:#087E8B!important;color:#FFFFFF!important;border-color:#087E8B!important}
+:root[data-theme="light"] .cal-grid .cell.sel,:root[data-theme="light"] .cal-grid .sel,:root[data-theme="light"] .cal-grid [aria-pressed="true"]{background:#087E8B!important;color:#FFFFFF!important;border-color:#087E8B!important}
+:root[data-theme="light"] .field:focus,:root[data-theme="light"] input:focus,:root[data-theme="light"] textarea:focus,:root[data-theme="light"] select:focus{border-color:#087E8B!important;box-shadow:0 0 0 3px rgba(8,126,139,.13)!important}
+:root[data-theme="light"] .side-nav button.active,:root[data-theme="light"] .side-nav button[aria-current="page"]{background:rgba(8,126,139,.11)!important;color:#087E8B!important}
+:root[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#121212; --surface:#1C1C1E; --surface-2:#262629;
+ --line:#3A3A3C; --ink:#F5F5F7; --muted:#B7B7BD;
+ --accent:#D1D1D6; --accent-ink:#171719; --accent-soft:rgba(209,209,214,.12);
+ --amber:#D1D1D6; --amber-soft:rgba(209,209,214,.12);
+ --rose:#D1D1D6; --rose-soft:rgba(209,209,214,.12);
+ --ok:#D1D1D6; --ok-soft:rgba(209,209,214,.12);
+}
+:root[data-theme="dark"] .hero{background:linear-gradient(135deg,#1C1C1E,#262629)!important;color:#F5F5F7!important;border-color:#3A3A3C!important}
+:root[data-theme="dark"] .btn,:root[data-theme="dark"] .install-app{background:#D1D1D6!important;color:#171719!important;border-color:#D1D1D6!important}
+:root[data-theme="dark"] .cal-grid .cell.sel,:root[data-theme="dark"] .cal-grid .sel,:root[data-theme="dark"] .cal-grid [aria-pressed="true"]{background:#D1D1D6!important;color:#171719!important;border-color:#D1D1D6!important}
 
 </style>
 </head>
