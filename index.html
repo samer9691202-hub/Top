@@ -232,6 +232,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .card-head .sub{margin-top:2px}
 .list{display:grid;gap:10px}
 .collapsed-list > li:nth-child(n+4){display:none}
+#tasks,#notes,#base{scroll-margin-top:18px}
 .list-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2,var(--surface));color:var(--accent);font:inherit;font-weight:750;cursor:pointer;transition:background .18s ease,border-color .18s ease}
 .list-more:hover{background:var(--soft);border-color:var(--accent)}
 .list-more[hidden]{display:none!important}
@@ -871,10 +872,10 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     if(opener && opener.focus) opener.focus();
   }
   // الإعدادات تستخدم نفس آلية استجابة أزرار الواجهة: نقرة واحدة واضحة ومتوافقة مع اللمس والماوس ولوحة المفاتيح.
-  const settingsButton = $('#openSettings');
+  const settingsButton = $('#quickSettings');
   settingsButton?.addEventListener('click', openSettings);
   $('#setClose').addEventListener('click', closeSettings);
-  document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
+  document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(!target)return;if(b.dataset.jump==='tasks'||b.dataset.jump==='notes'){openDay(todayKey(),{reset:true});requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'start'}));}else target.scrollIntoView({behavior:'smooth',block:'start'});});
   document.getElementById('homeBrand')?.addEventListener('click',()=>{const home=document.querySelector('.hero')||document.querySelector('.wrap');if(home){home.scrollIntoView({behavior:'smooth',block:'start'});window.scrollTo({top:0,behavior:'smooth'});}});
   document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return; if(dlgDone){ dlgDone(null); return; } if(!$('#settings').hidden) closeSettings(); });
   $('#settings').addEventListener('click', e=>{
@@ -960,6 +961,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     const key = normDate(date), d = dparse(key);
     ui.sel = key; ui.calY = d.getFullYear(); ui.calM = d.getMonth();
     if(opts.reset){ ui.filter = 'all'; ui.noteView = 'day'; ui.noteQ = ''; }
+    if(opts.expandLists){ tasksExpanded = true; notesExpanded = true; }
+    else if(opts.reset){ tasksExpanded = false; notesExpanded = false; }
     syncSegs();
     renderAll();
     if(opts.scroll){
@@ -1255,8 +1258,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     if(!q && !window.nexoraBaseExpanded) rows=rows.slice(0,7);
     const table = '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+rows.map(d=>
       '<tr class="'+(d.date===ui.sel?'is-sel':'')+'"><td class="date-cell" data-label="التاريخ"><button type="button" class="datebtn" data-central-date="'+esc(d.date)+'">'+esc(fShortBase(d.date))+'</button>'+(d.date===tk?'<span class="mini-tag">اليوم</span>':'')+'<br><span class="muted-cell">'+esc(d.date)+'</span></td>'+
-      '<td class="content-cell" data-label="المهام">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+(mainOf(t)?'◆ ':'')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td>'+
-      '<td class="content-cell" data-label="الملاحظات">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc((n.title||n.text).slice(0,240))+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td>'+
+      '<td class="content-cell" data-label="المهام">'+(d.tasks.length?d.tasks.slice(0,3).map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+(mainOf(t)?'◆ ':'')+esc(t.text)+'</span>').join('')+(d.tasks.length>3?'<span class="muted-cell">+'+(d.tasks.length-3)+' مهام أخرى</span>':''):'<span class="muted-cell">لا توجد مهام</span>')+'</td>'+
+      '<td class="content-cell" data-label="الملاحظات">'+(d.notes.length?d.notes.slice(0,3).map(n=>'<span class="note-line">'+esc((n.title||n.text).slice(0,240))+'</span>').join('')+(d.notes.length>3?'<span class="muted-cell">+'+(d.notes.length-3)+' ملاحظات أخرى</span>':''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td>'+
       '<td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
     return table + ((!q && totalRows>7) ? '<div class="base-more-wrap"><button type="button" class="list-more base-more" id="baseDaysMore" aria-expanded="'+String(!!window.nexoraBaseExpanded)+'">'+(window.nexoraBaseExpanded?'عرض أقل ↑':'عرض المزيد ('+(totalRows-7)+') ↓')+'</button></div>' : '');
   }
@@ -1368,7 +1371,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   $('#baseView').addEventListener('change', e=>{ if(e.target.classList.contains('main-scope')) ui.mainScope = e.target.value; });
   $('#baseView').addEventListener('click', async e=>{
     const dayBtn = e.target.closest('[data-central-date]');
-    if(dayBtn){ openDay(dayBtn.dataset.centralDate, {reset:true, scroll:true}); return; }
+    if(dayBtn){ openDay(dayBtn.dataset.centralDate, {reset:true, scroll:true, expandLists:true}); return; }
     const ma = e.target.closest('[data-ma]');
     if(ma){
       const el = ma.closest('[data-main-id]'); const m = el && state.mainTasks.find(x=>x.id===el.dataset.mainId); if(!m) return;
@@ -1523,9 +1526,7 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 /* NEXORA v43 — اختصارات الهوية */
 (function(){
   const home = document.getElementById('brandHome');
-  const settings = document.getElementById('quickSettings');
   home?.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); });
-  settings?.addEventListener('click', function(){ document.getElementById('openSettings')?.click(); });
 })();
 </script>
 
