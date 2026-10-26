@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v43-polished';
+const CACHE = 'nexora-v43-layout-update-1';
 const BASE = self.registration.scope;
 const FILES = [
   './',

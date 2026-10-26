@@ -231,6 +231,12 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .card-head h2{font-size:1.2rem;font-weight:700;line-height:1.35}
 .card-head .sub{margin-top:2px}
 .list{display:grid;gap:10px}
+.collapsed-list > li:nth-child(n+4){display:none}
+.list-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2,var(--surface));color:var(--accent);font:inherit;font-weight:750;cursor:pointer;transition:background .18s ease,border-color .18s ease}
+.list-more:hover{background:var(--soft);border-color:var(--accent)}
+.list-more[hidden]{display:none!important}
+.base-more-wrap{display:flex;justify-content:center;padding:12px 0 2px}
+.base-more{min-width:180px}
 
 /* المهام */
 .prog{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -483,10 +489,10 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
  .brand-symbol svg{width:29px;height:29px}
  .brand-copy strong{font-size:.98rem}
  .brand-copy small{font-size:.7rem}
- .brand-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .brand-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
  .brand-link{font-size:.78rem;text-align:center;padding:8px 4px}
  .brand-action{grid-column:span 1;font-size:.72rem;min-height:38px}
- .brand-action-primary{grid-column:span 2}
+ .brand-action-primary{grid-column:auto}
  .hero{padding:19px;border-radius:23px;gap:16px}
  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
  .stat{padding:14px 14px;border-radius:18px}
@@ -509,8 +515,6 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <button type="button" data-jump="tasks" aria-label="المهام" title="المهام"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="m7.5 9 1.7 1.7L12 8m2 1h2.5m-9 5 1.7 1.7L12 13m2 1h2.5"/></svg><span>المهام</span></button>
   <button type="button" data-jump="notes" aria-label="الملاحظات" title="الملاحظات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h9l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5a1.5 1.5 0 0 1 1-1.5Z"/><path d="M14.5 3.5V8H19M8 12h8M8 15.5h8"/></svg><span>الملاحظات</span></button>
   <button type="button" data-jump="base" aria-label="القاعدة الرئيسية" title="القاعدة الرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6M4.5 11.5v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6"/></svg><span>القاعدة</span></button>
-  <div class="nav-divider"></div>
-  <button type="button" class="side-settings" id="openSettings" aria-label="الإعدادات" aria-controls="settings" title="الإعدادات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.2 13.5 1.1.9-1.4 2.4-1.4-.5a7.7 7.7 0 0 1-1.6.9l-.3 1.5h-2.8l-.3-1.5a7.7 7.7 0 0 1-1.6-.9l-1.4.5-1.4-2.4 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.4-2.4 1.4.5a7.7 7.7 0 0 1 1.6-.9l.3-1.5h2.8l.3 1.5a7.7 7.7 0 0 1 1.6.9l1.4-.5 1.4 2.4-1.1.9a7 7 0 0 1 0 1.8Z"/></svg><span>الإعدادات</span></button>
 </nav>
 <div class="wrap">
 
@@ -523,10 +527,6 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
       <span class="brand-copy"><strong>NEXORA</strong><small>نظّم يومك، واحتفظ بأفكارك</small></span>
     </a>
     <div class="brand-actions">
-      <a class="brand-link" href="#tasks">المهام</a>
-      <a class="brand-link" href="#notes">الملاحظات</a>
-      <a class="brand-link" href="#base">القاعدة</a>
-      <button class="brand-action" id="quickBackup" type="button" title="تحميل نسخة احتياطية"><span aria-hidden="true">↧</span> نسخة احتياطية</button>
       <button class="brand-action brand-action-primary" id="quickSettings" type="button"><span aria-hidden="true">⚙</span> الإعدادات</button>
     </div>
   </header>
@@ -610,7 +610,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
         <input class="field" id="taskInput" placeholder="مهمة جديدة لهذا اليوم" autocomplete="off">
         <button class="btn" id="taskAdd">أضف</button>
       </div>
-      <ul class="list" id="taskList"></ul>
+      <ul class="list collapsed-list" id="taskList"></ul>
+      <button type="button" class="list-more" id="tasksMore" hidden aria-expanded="false">عرض المزيد <span aria-hidden="true">↓</span></button>
     </section>
 
     <!-- الملاحظات -->
@@ -638,7 +639,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
         <label class="sr" for="noteSearch">بحث في الملاحظات</label>
         <input class="field" id="noteSearch" type="search" placeholder="ابحث في كل الملاحظات">
       </div>
-      <ul class="list" id="noteList"></ul>
+      <ul class="list collapsed-list" id="noteList"></ul>
+      <button type="button" class="list-more" id="notesMore" hidden aria-expanded="false">عرض المزيد <span aria-hidden="true">↓</span></button>
     </section>
   </div>
 
@@ -870,7 +872,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   }
   // الإعدادات تستخدم نفس آلية استجابة أزرار الواجهة: نقرة واحدة واضحة ومتوافقة مع اللمس والماوس ولوحة المفاتيح.
   const settingsButton = $('#openSettings');
-  settingsButton.addEventListener('click', openSettings);
+  settingsButton?.addEventListener('click', openSettings);
   $('#setClose').addEventListener('click', closeSettings);
   document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
   document.getElementById('homeBrand')?.addEventListener('click',()=>{const home=document.querySelector('.hero')||document.querySelector('.wrap');if(home){home.scrollIntoView({behavior:'smooth',block:'start'});window.scrollTo({top:0,behavior:'smooth'});}});
@@ -1037,6 +1039,18 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     dates.forEach(date=>{ if(!state.tasks.some(x=>x.date===date && x.mainId===m.id)){ state.tasks.push({id:uid(), mainId:m.id, text:m.name, date, done:false, prio:[0,1,2].includes(m.prio)?m.prio:1}); added++; } });
     return added;
   }
+  let tasksExpanded = false;
+  let notesExpanded = false;
+  function syncListMore(listId, buttonId, expanded, count){
+    const list = document.getElementById(listId), button = document.getElementById(buttonId);
+    if(!list || !button) return;
+    list.classList.toggle('collapsed-list', !expanded);
+    button.hidden = count <= 3;
+    button.setAttribute('aria-expanded', String(expanded));
+    button.innerHTML = expanded ? 'عرض أقل <span aria-hidden="true">↑</span>' : 'عرض المزيد <span aria-hidden="true">↓</span>';
+  }
+  $('#tasksMore').addEventListener('click',()=>{tasksExpanded=!tasksExpanded;syncListMore('taskList','tasksMore',tasksExpanded,$('#taskList').querySelectorAll(':scope > li:not(.empty)').length);});
+  $('#notesMore').addEventListener('click',()=>{notesExpanded=!notesExpanded;syncListMore('noteList','notesMore',notesExpanded,$('#noteList').querySelectorAll(':scope > li:not(.empty)').length);});
   function renderTasks(){
     const day = state.tasks.filter(t=>t.date===ui.sel);
     const total = day.length, done = day.filter(t=>t.done).length;
@@ -1049,7 +1063,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     items = items.slice().sort((a,b)=> a.done-b.done || (Number(b.prio)||0)-(Number(a.prio)||0));
     if(!items.length){
       $('#taskList').innerHTML = '<li class="empty">'+(total?'لا توجد مهام في هذا العرض.':'لا توجد مهام لهذا اليوم. اكتب أول مهمة في الحقل أعلاه.')+'</li>';
-      return;
+      tasksExpanded=false; syncListMore('taskList','tasksMore',false,0); return;
     }
     $('#taskList').innerHTML = items.map(t=>{
       const m = mainOf(t), p = [0,1,2].includes(t.prio) ? t.prio : 0, n = m ? linksOf(m).length : 0;
@@ -1063,6 +1077,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
         </div>
       </li>`;}).join('');
     fitClamp($('#taskList'),'.t-text');
+    syncListMore('taskList','tasksMore',tasksExpanded,items.length);
   }
   function addTask(){
     const el = $('#taskInput'), text = el.value.trim();
@@ -1143,7 +1158,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     $('#noteCancel').hidden = !ui.editing;
     if(!items.length){
       $('#noteList').innerHTML = '<li class="empty">'+(all ? (state.notes.length?'لا توجد نتائج مطابقة.':'لا توجد ملاحظات محفوظة بعد.') : 'لا توجد ملاحظات محفوظة لهذا اليوم.')+'</li>';
-      return;
+      notesExpanded=false; syncListMore('noteList','notesMore',false,0); return;
     }
     $('#noteList').innerHTML = items.map(n=>`
       <li class="ncard ${ui.editing===n.id?'editing':''}" data-id="${n.id}">
@@ -1159,6 +1174,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
         </div>
       </li>`).join('');
     fitClamp($('#noteList'),'.nbody');
+    syncListMore('noteList','notesMore',notesExpanded,items.length);
   }
   function clearEditor(){ $('#noteTitle').value=''; $('#noteText').value=''; ui.editing=null; }
   $('#noteSave').onclick = ()=>{
@@ -1219,18 +1235,30 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   }
   function daysHTML(){
     const q = ui.q.trim().toLowerCase(), tk = todayKey();
-    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    const daySet = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)].filter(Boolean));
+    for(let offset=0; offset<7; offset++){ const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-offset); daySet.add(dkey(d)); }
+    const days = [...daySet];
+    // اليوم الحالي أولاً، ثم الأيام الستة السابقة، وبعدها بقية الأيام عبر «عرض المزيد».
+    days.sort((a,b)=>{
+      const rank = d => d===tk ? 0 : d<tk ? 1 : 2;
+      const ra=rank(a), rb=rank(b);
+      if(ra!==rb) return ra-rb;
+      return ra===1 ? b.localeCompare(a) : a.localeCompare(b);
+    });
     // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
-    const rows = days.map(date=>({date, tasks:state.tasks.filter(t=>t.date===date), notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
+    let rows = days.map(date=>({date, tasks:state.tasks.filter(t=>t.date===date), notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
       if(!q) return true;
       return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
     });
     if(!rows.length) return '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد. أضف مهمة أو ملاحظة في أي يوم وستظهر هنا تلقائيًا.')+'</div>';
-    return '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+rows.map(d=>
+    const totalRows=rows.length;
+    if(!q && !window.nexoraBaseExpanded) rows=rows.slice(0,7);
+    const table = '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+rows.map(d=>
       '<tr class="'+(d.date===ui.sel?'is-sel':'')+'"><td class="date-cell" data-label="التاريخ"><button type="button" class="datebtn" data-central-date="'+esc(d.date)+'">'+esc(fShortBase(d.date))+'</button>'+(d.date===tk?'<span class="mini-tag">اليوم</span>':'')+'<br><span class="muted-cell">'+esc(d.date)+'</span></td>'+
       '<td class="content-cell" data-label="المهام">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+(mainOf(t)?'◆ ':'')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td>'+
       '<td class="content-cell" data-label="الملاحظات">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc((n.title||n.text).slice(0,240))+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td>'+
       '<td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
+    return table + ((!q && totalRows>7) ? '<div class="base-more-wrap"><button type="button" class="list-more base-more" id="baseDaysMore" aria-expanded="'+String(!!window.nexoraBaseExpanded)+'">'+(window.nexoraBaseExpanded?'عرض أقل ↑':'عرض المزيد ('+(totalRows-7)+') ↓')+'</button></div>' : '');
   }
   function mainsHTML(){
     const q = ui.q.trim().toLowerCase();
@@ -1280,6 +1308,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     $('#baseView').innerHTML = tab==='days' ? daysHTML() : mainsHTML();
   }
   $('#baseTabs').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; ui.baseTab = b.dataset.bt; renderBase(); });
+  $('#base').addEventListener('click', e=>{ if(e.target.closest('#baseDaysMore')){ window.nexoraBaseExpanded=!window.nexoraBaseExpanded; renderBase(); } });
   const centralKind = $('#centralKind');
   function syncCentralKind(){
     const note = centralKind.value==='note';
@@ -1494,10 +1523,8 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 /* NEXORA v43 — اختصارات الهوية */
 (function(){
   const home = document.getElementById('brandHome');
-  const backup = document.getElementById('quickBackup');
   const settings = document.getElementById('quickSettings');
   home?.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); });
-  backup?.addEventListener('click', function(){ document.getElementById('export')?.click(); });
   settings?.addEventListener('click', function(){ document.getElementById('openSettings')?.click(); });
 })();
 </script>
