@@ -420,6 +420,24 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 @media(max-width:520px){.clock .hm{font-size:clamp(3.2rem,16vw,5rem)}.cal-grid .cell,.cal-grid button{min-height:43px;padding:3px;font-size:.82rem}.month-panel{padding:10px}.daybox{padding:10px}.card{padding:14px}.daybar{flex-wrap:wrap}.day-pick{flex:1}.day-pick button{width:100%}}
 @media(prefers-reduced-motion:no-preference){.card,.stat,.month-panel,.daybox,.side-nav button{transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease}}
 
+
+/* NEXORA v31: theme controlled from Settings + glass UI light/dark palettes */
+:root[data-theme="dark"]{color-scheme:dark;--bg:#130e12;--surface:rgba(47,31,36,.82);--surface-2:rgba(73,48,54,.72);--line:rgba(255,239,233,.18);--ink:#fff7f2;--muted:#c6b2b1;--accent:#d99a70;--accent-2:#f0b78e;--ov1:rgba(255,230,220,.10);--ov4:rgba(255,255,255,.055)}
+:root[data-theme="light"]{color-scheme:light;--bg:#eee8e5;--surface:rgba(255,250,248,.88);--surface-2:rgba(239,226,221,.88);--line:rgba(85,57,55,.2);--ink:#302226;--muted:#756368;--accent:#a85f3d;--accent-2:#c27b54;--ov1:rgba(255,255,255,.62);--ov4:rgba(90,52,47,.045)}
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 15% 10%,#ead0c2 0,transparent 42%),linear-gradient(135deg,#f4eeeb,#ded1ce);color:var(--ink)}
+:root[data-theme="light"] .stats .stat,:root[data-theme="light"] .card,:root[data-theme="light"] .daybox,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .base-card,:root[data-theme="light"] .central-add{background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(245,235,231,.88));border-color:rgba(87,55,52,.19);box-shadow:0 16px 42px rgba(69,42,39,.10);color:var(--ink)}
+:root[data-theme="light"] .card h2,:root[data-theme="light"] .month-panel .title{color:#38272a}
+:root[data-theme="light"] .side-nav{background:linear-gradient(145deg,rgba(255,250,248,.88),rgba(236,220,216,.84));border-color:rgba(87,55,52,.2);box-shadow:0 16px 40px rgba(58,35,34,.13)}
+:root[data-theme="light"] .side-nav button{color:#493337}
+:root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active{background:linear-gradient(120deg,rgba(217,154,112,.28),rgba(255,255,255,.5));border-color:rgba(168,95,61,.35)}
+:root[data-theme="light"] .field,:root[data-theme="light"] .select,:root[data-theme="light"] input,:root[data-theme="light"] textarea{background:rgba(255,255,255,.78);color:var(--ink);border-color:var(--line)}
+:root[data-theme="light"] .base-day-table th,:root[data-theme="light"] .base-day-table td,:root[data-theme="light"] .search-hit{border-color:var(--line);background:rgba(255,255,255,.35);color:var(--ink)}
+:root[data-theme="light"] .btn{background:linear-gradient(135deg,#b87551,#d99a70);color:#fffaf7;border-color:rgba(139,75,48,.3)}
+#base .tools{display:flex;align-items:center;gap:10px}
+#base .tools #search{flex:1;min-width:0}
+#base .tools .base-add-btn{flex:0 0 auto}
+#mainAddForm[hidden],#centralAddForm[hidden]{display:none!important}
+@media(max-width:520px){#base .tools{gap:7px}#base .tools #search{width:1%;font-size:.9rem}#base .base-add-btn{padding-inline:12px}}
 </style>
 </head>
 <body>
@@ -658,7 +676,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   };
 
   let state = {tasks:[], notes:[], base:[], mainTasks:[]};
-  const DEFAULTS = {clockFmt:'12', theme:'auto', weekStart:'0', showSec:true, showHijri:true};
+  const DEFAULTS = {clockFmt:'12', theme:'dark', weekStart:'0', showSec:true, showHijri:true};
   let settings = Object.assign({}, DEFAULTS);
   let ui = {sel: todayKey(), calY:0, calM:0, calExpanded:false, filter:'all', noteView:'day', noteQ:'', editing:null, view:'table', q:'', st:'all', baseTab:'days', mainScope:'day', openMains:new Set()};
   { const t = new Date(); ui.calY = t.getFullYear(); ui.calM = t.getMonth(); }
@@ -1149,7 +1167,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
     $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
     document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
-    $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = tab!=='mains';
+    $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = true;
     $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : 'ابحث في المهام الرئيسية والمهام والملاحظات والتواريخ';
     $('#baseView').innerHTML = tab==='days' ? daysHTML() : mainsHTML();
   }
@@ -1164,7 +1182,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   }
   function openCentralAdd(){
     $('#centralDate').value = ui.sel || todayKey();
-    $('#centralKind').value='task'; $('#centralText').value=''; $('#centralTitle').value=''; $('#centralScope').value='day'; $('#centralPrio').value='0';
+    $('#centralKind').value='task'; $('#centralText').value=($('#search').value||'').trim(); $('#centralTitle').value=''; $('#centralScope').value='day'; $('#centralPrio').value='0';
     syncCentralKind(); $('#centralAddForm').hidden=false; $('#centralText').focus();
   }
   $('#centralAddOpen').onclick=openCentralAdd;
