@@ -1371,6 +1371,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.drawImage(img,0,0);URL.revokeObjectURL(url);canvas.toBlob(b=>{if(!b){flash('تعذر إنشاء الصورة');return;}const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='NEXORA-'+(window.nexoraReportMode||'daily')+'-report.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);},'image/jpeg',.94);};
     img.onerror=()=>{URL.revokeObjectURL(url);flash('تعذر إنشاء صورة التقرير');};img.src=url;
   }
+
   function renderBase(){
     const tab = ui.baseTab;
     const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
