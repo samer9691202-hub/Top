@@ -677,6 +677,82 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="dark"] .nav-brand-name{color:#D1D1D6!important}
 :root[data-theme="dark"] .side-nav button{color:#D1D1D6!important}
 
+
+/* NEXORA v38 — remove all warm/brown tones from Light Mode */
+:root[data-theme="light"]{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F5F7F9;
+  --line:#E2E8F0; --ink:#17212B; --muted:#64748B;
+  --accent:#087E8B; --accent-ink:#FFFFFF; --accent-soft:rgba(8,126,139,.11);
+  /* Semantic colors intentionally use the original teal in Light Mode. */
+  --amber:#087E8B; --amber-soft:rgba(8,126,139,.10);
+  --rose:#087E8B; --rose-soft:rgba(8,126,139,.10);
+  --ok:#087E8B; --ok-soft:rgba(8,126,139,.10);
+  color-scheme:light;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app,
+:root[data-theme="light"] main{background:#FFFFFF!important;color:#17212B!important}
+:root[data-theme="light"] .side-nav,
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .month-panel,
+:root[data-theme="light"] .daybox,
+:root[data-theme="light"] .daybar,
+:root[data-theme="light"] .base-card,
+:root[data-theme="light"] .mcard,
+:root[data-theme="light"] .settings-panel,
+:root[data-theme="light"] .modal-card,
+:root[data-theme="light"] .sheet,
+:root[data-theme="light"] .central-add,
+:root[data-theme="light"] .ncard,
+:root[data-theme="light"] .row,
+:root[data-theme="light"] .col,
+:root[data-theme="light"] .kcard,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .main-task{
+  background:#FFFFFF!important;color:#17212B!important;border-color:#E2E8F0!important;
+  box-shadow:0 8px 28px rgba(15,23,42,.055)!important;
+}
+:root[data-theme="light"] .hero{background:linear-gradient(135deg,#087E8B,#15999A)!important;color:#FFFFFF!important;border-color:rgba(8,126,139,.2)!important}
+:root[data-theme="light"] .btn,
+:root[data-theme="light"] .install-app{background:#087E8B!important;color:#FFFFFF!important;border-color:#087E8B!important}
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .chip{background:#F5F7F9!important;color:#17212B!important;border-color:#E2E8F0!important}
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] select,
+:root[data-theme="light"] .search-hit,
+:root[data-theme="light"] .base-day-table{background:#FFFFFF!important;color:#17212B!important;border-color:#E2E8F0!important}
+:root[data-theme="light"] .cal-grid .cell,
+:root[data-theme="light"] .cal-grid button,
+:root[data-theme="light"] .month-panel .cal-grid .cell,
+:root[data-theme="light"] .month-panel .cal-grid button,
+:root[data-theme="light"] .month-panel .cal-grid .wd{background:#F8FAFC!important;color:#17212B!important;border-color:#E2E8F0!important}
+:root[data-theme="light"] .cal-grid .cell.sel,
+:root[data-theme="light"] .cal-grid .sel,
+:root[data-theme="light"] .cal-grid [aria-pressed="true"],
+:root[data-theme="light"] .side-nav button.active,
+:root[data-theme="light"] .side-nav button[aria-current="page"]{background:rgba(8,126,139,.11)!important;color:#087E8B!important;border-color:rgba(8,126,139,.28)!important}
+:root[data-theme="light"] .chip.p1,
+:root[data-theme="light"] .chip.s1,
+:root[data-theme="light"] .priority-tag,
+:root[data-theme="light"] .priority-tag.p1,
+:root[data-theme="light"] .priority-tag.p2,
+:root[data-theme="light"] .dots i.n,
+:root[data-theme="light"] .legend .l2::before,
+:root[data-theme="light"] .task.p1{background-color:rgba(8,126,139,.10)!important;color:#087E8B!important;border-color:rgba(8,126,139,.22)!important}
+:root[data-theme="light"] .task.p1{border-inline-start-color:#087E8B!important}
+:root[data-theme="light"] .nav-brand-mark{background:linear-gradient(135deg,#087E8B,#15999A)!important;color:#FFFFFF!important;border-color:rgba(8,126,139,.20)!important}
+:root[data-theme="light"] .nav-brand-name{color:#087E8B!important}
+:root[data-theme="light"] .field:focus,
+:root[data-theme="light"] input:focus,
+:root[data-theme="light"] textarea:focus,
+:root[data-theme="light"] select:focus{border-color:#087E8B!important;box-shadow:0 0 0 3px rgba(8,126,139,.13)!important}
+
 </style>
 </head>
 <body>
