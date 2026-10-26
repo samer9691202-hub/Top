@@ -517,6 +517,49 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="light"] .sub,:root[data-theme="light"] .muted,:root[data-theme="light"] .label,:root[data-theme="light"] .legend{color:#62676a!important}
 :root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active{background:rgba(71,126,130,.17)!important;border-color:rgba(71,126,130,.34)!important}
 
+
+/* NEXORA v34 — one source of truth for every theme surface */
+:root[data-theme="light"]{
+  --bg:#e9efed;--surface:rgba(255,255,255,.56);--surface-2:rgba(255,255,255,.34);
+  --line:rgba(55,91,91,.18);--ink:#203638;--muted:#607779;
+  --accent:#167f82;--accent-ink:#fff;--accent-soft:rgba(22,127,130,.13);
+  --amber:#a95e22;--amber-soft:rgba(211,137,65,.16);--rose:#b74457;--rose-soft:rgba(183,68,87,.13);
+  --ok:#24775e;--ok-soft:rgba(36,119,94,.13);color-scheme:light
+}
+:root[data-theme="dark"]{
+  --bg:#171316;--surface:rgba(40,31,35,.76);--surface-2:rgba(54,42,47,.68);
+  --line:rgba(255,244,239,.17);--ink:#fff8f4;--muted:#c9b9b7;
+  --accent:#d58f68;--accent-ink:#211815;--accent-soft:rgba(213,143,104,.17);
+  --amber:#edb18d;--amber-soft:rgba(237,177,141,.15);--rose:#f08b96;--rose-soft:rgba(240,139,150,.14);
+  --ok:#8bd2ac;--ok-soft:rgba(139,210,172,.14);color-scheme:dark
+}
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 12% 5%,rgba(255,255,255,.78),transparent 39%),radial-gradient(ellipse at 90% 90%,rgba(89,151,151,.17),transparent 42%),var(--bg)!important;color:var(--ink)}
+:root[data-theme="dark"] body{background:radial-gradient(ellipse at 12% 0%,rgba(213,143,104,.10),transparent 38%),radial-gradient(ellipse at 92% 90%,rgba(92,131,132,.09),transparent 40%),var(--bg)!important;color:var(--ink)}
+/* Same glass treatment for navigation, cards, dialogs, forms, calendar and database */
+:root[data-theme="light"] .side-nav,:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .daybox,:root[data-theme="light"] .daybar,:root[data-theme="light"] .base-card,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .central-add,:root[data-theme="light"] .ncard,:root[data-theme="light"] .row,:root[data-theme="light"] .col,:root[data-theme="light"] .kcard,:root[data-theme="light"] .task,:root[data-theme="light"] .main-task{
+ color:var(--ink)!important;background:linear-gradient(145deg,rgba(255,255,255,.67),rgba(255,255,255,.31))!important;border-color:var(--line)!important;box-shadow:0 12px 32px rgba(32,61,61,.07),inset 0 1px 0 rgba(255,255,255,.72)!important;backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+:root[data-theme="dark"] .side-nav,:root[data-theme="dark"] .card,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .month-panel,:root[data-theme="dark"] .daybox,:root[data-theme="dark"] .daybar,:root[data-theme="dark"] .base-card,:root[data-theme="dark"] .mcard,:root[data-theme="dark"] .settings-panel,:root[data-theme="dark"] .modal-card,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .central-add,:root[data-theme="dark"] .ncard,:root[data-theme="dark"] .row,:root[data-theme="dark"] .col,:root[data-theme="dark"] .kcard,:root[data-theme="dark"] .task,:root[data-theme="dark"] .main-task{
+ color:var(--ink)!important;background:linear-gradient(145deg,rgba(54,42,47,.82),rgba(35,28,32,.72))!important;border-color:var(--line)!important;box-shadow:0 12px 32px rgba(0,0,0,.17),inset 0 1px 0 rgba(255,255,255,.035)!important;backdrop-filter:blur(22px) saturate(125%);-webkit-backdrop-filter:blur(22px) saturate(125%)}
+:root[data-theme="light"] .hero{color:#fff!important;background:linear-gradient(125deg,#176e72,#16878a 56%,#2c9b96)!important;border-color:rgba(255,255,255,.36)!important}
+:root[data-theme="dark"] .hero{color:#fff8f4!important;background:linear-gradient(125deg,#352522,#49302a 56%,#365354)!important;border-color:rgba(255,244,239,.14)!important}
+:root[data-theme="light"] .hero .datepanel,:root[data-theme="dark"] .hero .datepanel{color:inherit!important;background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.24)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)!important}
+:root[data-theme="light"] .side-nav button,:root[data-theme="light"] .side-nav .side-settings,:root[data-theme="light"] .card h2,:root[data-theme="light"] .month-panel .title,:root[data-theme="light"] .daybar,:root[data-theme="light"] .day-pick button{color:var(--ink)!important}
+:root[data-theme="dark"] .side-nav button,:root[data-theme="dark"] .side-nav .side-settings,:root[data-theme="dark"] .card h2,:root[data-theme="dark"] .month-panel .title,:root[data-theme="dark"] .daybar,:root[data-theme="dark"] .day-pick button{color:var(--ink)!important}
+:root[data-theme="light"] .field,:root[data-theme="light"] .select,:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select,:root[data-theme="light"] .search-hit,:root[data-theme="light"] .base-day-table{background:rgba(255,255,255,.52)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="dark"] .field,:root[data-theme="dark"] .select,:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .search-hit,:root[data-theme="dark"] .base-day-table{background:rgba(20,16,19,.32)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .cal-grid .cell,:root[data-theme="light"] .cal-grid button,:root[data-theme="light"] .month-panel .cal-grid .cell,:root[data-theme="light"] .month-panel .cal-grid button,:root[data-theme="light"] .month-panel .cal-grid .wd{background:rgba(255,255,255,.35)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="dark"] .cal-grid .cell,:root[data-theme="dark"] .cal-grid button,:root[data-theme="dark"] .month-panel .cal-grid .cell,:root[data-theme="dark"] .month-panel .cal-grid button,:root[data-theme="dark"] .month-panel .cal-grid .wd{background:rgba(255,255,255,.035)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .cal-grid .cell.sel,:root[data-theme="light"] .cal-grid .sel,:root[data-theme="light"] .cal-grid [aria-pressed="true"]{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+:root[data-theme="dark"] .cal-grid .cell.sel,:root[data-theme="dark"] .cal-grid .sel,:root[data-theme="dark"] .cal-grid [aria-pressed="true"]{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important}
+:root[data-theme="light"] .btn,:root[data-theme="dark"] .btn,:root[data-theme="light"] .install-app,:root[data-theme="dark"] .install-app{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important}
+:root[data-theme="light"] .btn.ghost,:root[data-theme="light"] .abtn,:root[data-theme="light"] .nav-btn,:root[data-theme="light"] .chip,:root[data-theme="dark"] .btn.ghost,:root[data-theme="dark"] .abtn,:root[data-theme="dark"] .nav-btn,:root[data-theme="dark"] .chip{background:var(--surface-2)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .sub,:root[data-theme="light"] .muted,:root[data-theme="light"] .label,:root[data-theme="light"] .legend,:root[data-theme="light"] footer,:root[data-theme="dark"] .sub,:root[data-theme="dark"] .muted,:root[data-theme="dark"] .label,:root[data-theme="dark"] .legend,:root[data-theme="dark"] footer{color:var(--muted)!important}
+:root[data-theme="light"] .side-nav button[aria-current="page"],:root[data-theme="light"] .side-nav button.active,:root[data-theme="dark"] .side-nav button[aria-current="page"],:root[data-theme="dark"] .side-nav button.active{background:var(--accent-soft)!important;border-color:var(--line)!important;color:var(--accent)!important}
+:root[data-theme="light"] .base-day-table th,:root[data-theme="dark"] .base-day-table th{background:var(--surface-2)!important;color:var(--muted)!important}
+:root[data-theme="light"] .base-day-table td,:root[data-theme="dark"] .base-day-table td{background:transparent!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .overlay .sheet,:root[data-theme="dark"] .overlay .sheet{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .net-status,:root[data-theme="light"] .install-app:not([hidden]),:root[data-theme="dark"] .net-status{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+
 </style>
 </head>
 <body>
