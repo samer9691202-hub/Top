@@ -946,6 +946,103 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="light"] .chip,
 :root[data-theme="light"] .nav-btn { border-color: #1C8C8D !important; }
 
+
+/* FINAL LIGHT THEME FIX: remove gray from text, borders, and secondary buttons only. Keep layout and dark theme unchanged. */
+:root[data-theme="light"] {
+  --line: #1C8C8D !important;
+  --ink: #1C8C8D !important;
+  --muted: #1C8C8D !important;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] body :not(.hero):not(.hero *) {
+  scrollbar-color: #1C8C8D #FFFFFF;
+}
+:root[data-theme="light"] .sub,
+:root[data-theme="light"] .muted,
+:root[data-theme="light"] .label,
+:root[data-theme="light"] .legend,
+:root[data-theme="light"] footer,
+:root[data-theme="light"] .about,
+:root[data-theme="light"] .nfoot,
+:root[data-theme="light"] .r-meta,
+:root[data-theme="light"] .wd,
+:root[data-theme="light"] .prog,
+:root[data-theme="light"] .nav-brand-name,
+:root[data-theme="light"] .icon-btn,
+:root[data-theme="light"] .link,
+:root[data-theme="light"] .seg button,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .base-day-table th,
+:root[data-theme="light"] .base-day-table .muted-cell {
+  color: #1C8C8D !important;
+}
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .ncard,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .row,
+:root[data-theme="light"] .kcard,
+:root[data-theme="light"] .base-table-wrap,
+:root[data-theme="light"] .base-day-table td,
+:root[data-theme="light"] .base-day-table th,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .check,
+:root[data-theme="light"] .empty,
+:root[data-theme="light"] .col,
+:root[data-theme="light"] .prog-track,
+:root[data-theme="light"] .srow,
+:root[data-theme="light"] .sw,
+:root[data-theme="light"] .seg,
+:root[data-theme="light"] .seg button[aria-pressed="true"],
+:root[data-theme="light"] .side-nav .side-settings {
+  border-color: #1C8C8D !important;
+}
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .icon-btn,
+:root[data-theme="light"] .link,
+:root[data-theme="light"] .seg button,
+:root[data-theme="light"] .side-nav button:not(.active):not([aria-current="page"]) {
+  color: #1C8C8D !important;
+}
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .seg,
+:root[data-theme="light"] .seg button[aria-pressed="true"] {
+  background-color: #FFFFFF !important;
+}
+:root[data-theme="light"] .btn:not(.ghost),
+:root[data-theme="light"] .side-nav button.active,
+:root[data-theme="light"] .side-nav button[aria-current="page"],
+:root[data-theme="light"] .seg button[aria-pressed="true"] {
+  background-color: #1C8C8D !important;
+  color: #FFFFFF !important;
+  border-color: #1C8C8D !important;
+}
+:root[data-theme="light"] .field::placeholder,
+:root[data-theme="light"] input::placeholder,
+:root[data-theme="light"] textarea::placeholder {
+  color: #1C8C8D !important;
+  opacity: .8;
+}
+
 </style>
 </head>
 <body>
