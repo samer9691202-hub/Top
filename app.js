@@ -73,13 +73,20 @@
   function saveSettings(){ store.set('plan-settings-v1', JSON.stringify(settings)); }
   function applySettings(){
     const r = document.documentElement;
-    if(settings.theme==='auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', settings.theme);
+    if(settings.theme==='auto'){ r.setAttribute('data-theme', window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } else { r.setAttribute('data-theme', settings.theme); }
     document.querySelectorAll('#settings [data-setting]').forEach(g=>{
       const k = g.dataset.setting;
       if(g.classList.contains('sw')) g.setAttribute('aria-checked', String(!!settings[k]));
       else g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(String(settings[k])===b.dataset.val)));
     });
     tick(); renderCal();
+  }
+  // Keep the automatic theme synchronized with the device while Auto is selected.
+  if(window.matchMedia){
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSystemThemeChange = ()=>{ if(settings.theme==='auto') applySettings(); };
+    if(systemTheme.addEventListener) systemTheme.addEventListener('change', onSystemThemeChange);
+    else if(systemTheme.addListener) systemTheme.addListener(onSystemThemeChange);
   }
   let opener = null;
   function openSettings(){

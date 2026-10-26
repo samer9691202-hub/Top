@@ -438,6 +438,54 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 #base .tools .base-add-btn{flex:0 0 auto}
 #mainAddForm[hidden],#centralAddForm[hidden]{display:none!important}
 @media(max-width:520px){#base .tools{gap:7px}#base .tools #search{width:1%;font-size:.9rem}#base .base-add-btn{padding-inline:12px}}
+
+
+/* NEXORA v32 — reliable light palette + refined premium month calendar */
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 12% 0%,rgba(217,154,112,.16),transparent 38%),radial-gradient(ellipse at 90% 90%,rgba(109,154,164,.13),transparent 38%),linear-gradient(135deg,#f6f2ef,#e9e2df)!important;color:var(--ink)}
+:root[data-theme="light"] .hero,:root[data-theme="light"] .datepanel,:root[data-theme="light"] .daybox,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .base-card,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .central-add{color:var(--ink)!important;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(246,238,234,.82))!important;border-color:rgba(93,66,61,.18)!important;box-shadow:0 14px 38px rgba(74,48,44,.09),inset 0 1px 0 rgba(255,255,255,.9)!important}
+:root[data-theme="light"] .hero *,:root[data-theme="light"] .datepanel *,:root[data-theme="light"] .month-panel *,:root[data-theme="light"] .daybox *,:root[data-theme="light"] .card *,:root[data-theme="light"] .base-card *{text-shadow:none}
+:root[data-theme="light"] .cal-grid .cell,:root[data-theme="light"] .cal-grid button{color:#3b2c2d!important;background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(244,235,231,.68))!important;border-color:rgba(91,65,62,.14)!important}
+:root[data-theme="light"] .cal-grid .cell:hover,:root[data-theme="light"] .cal-grid button:hover{background:#fff!important;border-color:var(--accent)!important}
+:root[data-theme="light"] .cal-grid .selected,:root[data-theme="light"] .cal-grid [aria-pressed="true"],:root[data-theme="light"] .cal-grid .sel{background:linear-gradient(145deg,rgba(196,126,91,.22),rgba(255,255,255,.92))!important;border-color:rgba(168,95,61,.52)!important;color:#4a2923!important}
+:root[data-theme="light"] .cal-grid .today,:root[data-theme="light"] .cal-grid .is-today{color:#9a4c2e!important;font-weight:800}
+:root[data-theme="light"] .month-panel .title,:root[data-theme="light"] .card h2,:root[data-theme="light"] .daybar,:root[data-theme="light"] .day-pick button{color:var(--ink)!important}
+:root[data-theme="light"] .month-summary span{background:rgba(255,255,255,.7);color:#665255;border-color:rgba(91,65,62,.14)}
+:root[data-theme="light"] .field,:root[data-theme="light"] .select,:root[data-theme="light"] input,:root[data-theme="light"] textarea{background:rgba(255,255,255,.92)!important;color:#342628!important;border-color:rgba(91,65,62,.22)!important}
+:root[data-theme="light"] .btn.ghost,:root[data-theme="light"] .chip,:root[data-theme="light"] .nav-btn{color:#493337!important;background:rgba(255,255,255,.68)!important;border-color:rgba(91,65,62,.2)!important}
+:root[data-theme="light"] .legend,:root[data-theme="light"] .sub,:root[data-theme="light"] .muted,:root[data-theme="light"] .label{color:#78686a!important}
+/* Month view: structured, information-rich cells while preserving existing navigation and data behavior */
+.month-panel{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(135deg,var(--ov1),var(--ov4)),var(--surface);box-shadow:0 20px 56px rgba(10,20,25,.15),inset 0 1px 0 rgba(255,255,255,.12)}
+.month-panel:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 0 0,rgba(217,154,112,.13),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(86,156,165,.12),transparent 40%)}
+.month-panel .cal-nav{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:14px;border-radius:17px;background:rgba(255,255,255,.055);border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.month-panel .cal-nav .title{flex:1;text-align:center;letter-spacing:.01em;font-size:clamp(1rem,2.2vw,1.45rem)}
+.month-panel .cal-nav .nav-btn{width:40px;height:40px;border-radius:13px;flex:0 0 40px}
+.month-panel #monthToday{white-space:nowrap;border-radius:12px;padding:8px 12px}
+.month-panel .month-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.month-panel .month-summary span{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 9px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid var(--line);font-size:.8rem}
+.month-panel .month-summary b{font-size:1rem}
+.month-panel .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);border-radius:16px;overflow:hidden;gap:0!important}
+.month-panel .cal-grid .wd{display:flex;justify-content:center;align-items:center;min-height:39px;margin:0;padding:7px 2px;background:rgba(255,255,255,.075);border:0;border-inline-end:1px solid var(--line);font-size:.82rem;font-weight:700;color:var(--muted)}
+.month-panel .cal-grid .cell,.month-panel .cal-grid button{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-width:0;min-height:clamp(66px,8.5vw,100px);padding:9px 9px 7px;border:0!important;border-radius:0!important;border-inline-end:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important;background:rgba(255,255,255,.025);color:var(--ink);text-align:start;transition:background .18s ease,box-shadow .18s ease;overflow:hidden}
+.month-panel .cal-grid .cell:nth-child(7n),.month-panel .cal-grid button:nth-child(7n){border-inline-end:0!important}
+.month-panel .cal-grid .cell>span:first-child,.month-panel .cal-grid button>span:first-child{align-self:flex-start;display:grid;place-items:center;min-width:28px;height:28px;padding:0 5px;border-radius:9px;font-size:.88rem;font-weight:600}
+.month-panel .cal-grid button:hover{transform:none!important;background:rgba(255,255,255,.09)!important;box-shadow:inset 0 0 0 1px var(--accent)}
+.month-panel .cal-grid .blank{background:rgba(0,0,0,.025)}
+.month-panel .cal-grid .today>span:first-child{background:var(--accent);color:#fff!important;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.month-panel .cal-grid .sel{box-shadow:inset 0 0 0 2px var(--accent)!important;background:rgba(217,154,112,.13)!important}
+.month-panel .cal-grid .dots{display:flex;gap:5px;align-items:center;min-height:9px;padding-inline:3px}
+.month-panel .cal-grid .dots i{width:7px;height:7px;border-radius:50%;display:inline-block;background:#ed8b58;box-shadow:0 0 0 3px rgba(237,139,88,.13)}
+.month-panel .cal-grid .dots i.ok{background:#5fc69b;box-shadow:0 0 0 3px rgba(95,198,155,.13)}
+.month-panel .cal-grid .dots i.n{background:#78a9ff;box-shadow:0 0 0 3px rgba(120,169,255,.13)}
+.month-panel .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:.78rem}
+.month-panel .legend span{display:inline-flex;align-items:center;gap:7px}
+.month-panel .legend span:before{content:"";width:8px;height:8px;border-radius:50%;background:#ed8b58}.month-panel .legend .l3:before{background:#5fc69b}.month-panel .legend .l2:before{background:#78a9ff}
+:root[data-theme="light"] .month-panel .cal-grid .wd{background:rgba(104,69,61,.055);color:#776467}
+:root[data-theme="light"] .month-panel .cal-grid .cell,:root[data-theme="light"] .month-panel .cal-grid button{background:rgba(255,255,255,.45)!important;color:#3b2c2d!important}
+:root[data-theme="light"] .month-panel .cal-grid button:hover{background:#fff!important}
+:root[data-theme="light"] .month-panel .cal-grid .blank{background:rgba(92,62,58,.04)!important}
+@media(max-width:650px){.month-panel .month-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.month-panel .cal-grid .wd{min-height:32px;font-size:.7rem}.month-panel .cal-grid .cell,.month-panel .cal-grid button{min-height:52px;padding:5px 4px}.month-panel .cal-grid .cell>span:first-child,.month-panel .cal-grid button>span:first-child{min-width:24px;height:24px;font-size:.78rem}.month-panel .cal-nav{gap:5px;padding:7px}.month-panel .cal-nav .nav-btn{width:34px;height:34px;flex-basis:34px}.month-panel #monthToday{padding:6px 8px;font-size:.76rem}}
+@media(max-width:380px){.month-panel .cal-grid .cell,.month-panel .cal-grid button{min-height:44px;padding:3px 2px}.month-panel .cal-grid .dots{gap:3px}.month-panel .cal-grid .dots i{width:5px;height:5px}.month-panel .cal-grid .wd{font-size:.64rem}}
+
 </style>
 </head>
 <body>
