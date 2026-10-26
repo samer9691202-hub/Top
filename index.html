@@ -813,113 +813,235 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="light"]{--muted:#17212B!important}
 :root[data-theme="light"] .sub,:root[data-theme="light"] .about,:root[data-theme="light"] .field::placeholder,:root[data-theme="light"] .wd,:root[data-theme="light"] .legend,:root[data-theme="light"] .seg button,:root[data-theme="light"] .sheet h3{color:#17212B!important}
 
-/* v42: remove unwanted brown/gray-beige colors from LIGHT theme only */
-:root[data-theme="light"] {
-  --bg:#F2F4F3 !important;
-  --surface:#F2F4F3 !important;
-  --surface-2:#F2F4F3 !important;
-  --line:rgba(28,140,141,.28) !important;
-  --ink:#1C8C8D !important;
-  --muted:#1C8C8D !important;
-  --accent:#1C8C8D !important;
-  --accent-2:#1C8C8D !important;
-  --accent-ink:#F2F4F3 !important;
-  --accent-soft:rgba(28,140,141,.14) !important;
-  --amber:#1C8C8D !important; --amber-soft:rgba(28,140,141,.12) !important;
-  --rose:#1C8C8D !important; --rose-soft:rgba(28,140,141,.12) !important;
-  --ok:#1C8C8D !important; --ok-soft:rgba(28,140,141,.12) !important;
+/* NEXORA v40 patch: remove the four specified colors from LIGHT mode only */
+:root[data-theme="light"]{
+  --bg:#FFFFFF!important;
+  --surface:#FFFFFF!important;
+  --surface-2:#FFFFFF!important;
+  --line:rgba(28,140,141,.24)!important;
+  --ink:#263536!important;
+  --muted:#263536!important;
+  --accent:#1C8C8D!important;
+  --accent-2:#1C8C8D!important;
+  --accent-ink:#FFFFFF!important;
+  --accent-soft:rgba(28,140,141,.12)!important;
+  --amber:#1C8C8D!important; --amber-soft:rgba(28,140,141,.12)!important;
+  --rose:#1C8C8D!important; --rose-soft:rgba(28,140,141,.12)!important;
+  --ok:#1C8C8D!important; --ok-soft:rgba(28,140,141,.12)!important;
 }
-:root[data-theme="light"] body { background:#F2F4F3 !important; color:#1C8C8D !important; }
-:root[data-theme="light"] .hero { background:#1C8C8D !important; color:#F2F4F3 !important; border-color:rgba(28,140,141,.25) !important; }
-:root[data-theme="light"] .hero .datepanel { background:rgba(242,244,243,.12) !important; color:#F2F4F3 !important; }
+:root[data-theme="light"] body{background:#FFFFFF!important;color:#263536!important}
+:root[data-theme="light"] .hero{background:#1C8C8D!important;color:#FFFFFF!important;border-color:rgba(28,140,141,.3)!important}
+:root[data-theme="light"] .hero .datepanel{background:rgba(255,255,255,.14)!important;color:#FFFFFF!important}
 :root[data-theme="light"] .side-nav,
 :root[data-theme="light"] .card,
-:root[data-theme="light"] .task,
-:root[data-theme="light"] .ncard,
 :root[data-theme="light"] .stat,
-:root[data-theme="light"] .row,
-:root[data-theme="light"] .col,
-:root[data-theme="light"] .kcard,
-:root[data-theme="light"] .daybox,
 :root[data-theme="light"] .month-panel,
+:root[data-theme="light"] .daybox,
+:root[data-theme="light"] .daybar,
+:root[data-theme="light"] .base-card,
 :root[data-theme="light"] .mcard,
 :root[data-theme="light"] .settings-panel,
 :root[data-theme="light"] .modal-card,
 :root[data-theme="light"] .sheet,
-:root[data-theme="light"] .base-card,
 :root[data-theme="light"] .central-add,
+:root[data-theme="light"] .ncard,
+:root[data-theme="light"] .row,
+:root[data-theme="light"] .col,
+:root[data-theme="light"] .kcard,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .main-task,
+:root[data-theme="light"] .datepanel{
+  background:#FFFFFF!important;color:#263536!important;border-color:rgba(28,140,141,.24)!important;box-shadow:none!important
+}
 :root[data-theme="light"] .field,
 :root[data-theme="light"] .select,
 :root[data-theme="light"] input,
 :root[data-theme="light"] textarea,
-:root[data-theme="light"] select,
 :root[data-theme="light"] .cal-grid .cell,
 :root[data-theme="light"] .cal-grid button,
-:root[data-theme="light"] .month-summary span,
-:root[data-theme="light"] .btn.ghost,
-:root[data-theme="light"] .chip,
-:root[data-theme="light"] .nav-btn,
-:root[data-theme="light"] .abtn {
-  background:#F2F4F3 !important;
-  color:#1C8C8D !important;
-  border-color:rgba(28,140,141,.24) !important;
-  box-shadow:none !important;
+:root[data-theme="light"] .cal-grid .wd{
+  background:#FFFFFF!important;color:#263536!important;border-color:rgba(28,140,141,.24)!important
 }
 :root[data-theme="light"] .btn,
-:root[data-theme="light"] .install-app,
-:root[data-theme="light"] .cal-grid .selected,
-:root[data-theme="light"] .cal-grid .sel,
-:root[data-theme="light"] .cal-grid [aria-pressed="true"],
+:root[data-theme="light"] .side-nav button[aria-current="page"],
 :root[data-theme="light"] .side-nav button.active,
-:root[data-theme="light"] .side-nav button[aria-current="page"] {
-  background:#1C8C8D !important; color:#F2F4F3 !important; border-color:#1C8C8D !important;
+:root[data-theme="light"] .cal-grid .selected,
+:root[data-theme="light"] .cal-grid [aria-pressed="true"],
+:root[data-theme="light"] .cal-grid .sel{
+  background:#1C8C8D!important;color:#FFFFFF!important;border-color:#1C8C8D!important
+}
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .nav-btn{
+  background:#FFFFFF!important;color:#1C8C8D!important;border-color:rgba(28,140,141,.35)!important
+}
+:root[data-theme="light"] .sub,
+:root[data-theme="light"] .muted,
+:root[data-theme="light"] .label,
+:root[data-theme="light"] .legend{color:#263536!important}
+
+
+/* v40 light-theme color cleanup: clock, tasks, notes and main database */
+:root[data-theme="light"] {
+  --bg:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-2:#FFFFFF;
+  --line:#C6C8C7;
+  --ink:#263536;
+  --muted:#263536;
+  --accent:#1C8C8D;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#FFFFFF;
+  --amber:#1C8C8D;
+  --amber-soft:#FFFFFF;
+  --rose:#1C8C8D;
+  --rose-soft:#FFFFFF;
+  --ok:#1C8C8D;
+  --ok-soft:#FFFFFF;
+}
+
+
+/* Color-only correction: preserve the original layout and component styling. */
+:root[data-theme="light"] {
+  --line: #1C8C8D;
+  --ink: #1C8C8D;
+  --muted: #1C8C8D;
+}
+:root[data-theme="light"] .hero {
+  background: linear-gradient(135deg, #1C8C8D, #1C8C8D) !important;
+  border-color: #1C8C8D !important;
+  color: #FFFFFF !important;
+}
+:root[data-theme="light"] .hero:after { background: none !important; }
+:root[data-theme="light"] .hero .greet,
+:root[data-theme="light"] .hero .clock,
+:root[data-theme="light"] .hero .clock .hm,
+:root[data-theme="light"] .hero .clock .colon,
+:root[data-theme="light"] .hero .clock .sec,
+:root[data-theme="light"] .hero .datepanel,
+:root[data-theme="light"] .hero .datepanel * {
+  color: #FFFFFF !important;
+}
+:root[data-theme="light"] .hero .clock .ap {
+  background: #FFFFFF !important;
+  color: #1C8C8D !important;
+  border-color: #FFFFFF !important;
+}
+:root[data-theme="light"] .hero .datepanel {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.45) !important;
+}
+:root[data-theme="light"] .hero .day-track,
+:root[data-theme="light"] .hero .prog-track { background: rgba(255,255,255,.25) !important; }
+:root[data-theme="light"] .hero .day-fill,
+:root[data-theme="light"] .hero .prog-fill { background: #FFFFFF !important; }
+:root[data-theme="light"] .sub,
+:root[data-theme="light"] .muted,
+:root[data-theme="light"] .label,
+:root[data-theme="light"] .legend { color: #1C8C8D !important; }
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] select,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .nav-btn { border-color: #1C8C8D !important; }
+
+
+/* FINAL LIGHT THEME FIX: remove gray from text, borders, and secondary buttons only. Keep layout and dark theme unchanged. */
+:root[data-theme="light"] {
+  --line: #1C8C8D !important;
+  --ink: #1C8C8D !important;
+  --muted: #1C8C8D !important;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] body :not(.hero):not(.hero *) {
+  scrollbar-color: #1C8C8D #FFFFFF;
 }
 :root[data-theme="light"] .sub,
 :root[data-theme="light"] .muted,
 :root[data-theme="light"] .label,
 :root[data-theme="light"] .legend,
 :root[data-theme="light"] footer,
-:root[data-theme="light"] .month-panel .title,
-:root[data-theme="light"] .card h2 { color:#1C8C8D !important; }
-
-
-/* NEXORA Pro UI refinement — keeps existing layout and data behavior */
-:root[data-theme="light"]{
-  --bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#FFFFFF;--line:#B9DDE0;
-  --ink:#172B32;--muted:#087E8B;--accent:#087E8B;--accent-ink:#FFFFFF;--accent-soft:#E5F5F6;
+:root[data-theme="light"] .about,
+:root[data-theme="light"] .nfoot,
+:root[data-theme="light"] .r-meta,
+:root[data-theme="light"] .wd,
+:root[data-theme="light"] .prog,
+:root[data-theme="light"] .nav-brand-name,
+:root[data-theme="light"] .icon-btn,
+:root[data-theme="light"] .link,
+:root[data-theme="light"] .seg button,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .base-day-table th,
+:root[data-theme="light"] .base-day-table .muted-cell {
+  color: #1C8C8D !important;
 }
-:root[data-theme="light"] body{background:#fff;background-image:radial-gradient(circle at 90% 0%,rgba(8,126,139,.055),transparent 28rem)}
-.wrap{max-width:1160px;padding-top:26px;padding-bottom:64px}
-.hero{position:relative;overflow:hidden;box-shadow:0 20px 48px rgba(8,126,139,.18),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18)}
-.hero:after{content:"";position:absolute;pointer-events:none;width:260px;height:260px;border:1px solid rgba(255,255,255,.13);border-radius:50%;inset-inline-end:-95px;top:-145px;box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 58px rgba(255,255,255,.025)}
-.hero>*{position:relative;z-index:1}
-.clock .hm{letter-spacing:-.055em;text-shadow:0 3px 20px rgba(0,0,0,.08)}
-.datepanel{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:rgba(255,255,255,.22)}
-.stats{gap:13px;margin:18px 0}
-.stat{border-radius:18px;min-height:96px;box-shadow:0 8px 25px rgba(16,64,70,.055);transition:transform .2s ease,box-shadow .2s ease}
-.stat:hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(8,126,139,.10)}
-.card,.daybox,.month-panel,.base-card{border-radius:20px}
-.card{box-shadow:0 8px 28px rgba(15,45,50,.045);transition:box-shadow .2s ease,border-color .2s ease}
-.card:hover{box-shadow:0 12px 32px rgba(8,126,139,.075)}
-.card-head{align-items:center;margin-bottom:16px}
-.card h2{letter-spacing:-.02em}
-.field{border-radius:13px;min-height:46px;transition:border-color .18s ease,box-shadow .18s ease}
-.field:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px rgba(8,126,139,.11)}
-.btn,.chip,.abtn,.nav-btn{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
-.btn:not(:disabled):active,.chip:active,.abtn:active,.nav-btn:active{transform:scale(.97)}
-.btn:not(.ghost){box-shadow:0 4px 12px rgba(8,126,139,.12)}
-:root[data-theme="light"] .side-nav{background:rgba(255,255,255,.78)!important;border:1px solid rgba(8,126,139,.18)!important;box-shadow:0 18px 48px rgba(8,65,73,.13),inset 0 1px 0 rgba(255,255,255,.95)!important;backdrop-filter:blur(28px) saturate(165%);-webkit-backdrop-filter:blur(28px) saturate(165%)}
-:root[data-theme="light"] .side-nav button{color:#087E8B!important}
-:root[data-theme="light"] .side-nav button.active,:root[data-theme="light"] .side-nav button[aria-current="page"]{background:#E5F5F6!important;border-color:#B9DDE0!important;color:#087E8B!important}
-:root[data-theme="light"] .sub,:root[data-theme="light"] .muted,:root[data-theme="light"] .card .sub{color:#087E8B!important}
-:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .month-panel,:root[data-theme="light"] .daybox,:root[data-theme="light"] .daybar,:root[data-theme="light"] .base-card,:root[data-theme="light"] .mcard,:root[data-theme="light"] .settings-panel,:root[data-theme="light"] .modal-card,:root[data-theme="light"] .sheet,:root[data-theme="light"] .central-add,:root[data-theme="light"] .ncard,:root[data-theme="light"] .row,:root[data-theme="light"] .col,:root[data-theme="light"] .kcard,:root[data-theme="light"] .task,:root[data-theme="light"] .main-task{background:#FFFFFF!important}
-.cal-grid .cell,.cal-grid button{border-radius:12px;transition:background .15s ease,transform .15s ease}
-.cal-grid button:hover{transform:translateY(-1px)}
-.list{gap:9px}
-.list>li,.task,.ncard,.main-task{border-radius:14px}
-@media(min-width:1100px){.grid.two{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:18px}.side-nav{right:18px}}
-@media(max-width:700px){.wrap{padding:12px 12px 112px}.hero{box-shadow:0 14px 34px rgba(8,126,139,.16)}.stats{gap:9px;margin:12px 0}.stat{min-height:82px}.card{padding:15px}.card-head{gap:9px}.side-nav{border:1px solid rgba(8,126,139,.18)!important;background:rgba(255,255,255,.9)!important}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .ncard,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .row,
+:root[data-theme="light"] .kcard,
+:root[data-theme="light"] .base-table-wrap,
+:root[data-theme="light"] .base-day-table td,
+:root[data-theme="light"] .base-day-table th,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .check,
+:root[data-theme="light"] .empty,
+:root[data-theme="light"] .col,
+:root[data-theme="light"] .prog-track,
+:root[data-theme="light"] .srow,
+:root[data-theme="light"] .sw,
+:root[data-theme="light"] .seg,
+:root[data-theme="light"] .seg button[aria-pressed="true"],
+:root[data-theme="light"] .side-nav .side-settings {
+  border-color: #1C8C8D !important;
+}
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .icon-btn,
+:root[data-theme="light"] .link,
+:root[data-theme="light"] .seg button,
+:root[data-theme="light"] .side-nav button:not(.active):not([aria-current="page"]) {
+  color: #1C8C8D !important;
+}
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .chip.s0,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .seg,
+:root[data-theme="light"] .seg button[aria-pressed="true"] {
+  background-color: #FFFFFF !important;
+}
+:root[data-theme="light"] .btn:not(.ghost),
+:root[data-theme="light"] .side-nav button.active,
+:root[data-theme="light"] .side-nav button[aria-current="page"],
+:root[data-theme="light"] .seg button[aria-pressed="true"] {
+  background-color: #1C8C8D !important;
+  color: #FFFFFF !important;
+  border-color: #1C8C8D !important;
+}
+:root[data-theme="light"] .field::placeholder,
+:root[data-theme="light"] input::placeholder,
+:root[data-theme="light"] textarea::placeholder {
+  color: #1C8C8D !important;
+  opacity: .8;
+}
 
 </style>
 </head>
