@@ -812,6 +812,45 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 /* v40: remove teal-gray secondary text in light mode only */
 :root[data-theme="light"]{--muted:#17212B!important}
 :root[data-theme="light"] .sub,:root[data-theme="light"] .about,:root[data-theme="light"] .field::placeholder,:root[data-theme="light"] .wd,:root[data-theme="light"] .legend,:root[data-theme="light"] .seg button,:root[data-theme="light"] .sheet h3{color:#17212B!important}
+
+/* NEXORA v41 — strict two-color light theme only */
+:root[data-theme="light"] {
+  color-scheme: light !important;
+  --bg: #F2F4F3 !important; --surface: #F2F4F3 !important; --surface-2: #F2F4F3 !important;
+  --line: #1C8C8D !important; --ink: #1C8C8D !important; --muted: #1C8C8D !important;
+  --accent: #1C8C8D !important; --accent-2: #1C8C8D !important; --accent-ink: #F2F4F3 !important;
+  --accent-soft: #F2F4F3 !important; --amber: #1C8C8D !important; --amber-soft: #F2F4F3 !important;
+  --rose: #1C8C8D !important; --rose-soft: #F2F4F3 !important; --ok: #1C8C8D !important; --ok-soft: #F2F4F3 !important;
+  --ov1: #F2F4F3 !important; --ov2: #F2F4F3 !important; --ov3: #F2F4F3 !important; --ov4: #F2F4F3 !important;
+}
+:root[data-theme="light"] body { background: #F2F4F3 !important; color: #1C8C8D !important; }
+:root[data-theme="light"] .hero, :root[data-theme="light"] .datepanel,
+:root[data-theme="light"] .daybox, :root[data-theme="light"] .month-panel,
+:root[data-theme="light"] .card, :root[data-theme="light"] .task,
+:root[data-theme="light"] .ncard, :root[data-theme="light"] .stat,
+:root[data-theme="light"] .base-card, :root[data-theme="light"] .mcard,
+:root[data-theme="light"] .settings-panel, :root[data-theme="light"] .modal-card,
+:root[data-theme="light"] .sheet, :root[data-theme="light"] .central-add,
+:root[data-theme="light"] .row, :root[data-theme="light"] .kcard,
+:root[data-theme="light"] .field, :root[data-theme="light"] .select,
+:root[data-theme="light"] input, :root[data-theme="light"] textarea,
+:root[data-theme="light"] select, :root[data-theme="light"] .chip,
+:root[data-theme="light"] .col, :root[data-theme="light"] .base-day-table th,
+:root[data-theme="light"] .base-day-table td, :root[data-theme="light"] .cal-grid .cell,
+:root[data-theme="light"] .cal-grid button {
+  background: #F2F4F3 !important; color: #1C8C8D !important;
+  border-color: #1C8C8D !important; box-shadow: none !important;
+}
+:root[data-theme="light"] .btn, :root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn[aria-current="page"],
+:root[data-theme="light"] .nav-btn.active,
+:root[data-theme="light"] button[aria-current="page"],
+:root[data-theme="light"] button.active {
+  background: #1C8C8D !important; color: #F2F4F3 !important; border-color: #1C8C8D !important;
+}
+:root[data-theme="light"] *, :root[data-theme="light"] *::before, :root[data-theme="light"] *::after {
+  text-shadow: none !important;
+}
 </style>
 </head>
 <body>
