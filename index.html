@@ -808,6 +808,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root:not([data-theme="dark"]) .base-day-table th,
 :root[data-theme="light"] .base-day-table th{background:#FFFFFF!important;color:#087E8B}
 
+
+/* v40: remove teal-gray secondary text in light mode only */
+:root[data-theme="light"]{--muted:#17212B!important}
+:root[data-theme="light"] .sub,:root[data-theme="light"] .about,:root[data-theme="light"] .field::placeholder,:root[data-theme="light"] .wd,:root[data-theme="light"] .legend,:root[data-theme="light"] .seg button,:root[data-theme="light"] .sheet h3{color:#17212B!important}
 </style>
 </head>
 <body>
