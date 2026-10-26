@@ -550,8 +550,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
       <span class="brand-copy"><strong>NEXORA</strong><small>نظّم يومك، واحتفظ بأفكارك</small></span>
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
-      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1.9-1.2 2.1-1.4-.5a7.8 7.8 0 0 1-1.7 1l-.2 1.5h-2.4l-.2-1.5a7.8 7.8 0 0 1-1.7-1l-1.4.5-1.2-2.1 1.1-.9a7.8 7.8 0 0 1 0-2l-1.1-.9 1.2-2.1 1.4.5a7.8 7.8 0 0 1 1.7-1l.2-1.5h2.4l.2 1.5a7.8 7.8 0 0 1 1.7 1l1.4-.5 1.2 2.1-1.1.9a7.8 7.8 0 0 1 0 2Z" transform="translate(-1 -1) scale(1.08)"/></svg></button>
       <button class="brand-action header-icon-btn theme-toggle" id="quickTheme" type="button" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
+      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z"/><path d="m19.4 13.5 1.1.85-1.5 2.6-1.3-.52a7.7 7.7 0 0 1-1.8 1.04l-.2 1.4h-3l-.2-1.4a7.7 7.7 0 0 1-1.8-1.04l-1.3.52-1.5-2.6 1.1-.85a7.2 7.2 0 0 1 0-2.1l-1.1-.85 1.5-2.6 1.3.52a7.7 7.7 0 0 1 1.8-1.04l.2-1.4h3l.2 1.4a7.7 7.7 0 0 1 1.8 1.04l1.3-.52 1.5 2.6-1.1.85a7.2 7.2 0 0 1 0 2.1Z" transform="translate(-1 -1)"/></svg></button>
     </div>
   </header>
 
@@ -1378,8 +1378,11 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
     document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
     $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = true;
+    const isReports = tab==='reports';
     $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : 'ابحث في المهام الرئيسية والمهام والملاحظات والتواريخ';
-    $('#baseView').innerHTML = tab==='days' ? daysHTML() : tab==='mains' ? mainsHTML() : reportsHTML();
+    $('#search').hidden = isReports;
+    $('#centralAddOpen').hidden = isReports;
+    $('#baseView').innerHTML = isReports ? reportsHTML() : tab==='days' ? daysHTML() : mainsHTML();
   }
   $('#baseTabs').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; ui.baseTab = b.dataset.bt; renderBase(); });
   $('#base').addEventListener('click', e=>{ if(e.target.closest('#baseDaysMore')){ window.nexoraBaseExpanded=!window.nexoraBaseExpanded; renderBase(); } });
