@@ -900,6 +900,79 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   --ok-soft:#F2F4F3;
 }
 
+
+/* v43: light mode removes gray text/borders/buttons; use only teal and light gray */
+:root[data-theme="light"] {
+  --bg:#F2F4F3 !important; --surface:#F2F4F3 !important; --surface-2:#F2F4F3 !important;
+  --line:#1C8C8D !important; --ink:#1C8C8D !important; --muted:#1C8C8D !important;
+  --accent:#1C8C8D !important; --accent-2:#1C8C8D !important; --accent-ink:#F2F4F3 !important;
+  --accent-soft:#F2F4F3 !important; --amber:#1C8C8D !important; --amber-soft:#F2F4F3 !important;
+  --rose:#1C8C8D !important; --rose-soft:#F2F4F3 !important; --ok:#1C8C8D !important; --ok-soft:#F2F4F3 !important;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] body * { text-shadow:none !important; }
+:root[data-theme="light"] body { background:#F2F4F3 !important; color:#1C8C8D !important; }
+:root[data-theme="light"] .hero,
+:root[data-theme="light"] .datepanel,
+:root[data-theme="light"] .daybox,
+:root[data-theme="light"] .month-panel,
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .base-card,
+:root[data-theme="light"] .mcard,
+:root[data-theme="light"] .settings-panel,
+:root[data-theme="light"] .modal-card,
+:root[data-theme="light"] .sheet,
+:root[data-theme="light"] .central-add,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .main-task,
+:root[data-theme="light"] .note,
+:root[data-theme="light"] .note-card,
+:root[data-theme="light"] .base-item,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .cal-grid .cell,
+:root[data-theme="light"] .cal-grid button,
+:root[data-theme="light"] .search-hit,
+:root[data-theme="light"] .month-summary span,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .btn,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .priority-tag,
+:root[data-theme="light"] .seg,
+:root[data-theme="light"] #baseTabs {
+  background:#F2F4F3 !important; color:#1C8C8D !important; border-color:#1C8C8D !important; box-shadow:none !important;
+}
+:root[data-theme="light"] .side-nav { background:#F2F4F3 !important; border-color:#1C8C8D !important; box-shadow:none !important; }
+:root[data-theme="light"] .side-nav button,
+:root[data-theme="light"] .side-nav button[aria-current="page"],
+:root[data-theme="light"] .side-nav button.active,
+:root[data-theme="light"] .seg button[aria-pressed="true"],
+:root[data-theme="light"] #baseTabs button[aria-pressed="true"],
+:root[data-theme="light"] .cal-grid .selected,
+:root[data-theme="light"] .cal-grid [aria-pressed="true"],
+:root[data-theme="light"] .cal-grid .sel,
+:root[data-theme="light"] .cal-grid .today,
+:root[data-theme="light"] .cal-grid .is-today {
+  background:#1C8C8D !important; color:#F2F4F3 !important; border-color:#1C8C8D !important;
+}
+:root[data-theme="light"] .field::placeholder,
+:root[data-theme="light"] textarea::placeholder { color:#1C8C8D !important; opacity:1; }
+:root[data-theme="light"] .legend,
+:root[data-theme="light"] .sub,
+:root[data-theme="light"] .muted,
+:root[data-theme="light"] .label,
+:root[data-theme="light"] .about,
+:root[data-theme="light"] .empty,
+:root[data-theme="light"] footer,
+:root[data-theme="light"] .nav-brand-name,
+:root[data-theme="light"] .month-summary,
+:root[data-theme="light"] .month-panel .cal-grid .wd,
+:root[data-theme="light"] .wd { color:#1C8C8D !important; }
+
 </style>
 </head>
 <body>
