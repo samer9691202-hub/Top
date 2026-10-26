@@ -753,6 +753,61 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 :root[data-theme="light"] textarea:focus,
 :root[data-theme="light"] select:focus{border-color:#087E8B!important;box-shadow:0 0 0 3px rgba(8,126,139,.13)!important}
 
+
+/* NEXORA v39 — Light mode: pure white + original teal only; no gray/brown */
+:root[data-theme="light"]{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#FFFFFF; --line:rgba(8,126,139,.22);
+  --ink:#064B52; --muted:#087E8B; --accent:#087E8B; --accent-ink:#FFFFFF; --accent-soft:rgba(8,126,139,.10);
+  --amber:#087E8B; --amber-soft:rgba(8,126,139,.10); --rose:#087E8B; --rose-soft:rgba(8,126,139,.10);
+  --ok:#087E8B; --ok-soft:rgba(8,126,139,.10);
+  --ov1:rgba(255,255,255,.96); --ov2:rgba(255,255,255,.92); --ov3:rgba(8,126,139,.16); --ov4:rgba(255,255,255,.98);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#FFFFFF; --line:rgba(8,126,139,.22);
+    --ink:#064B52; --muted:#087E8B; --accent:#087E8B; --accent-ink:#FFFFFF; --accent-soft:rgba(8,126,139,.10);
+    --amber:#087E8B; --amber-soft:rgba(8,126,139,.10); --rose:#087E8B; --rose-soft:rgba(8,126,139,.10);
+    --ok:#087E8B; --ok-soft:rgba(8,126,139,.10);
+    --ov1:rgba(255,255,255,.96); --ov2:rgba(255,255,255,.92); --ov3:rgba(8,126,139,.16); --ov4:rgba(255,255,255,.98);
+    color-scheme:light;
+  }
+}
+:root:not([data-theme="dark"]) body{background:#FFFFFF!important;color:var(--ink)}
+:root[data-theme="light"] body{background:#FFFFFF!important;color:var(--ink)}
+:root:not([data-theme="dark"]) .card,
+:root:not([data-theme="dark"]) .task,
+:root:not([data-theme="dark"]) .ncard,
+:root:not([data-theme="dark"]) .stat,
+:root:not([data-theme="dark"]) .row,
+:root:not([data-theme="dark"]) .kcard,
+:root:not([data-theme="dark"]) .base-day-table,
+:root:not([data-theme="dark"]) .overlay .sheet,
+:root:not([data-theme="dark"]) .field,
+:root:not([data-theme="dark"]) .select,
+:root:not([data-theme="dark"]) .abtn,
+:root:not([data-theme="dark"]) .nav-btn,
+:root:not([data-theme="dark"]) .chip,
+:root:not([data-theme="dark"]) .col,
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .task,
+:root[data-theme="light"] .ncard,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .row,
+:root[data-theme="light"] .kcard,
+:root[data-theme="light"] .base-day-table,
+:root[data-theme="light"] .overlay .sheet,
+:root[data-theme="light"] .field,
+:root[data-theme="light"] .select,
+:root[data-theme="light"] .abtn,
+:root[data-theme="light"] .nav-btn,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .col{background:#FFFFFF!important;border-color:rgba(8,126,139,.22)!important;color:var(--ink)}
+:root:not([data-theme="dark"]) .side-nav button:hover,
+:root[data-theme="light"] .side-nav button:hover{background:rgba(8,126,139,.08)!important;color:#087E8B;border-color:rgba(8,126,139,.22)}
+:root:not([data-theme="dark"]) .base-day-table th,
+:root[data-theme="light"] .base-day-table th{background:#FFFFFF!important;color:#087E8B}
+
 </style>
 </head>
 <body>
