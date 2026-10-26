@@ -289,7 +289,18 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
 .daybox{position:sticky;top:54px;z-index:25;margin-top:16px;max-height:calc(100vh - 70px);overflow:auto;border-radius:20px;box-shadow:0 8px 24px rgba(28,67,69,.09)}
 .month-panel{margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
 .month-panel[hidden]{display:none}
-.month-panel .cal-nav{justify-content:space-between;margin-bottom:8px}
+.month-panel .cal-nav{justify-content:space-between;margin-bottom:12px;padding:8px;border-radius:14px;background:var(--surface-2)}
+.month-panel{padding:14px;box-shadow:0 10px 28px rgba(20,60,65,.06)}
+.month-panel .cal-grid{gap:5px}
+.month-panel .wd{padding:8px 0;border-bottom:1px solid var(--line);margin-bottom:3px}
+.month-panel .cell{min-height:58px;border:1px solid var(--line);background:var(--surface-2);transition:transform .15s,background .15s,border-color .15s}
+.month-panel .cell:hover{transform:translateY(-1px);border-color:var(--accent)}
+.month-panel .cell.today{box-shadow:inset 0 0 0 1px var(--accent)}
+.month-panel .cell.sel{box-shadow:0 5px 14px rgba(8,126,139,.2)}
+.month-summary{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.month-summary span{font-size:.8rem;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:5px 10px}
+.month-summary b{color:var(--ink)}
+@media(max-width:520px){.month-panel{padding:8px}.month-panel .cell{min-height:45px;border-radius:9px}.month-panel .cal-grid{gap:3px}.month-panel .wd{font-size:.7rem}.month-panel .cal-nav .title{min-width:0;flex:1;font-size:.95rem}.month-panel .cal-nav{gap:5px}.month-panel #monthToday{padding:3px 7px;font-size:.75rem}}
 .daybar{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
 .daybar .nav-btn{flex:none}
 .day-pick{position:relative;flex:1;min-width:0}
@@ -427,7 +438,9 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       <button class="nav-btn" id="prevM" type="button" aria-label="الشهر السابق">›</button>
       <span class="title" id="calTitle"></span>
       <button class="nav-btn" id="nextM" type="button" aria-label="الشهر التالي">‹</button>
+      <button class="chip" id="monthToday" type="button">هذا الشهر</button>
     </div>
+    <div class="month-summary" id="monthSummary" aria-live="polite"></div>
     <div class="cal-grid" id="calGrid" role="grid"></div>
     <div class="legend"><span>مهام متبقية</span><span class="l3">مهام منجزة</span><span class="l2">ملاحظات</span></div>
   </div>
@@ -492,7 +505,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     <div class="seg tabs" id="baseTabs" role="group" aria-label="أقسام القاعدة">
       <button type="button" data-bt="days" aria-pressed="true">الأيام</button>
       <button type="button" data-bt="mains" aria-pressed="false">المهام الرئيسية</button>
-      <button type="button" data-bt="items" aria-pressed="false">العناصر</button>
+      <button type="button" data-bt="items" aria-pressed="false">إضافة سريعة</button>
     </div>
     <div class="tools">
       <label class="sr" for="search">بحث</label>
@@ -516,12 +529,13 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       <select class="select" id="mtPrio" aria-label="الأولوية الافتراضية"><option value="0">عادية</option><option value="1" selected>مهمة</option><option value="2">عاجلة</option></select>
       <button class="btn" id="mtAdd">أضف مهمة رئيسية</button>
     </div>
-    <div class="base-add" id="itemAddForm" role="group" aria-label="إضافة عنصر" hidden>
-      <input class="field" id="bName" placeholder="اسم العنصر" aria-label="اسم العنصر" autocomplete="off">
-      <input class="field" id="bCat" placeholder="التصنيف" aria-label="التصنيف" list="cats" autocomplete="off">
-      <datalist id="cats"></datalist>
-      <input class="field" id="bDate" type="date" aria-label="التاريخ">
-      <button class="btn" id="bAdd">أضف عنصرًا</button>
+    <div class="base-add" id="itemAddForm" role="group" aria-label="إضافة سريعة" hidden>
+      <input class="field" id="quickTaskName" placeholder="اكتب مهمة جديدة" aria-label="اسم المهمة الجديدة" autocomplete="off">
+      <input class="field" id="quickTaskDate" type="date" aria-label="تاريخ المهمة">
+      <button class="btn" id="quickTaskAdd" type="button">إضافة مهمة لليوم</button>
+      <input class="field" id="quickNoteTitle" placeholder="عنوان ملاحظة (اختياري)" aria-label="عنوان الملاحظة">
+      <input class="field" id="quickNoteText" placeholder="ملاحظة سريعة" aria-label="نص الملاحظة" autocomplete="off">
+      <button class="btn ghost" id="quickNoteAdd" type="button">حفظ الملاحظة</button>
     </div>
     <div id="baseView"></div>
   </section>
@@ -747,6 +761,10 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     $('#toggleCal').setAttribute('aria-expanded', String(ui.calExpanded));
     if(!ui.calExpanded) return;
     $('#calTitle').textContent = fMonth.format(new Date(y,mo,1));
+    const monthKeys = Object.keys(info).filter(k=>{const d=dparse(k);return d.getFullYear()===y && d.getMonth()===mo;});
+    const monthTasks = state.tasks.filter(t=>{const d=dparse(t.date);return d.getFullYear()===y && d.getMonth()===mo;});
+    const monthNotes = state.notes.filter(n=>{const d=dparse(n.date);return d.getFullYear()===y && d.getMonth()===mo;});
+    $('#monthSummary').innerHTML = '<span><b>'+monthKeys.length+'</b> يوم فيه نشاط</span><span><b>'+monthTasks.length+'</b> مهمة</span><span><b>'+monthTasks.filter(t=>t.done).length+'</b> منجزة</span><span><b>'+monthNotes.length+'</b> ملاحظة</span>'; 
     const ws = Number(settings.weekStart)||0;
     const first = (new Date(y,mo,1).getDay()-ws+7)%7, days = new Date(y,mo+1,0).getDate();
     let h = [0,1,2,3,4,5,6].map(i=>'<div class="wd" role="columnheader">'+WD[(ws+i)%7]+'</div>').join('');
@@ -801,6 +819,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   function shiftCal(n){ ui.calM += n; if(ui.calM<0){ui.calM=11;ui.calY--;} if(ui.calM>11){ui.calM=0;ui.calY++;} renderCal(); }
   $('#prevM').onclick = ()=>shiftCal(-1);
   $('#nextM').onclick = ()=>shiftCal(1);
+  $('#monthToday').onclick = ()=>{ const d=new Date(); ui.calY=d.getFullYear(); ui.calM=d.getMonth(); openDay(todayKey(), {reset:true}); renderCal(); };
   $('#toggleCal').onclick = ()=>{ ui.calExpanded = !ui.calExpanded; const d = dparse(ui.sel); ui.calY = d.getFullYear(); ui.calM = d.getMonth(); renderCal(); renderBase(); };
   const selLabel = () => (ui.sel===todayKey() ? 'اليوم، ' : '') + fDay.format(dparse(ui.sel));
 
@@ -1049,11 +1068,12 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   function mainsHTML(){
     const q = ui.q.trim().toLowerCase();
     if(!state.mainTasks.length) return '<div class="empty">لا توجد مهام رئيسية بعد. أنشئ مهمة تتكرر (مثل «مراجعة الأسبوع») ثم أضفها إلى يوم أو أسبوع أو شهر بضغطة واحدة.</div>';
-    const list = state.mainTasks.filter(m=>!q || String(m.name).toLowerCase().includes(q));
+    const list = state.mainTasks.filter(m=>!q || String(m.name).toLowerCase().includes(q) || linksOf(m).some(t=>String(t.text||'').toLowerCase().includes(q) || t.date.includes(q) || fShortBase(t.date).toLowerCase().includes(q))); 
     if(!list.length) return '<div class="empty">لا توجد مهام رئيسية مطابقة للبحث.</div>';
     const scopes = [['day','اليوم المحدد'],['week','أسبوع اليوم المحدد'],['month','شهر '+fMonth.format(new Date(ui.calY,ui.calM,1))]];
     return '<div class="mlist">'+list.map(m=>{
       const links = linksOf(m).sort((a,b)=>a.date.localeCompare(b.date)), done = links.filter(t=>t.done).length, onSel = links.some(t=>t.date===ui.sel);
+      const matchedLinks = q ? links.filter(t=>String(t.text||'').toLowerCase().includes(q)||t.date.includes(q)||fShortBase(t.date).toLowerCase().includes(q)) : links;
       const p = [0,1,2].includes(m.prio) ? m.prio : 1;
       const stat = links.length ? 'في '+fmtDays(links.length)+' • منجز '+done+' • متبقي '+(links.length-done) : 'لم تُضف إلى أي يوم بعد';
       return '<article class="mcard" data-main-id="'+esc(m.id)+'">'+
@@ -1061,7 +1081,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
         '<p class="sub" style="margin:0">'+stat+'</p>'+
         '<div class="madd"><select class="select main-scope" aria-label="نطاق إضافة '+esc(m.name)+'">'+scopes.map(o=>'<option value="'+o[0]+'"'+(ui.mainScope===o[0]?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select><button class="btn" data-ma="add">أضف</button></div>'+
         (onSel?'<div><button class="chip" data-ma="removeDay">إزالة من اليوم المحدد فقط</button></div>':'')+
-        (links.length?'<details class="mdays"'+(ui.openMains.has(m.id)?' open':'')+' data-det="'+esc(m.id)+'"><summary>الأيام المرتبطة ('+links.length+')</summary><div class="daychips">'+links.map(t=>'<button type="button" class="chip '+(t.done?'done':'')+'" data-central-date="'+esc(t.date)+'" title="فتح اليوم">'+(t.done?'✓ ':'')+esc(fShortBase(t.date))+'</button>').join('')+'</div></details>':'')+
+        (links.length?'<details class="mdays"'+(ui.openMains.has(m.id)?' open':'')+' data-det="'+esc(m.id)+'"><summary>'+(q && matchedLinks.length!==links.length?'نتائج البحث ('+matchedLinks.length+') من ':'الأيام المرتبطة (')+links.length+')</summary><div class="daychips">'+(q?matchedLinks:links).map(t=>'<button type="button" class="chip '+(t.done?'done':'')+'" data-central-date="'+esc(t.date)+'" title="فتح اليوم">'+(t.done?'✓ ':'')+esc(fShortBase(t.date))+'</button>').join('')+'</div></details>':'')+
         '<div class="mfoot"><button class="link" data-ma="rename">تعديل الاسم</button><button class="link danger" data-ma="delete">حذف نهائي</button></div>'+
       '</article>';
     }).join('')+'</div>';
@@ -1080,22 +1100,28 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
     $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
     document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
-    $('#itemTools').hidden = tab!=='items'; $('#itemAddForm').hidden = tab!=='items'; $('#mainAddForm').hidden = tab!=='mains';
-    $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : tab==='mains' ? 'ابحث في المهام الرئيسية' : 'ابحث في العناصر';
-    $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
-    $('#baseView').innerHTML = tab==='days' ? daysHTML() : tab==='mains' ? mainsHTML() : itemsHTML();
+    $('#itemTools').hidden = true; $('#itemAddForm').hidden = tab!=='items'; $('#mainAddForm').hidden = tab!=='mains';
+    $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : tab==='mains' ? 'ابحث عن مهمة رئيسية أو مهمة مرتبطة أو تاريخ' : 'إضافة سريعة: اكتب مهمة أو ملاحظة';
+    if(tab==='items') { $('#quickTaskDate').value = ui.sel; $('#baseView').innerHTML = '<div class="empty">أضف مهمة مباشرة إلى اليوم المحدد، أو احفظ ملاحظة سريعة. اختر تاريخًا مختلفًا إذا أردت إضافتها ليوم آخر.</div>'; return; }
+    $('#baseView').innerHTML = tab==='days' ? daysHTML() : mainsHTML();
   }
   $('#baseTabs').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; ui.baseTab = b.dataset.bt; renderBase(); });
   $('#goMains').onclick = ()=>{ closeSettings(); ui.baseTab = 'mains'; renderBase(); $('#base').scrollIntoView({behavior:'smooth',block:'start'}); };
-  function addBase(){
-    const n = $('#bName'), name = n.value.trim();
-    if(!name){ n.focus(); return; }
-    state.base.push({id:uid(), name, cat:$('#bCat').value.trim(), status:0, date:$('#bDate').value});
-    n.value=''; $('#bCat').value=''; $('#bDate').value=''; n.focus();
-    renderBase(); save();
+  function addQuickTask(){
+    const input=$('#quickTaskName'), name=input.value.trim(), date=$('#quickTaskDate').value||ui.sel;
+    if(!name){input.focus();return;}
+    state.tasks.push({id:uid(),text:name,done:false,prio:0,date});
+    input.value=''; ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth();
+    renderAll(); save(); toast('أُضيفت المهمة إلى '+fShortBase(date));
   }
-  $('#bAdd').onclick = addBase;
-  $('#bName').addEventListener('keydown', e=>{ if(e.key==='Enter') addBase(); });
+  $('#quickTaskAdd').onclick=addQuickTask;
+  $('#quickTaskName').addEventListener('keydown',e=>{if(e.key==='Enter')addQuickTask();});
+  $('#quickNoteAdd').onclick=()=>{
+    const title=$('#quickNoteTitle').value.trim(), text=$('#quickNoteText').value.trim(), date=$('#quickTaskDate').value||ui.sel;
+    if(!text){$('#quickNoteText').focus();return;}
+    state.notes.push({id:uid(),title,text,date,created:Date.now()}); $('#quickNoteTitle').value=''; $('#quickNoteText').value='';
+    ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); save(); toast('حُفظت الملاحظة في '+fShortBase(date));
+  };
   function addMain(){
     const i = $('#mtName'), name = i.value.trim();
     if(!name){ i.focus(); return; }
