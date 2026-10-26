@@ -1043,6 +1043,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   opacity: .8;
 }
 
+
+/* v41: تذكير النسخة الاحتياطية + عرض المزيد + ترتيب الشرائط */
+.backup-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:38px;margin-bottom:14px;padding:12px 16px;border-radius:16px;border:1px solid var(--accent);background:var(--surface);color:var(--ink)}
+.backup-bar[hidden]{display:none!important}
+.backup-bar .bb-text{display:grid;gap:2px;min-width:0}
+.backup-bar .bb-text span{font-size:.85rem;color:var(--muted)}
+.backup-bar .bb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.t-text.clamp,.nbody.clamp{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.t-text.clamp{-webkit-line-clamp:3;line-clamp:3}
+.nbody.clamp{-webkit-line-clamp:4;line-clamp:4}
+.more-btn{border:0!important;background:none!important;box-shadow:none!important;color:var(--accent);text-decoration:underline;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;padding:2px 0!important;min-height:28px!important;justify-self:start;text-align:start}
+.more-btn[hidden]{display:none!important}
+#dayZone > .stats{margin-top:14px}
 </style>
 </head>
 <body>
@@ -1060,6 +1073,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   <button type="button" class="side-settings" id="openSettings" aria-label="الإعدادات" aria-controls="settings" title="الإعدادات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.2 13.5 1.1.9-1.4 2.4-1.4-.5a7.7 7.7 0 0 1-1.6.9l-.3 1.5h-2.8l-.3-1.5a7.7 7.7 0 0 1-1.6-.9l-1.4.5-1.4-2.4 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.4-2.4 1.4.5a7.7 7.7 0 0 1 1.6-.9l.3-1.5h2.8l.3 1.5a7.7 7.7 0 0 1 1.6.9l1.4-.5 1.4 2.4-1.1.9a7 7 0 0 1 0 1.8Z"/></svg><span>الإعدادات</span></button>
 </nav>
 <div class="wrap">
+
+  <!-- تذكير النسخة الاحتياطية اليومية -->
+  <div class="backup-bar" id="backupBar" role="status" hidden>
+    <div class="bb-text"><b>لم تحمّل نسخة احتياطية اليوم</b><span>يُحفظ الملف باسم تاريخ اليوم.</span></div>
+    <div class="bb-actions"><button type="button" class="btn" id="bbDownload">تحميل النسخة</button><button type="button" class="btn ghost" id="bbLater">لاحقًا</button></div>
+  </div>
 
   <!-- الساعة والتاريخ -->
   <header class="hero" aria-label="الوقت والتاريخ">
@@ -1085,13 +1104,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     </div>
   </header>
 
-  <section class="stats" aria-label="ملخص الإنجاز">
-    <div class="stat"><div class="num" id="statTasks">0</div><div class="label">مهام اليوم</div></div>
-    <div class="stat"><div class="num" id="statDone">0%</div><div class="label">إنجاز اليوم</div></div>
-    <div class="stat"><div class="num" id="statNotes">0</div><div class="label">ملاحظات اليوم</div></div>
-    <div class="stat"><div class="num" id="statBase">0</div><div class="label">عناصر أخرى</div></div>
-  </section>
-
   <div id="dayZone">
   <div class="daybox">
   <div class="daybar" role="navigation" aria-label="التنقل بين الأيام">
@@ -1116,6 +1128,14 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <div class="legend"><span>مهام متبقية</span><span class="l3">مهام منجزة</span><span class="l2">ملاحظات</span></div>
   </div>
   </div>
+
+  <section class="stats" aria-label="ملخص الإنجاز">
+    <div class="stat"><div class="num" id="statTasks">0</div><div class="label">مهام اليوم</div></div>
+    <div class="stat"><div class="num" id="statDone">0%</div><div class="label">إنجاز اليوم</div></div>
+    <div class="stat"><div class="num" id="statNotes">0</div><div class="label">ملاحظات اليوم</div></div>
+    <div class="stat"><div class="num" id="statBase">0</div><div class="label">عناصر أخرى</div></div>
+  </section>
+
   <div class="grid two">
     <!-- مهام اليوم -->
     <section class="card" id="tasks" aria-labelledby="tasksTitle">
@@ -1232,7 +1252,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
       <div class="seg" data-setting="theme" role="group" aria-label="المظهر"><button type="button" data-val="auto">تلقائي</button><button type="button" data-val="light">فاتح</button><button type="button" data-val="dark">داكن</button></div></div>
 
     <h3>البيانات</h3>
-    <div class="srow"><div><b>نسخة احتياطية</b><p class="sub">تحميل ملف ببياناتك</p></div><button type="button" class="abtn" id="export">تحميل</button></div>
+    <div class="srow"><div><b>نسخة احتياطية</b><p class="sub" id="lastBackupTxt">تحميل ملف ببياناتك</p></div><button type="button" class="abtn" id="export">تحميل</button></div>
     <div class="srow"><div><b>استعادة نسخة</b><p class="sub">من ملف حفظته سابقًا</p></div><button type="button" class="abtn" id="importBtn">اختيار ملف</button></div>
     <input type="file" id="importFile" accept="application/json,.json" hidden>
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
@@ -1573,12 +1593,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
       return `
       <li class="task p${p} ${t.done?'done':''}" data-id="${esc(t.id)}">
         <button class="check" role="checkbox" aria-checked="${t.done}" aria-label="إنجاز: ${esc(t.text)}" data-a="toggle">✓</button>
-        <div class="t-body"><span class="t-text">${esc(t.text)}</span><span class="t-sub"><button class="chip ${p?'p'+p:''}" data-a="prio" title="غيّر الأولوية">${PRIO[p]}</button>${m?`<span class="t-meta">◆ مهمة رئيسية • في ${fmtDays(n)}</span>`:''}</span></div>
+        <div class="t-body"><span class="t-text">${esc(t.text)}</span><button type="button" class="more-btn" data-a="more" aria-expanded="false" hidden>عرض المزيد</button><span class="t-sub"><button class="chip ${p?'p'+p:''}" data-a="prio" title="غيّر الأولوية">${PRIO[p]}</button>${m?`<span class="t-meta">◆ مهمة رئيسية • في ${fmtDays(n)}</span>`:''}</span></div>
         <div class="t-actions">
           <button class="icon-btn" data-a="edit" aria-label="تعديل المهمة">${ICON_EDIT}</button>
           <button class="icon-btn" data-a="del" aria-label="حذف المهمة">${ICON_DEL}</button>
         </div>
       </li>`;}).join('');
+    fitClamp($('#taskList'),'.t-text');
   }
   function addTask(){
     const el = $('#taskInput'), text = el.value.trim();
@@ -1594,7 +1615,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   });
   $('#taskList').addEventListener('click', async e=>{
     const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const li = btn.closest('[data-id]'); const t = state.tasks.find(x=>x.id===li.dataset.id); if(!t) return;
+    const li = btn.closest('[data-id]');
+    if(btn.dataset.a==='more'){ toggleExp(li.dataset.id); fitClamp($('#taskList'),'.t-text'); return; }
+    const t = state.tasks.find(x=>x.id===li.dataset.id); if(!t) return;
     const a = btn.dataset.a, main = mainOf(t);
     if(a==='toggle'){ t.done = !t.done; }
     else if(a==='prio'){ t.prio = ((Number(t.prio)||0)+1)%3; }
@@ -1666,11 +1689,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
           ${all ? '<button class="chip" data-a="goto" title="افتح هذا اليوم">'+fShort.format(dparse(n.date))+'</button>' : ''}
         </div>
         <p class="nbody">${esc(n.text)}</p>
+        <button type="button" class="more-btn" data-a="more" aria-expanded="false" hidden>عرض المزيد</button>
         <div class="nfoot">
           <span>${fTime.format(new Date(n.created))}</span>
           <span><button class="link" data-a="nedit">تعديل</button><button class="link danger" data-a="ndel">حذف</button></span>
         </div>
       </li>`).join('');
+    fitClamp($('#noteList'),'.nbody');
   }
   function clearEditor(){ $('#noteTitle').value=''; $('#noteText').value=''; ui.editing=null; }
   $('#noteSave').onclick = ()=>{
@@ -1696,7 +1721,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   const armed = new Map();
   $('#noteList').addEventListener('click', e=>{
     const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const li = btn.closest('[data-id]'); const n = state.notes.find(x=>x.id===li.dataset.id); if(!n) return;
+    const li = btn.closest('[data-id]');
+    if(btn.dataset.a==='more'){ toggleExp(li.dataset.id); fitClamp($('#noteList'),'.nbody'); return; }
+    const n = state.notes.find(x=>x.id===li.dataset.id); if(!n) return;
     const a = btn.dataset.a;
     if(a==='goto'){
       openDay(n.date, {reset:true, scroll:true}); return;
@@ -1889,13 +1916,57 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   });
 
   /* ---------- نسخ احتياطي ومسح ---------- */
-  $('#export').onclick = ()=>{
+  /* ---------- عرض المزيد للنصوص الطويلة ---------- */
+  const expanded = new Set();
+  const toggleExp = id => { if(expanded.has(id)) expanded.delete(id); else expanded.add(id); };
+  function fitClamp(root, sel){
+    if(!root) return;
+    root.querySelectorAll(sel).forEach(el=>{
+      const li = el.closest('[data-id]'); if(!li) return;
+      const btn = li.querySelector('.more-btn'); if(!btn) return;
+      const open = expanded.has(li.dataset.id);
+      el.classList.add('clamp');
+      const over = el.scrollHeight > el.clientHeight + 1;
+      if(open) el.classList.remove('clamp');
+      btn.hidden = !over;
+      btn.textContent = open ? 'عرض أقل' : 'عرض المزيد';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  function fitAll(){ fitClamp($('#taskList'),'.t-text'); fitClamp($('#noteList'),'.nbody'); }
+  let fitTimer;
+  window.addEventListener('resize', ()=>{ clearTimeout(fitTimer); fitTimer = setTimeout(fitAll,150); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+  /* ---------- تذكير النسخة الاحتياطية اليومية ---------- */
+  const BK_KEY = 'plan-backup-v1', BK_SNOOZE = 4*60*60*1000;
+  let bk = {lastDay:'', lastTs:0, snoozeUntil:0};
+  async function loadBackupMeta(){
+    try{ const r = await store.get(BK_KEY); if(r) bk = Object.assign(bk, JSON.parse(r)); }catch(e){}
+  }
+  function saveBackupMeta(){ store.set(BK_KEY, JSON.stringify(bk)); }
+  function hasData(){ return !!(state.tasks.length || state.notes.length || state.base.length || state.mainTasks.length); }
+  function updateBackupUI(){
+    const due = hasData() && bk.lastDay !== todayKey() && Date.now() >= bk.snoozeUntil;
+    $('#backupBar').hidden = !due;
+    $('#lastBackupTxt').textContent = bk.lastTs
+      ? 'آخر نسخة: ' + new Intl.DateTimeFormat('ar-EG-u-nu-latn',{dateStyle:'medium',timeStyle:'short'}).format(new Date(bk.lastTs))
+      : 'تحميل ملف ببياناتك';
+  }
+  function doExport(){
     const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'plan-backup.json';
+    a.href = URL.createObjectURL(blob); a.download = 'NEXORA-backup-' + todayKey() + '.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
-  };
+    bk.lastDay = todayKey(); bk.lastTs = Date.now(); bk.snoozeUntil = 0;
+    saveBackupMeta(); updateBackupUI(); flash('تم تحميل نسخة اليوم ✓');
+  }
+  $('#export').onclick = doExport;
+  $('#bbDownload').onclick = doExport;
+  $('#bbLater').onclick = ()=>{ bk.snoozeUntil = Date.now() + BK_SNOOZE; saveBackupMeta(); updateBackupUI(); };
+  setInterval(updateBackupUI, 5*60*1000);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) updateBackupUI(); });
   $('#importBtn').onclick = ()=> $('#importFile').click();
   $('#importFile').addEventListener('change', async e=>{
     const f = e.target.files[0]; if(!f) return;
@@ -1919,8 +1990,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   /* ---------- بدء التشغيل ---------- */
   (async function init(){
     tick(); setInterval(tick, 1000);
-    await load(); await loadSettings();
-    applySettings(); renderAll();
+    await load(); await loadSettings(); await loadBackupMeta();
+    applySettings(); renderAll(); updateBackupUI();
   })();
 })();
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
