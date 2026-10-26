@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v24-auto-index';
+const CACHE = 'nexora-v26-days-mains';
 const BASE = self.registration.scope;
 const FILES = [
   './',

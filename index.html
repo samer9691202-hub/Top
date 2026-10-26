@@ -283,6 +283,78 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   .central-day-open{outline:3px solid rgba(13,126,135,.28);outline-offset:3px;transition:outline-color .3s;border-radius:18px}
+
+/* ===== v26: التنقل بين الأيام، المهام الرئيسية، الحوارات ===== */
+#dayZone{scroll-margin-top:8px}
+.daybar{position:sticky;top:54px;z-index:25;display:flex;align-items:center;gap:8px;padding:8px;margin-top:16px;border:1px solid var(--line);border-radius:20px;background:var(--surface);background:color-mix(in srgb,var(--surface) 90%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(28,67,69,.09)}
+.daybar .nav-btn{flex:none}
+.day-pick{position:relative;flex:1;min-width:0}
+.day-pick>button{width:100%;min-height:46px;border:0;background:transparent;border-radius:12px;display:grid;text-align:center;font-weight:700;line-height:1.35;padding:2px 6px}
+.day-pick>button:hover{background:var(--surface-2)}
+.day-pick small{color:var(--muted);font-weight:500;font-size:.78rem}
+.day-pick input{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none}
+.daybar .btn{flex:none;padding:8px 14px}
+.central-day-open .daybar{border-color:var(--accent);box-shadow:0 0 0 4px rgba(8,126,139,.18),0 8px 24px rgba(28,67,69,.09)}
+.btn.danger{background:var(--rose);color:#fff}
+.tabs{display:flex;width:100%;margin-bottom:12px}
+.tabs button{flex:1;min-height:42px;padding:6px 4px;font-size:.9rem;white-space:nowrap}
+.item-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.item-tools[hidden],.main-add[hidden],.base-add[hidden]{display:none}
+.main-add{display:grid;gap:8px;grid-template-columns:1fr;margin:12px 0 16px}
+@media(min-width:720px){.main-add{grid-template-columns:2fr 1fr auto}}
+.quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 12px;font-size:.85rem;color:var(--muted)}
+.quick[hidden]{display:none}
+.quick .chip{border:1px dashed var(--accent);background:var(--accent-soft);color:var(--accent);min-height:34px;padding:4px 12px}
+.task{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 10px;border-inline-start:4px solid transparent}
+.task.p1{border-inline-start-color:var(--amber)}
+.task.p2{border-inline-start-color:var(--rose)}
+.t-body{min-width:0;display:grid}
+.t-meta{font-size:.78rem;color:var(--accent);font-weight:600}
+.t-actions{display:flex;align-items:center;gap:2px}
+.icon-btn{display:grid;place-items:center;width:40px;height:40px}
+.icon-btn svg{width:19px;height:19px;pointer-events:none}
+.icon-btn[data-a="edit"]:hover{background:var(--accent-soft);color:var(--accent)}
+.t-sub{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px}
+.t-sub .chip{min-height:26px;padding:1px 10px;font-size:.76rem}
+.mlist{display:grid;gap:10px}
+.mcard{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--surface);display:grid;gap:10px}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mname{font-weight:700;overflow-wrap:anywhere}
+.madd{display:grid;grid-template-columns:1fr auto;gap:8px}
+.madd .select{min-height:44px}
+.mfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mdays summary{cursor:pointer;color:var(--muted);font-size:.9rem;min-height:38px;display:flex;align-items:center}
+.daychips{display:flex;flex-wrap:wrap;gap:6px;padding-top:4px}
+.daychips .chip{border:1px solid var(--line);min-height:32px}
+.daychips .chip.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.datebtn{border:0;background:none;padding:0;min-height:32px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.base-day-table tr.is-sel{background:var(--accent-soft)}
+.mini-tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:0 8px;margin-inline-start:6px}
+.toast{position:fixed;z-index:1100;inset-inline:12px;bottom:calc(92px + env(safe-area-inset-bottom));margin-inline:auto;max-width:440px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.28);font-size:.92rem}
+.toast[hidden]{display:none}
+.toast button{border:0;background:transparent;color:inherit;font-weight:700;text-decoration:underline;min-height:36px;padding:0 6px}
+@media(min-width:701px){.toast{bottom:24px}}
+#dlg{z-index:1050;align-items:flex-end}
+@media(min-width:601px){#dlg{align-items:center}}
+#dlg .sheet{padding:20px 18px 22px}
+#dlg h2{margin:0 0 6px;font-size:1.15rem}
+.dlg-actions{display:grid;gap:8px;margin-top:16px}
+.dlg-actions .btn{white-space:normal;line-height:1.4}
+@media(max-width:700px){
+  .base-table-wrap{border:0;overflow:visible;margin-top:4px}
+  .base-day-table{min-width:0;display:block;background:transparent}
+  .base-day-table thead{display:none}
+  .base-day-table tbody{display:grid;gap:10px}
+  .base-day-table tr{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .base-day-table td{display:block;padding:0;border:0;min-width:0!important}
+  .base-day-table td[data-label]::before{content:attr(data-label);display:block;font-size:.74rem;color:var(--muted);font-weight:700;margin-bottom:2px}
+  .base-day-table .date-cell{white-space:normal}
+  .base-day-table .date-cell br,.base-day-table .date-cell .muted-cell{display:none}
+  .base-day-table .open-cell{text-align:start}
+  .base-day-table .open-cell .chip{width:100%;min-height:42px;background:var(--accent);color:var(--accent-ink)}
+  .base-day-table tbody tr:hover{background:var(--surface)}
+  .base-day-table tbody tr.is-sel{background:var(--accent-soft)}
+}
 </style>
 </head>
 <body>
@@ -326,10 +398,10 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   </header>
 
   <section class="stats" aria-label="ملخص الإنجاز">
-    <div class="stat"><div class="num" id="statTasks">0</div><div class="label">إجمالي المهام</div></div>
-    <div class="stat"><div class="num" id="statDone">0%</div><div class="label">نسبة الإنجاز</div></div>
-    <div class="stat"><div class="num" id="statNotes">0</div><div class="label">الملاحظات</div></div>
-    <div class="stat"><div class="num" id="statBase">0</div><div class="label">عناصر القاعدة</div></div>
+    <div class="stat"><div class="num" id="statTasks">0</div><div class="label">مهام اليوم</div></div>
+    <div class="stat"><div class="num" id="statDone">0%</div><div class="label">إنجاز اليوم</div></div>
+    <div class="stat"><div class="num" id="statNotes">0</div><div class="label">ملاحظات اليوم</div></div>
+    <div class="stat"><div class="num" id="statBase">0</div><div class="label">عناصر أخرى</div></div>
   </section>
 
   <!-- التقويم -->
@@ -348,6 +420,16 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
 
 
 
+  <div id="dayZone">
+  <div class="daybar" role="navigation" aria-label="التنقل بين الأيام">
+    <button class="nav-btn" id="dayPrev" type="button" aria-label="اليوم السابق">›</button>
+    <div class="day-pick">
+      <button type="button" id="dayPickBtn" aria-label="اختيار تاريخ آخر"><span id="dayName"></span><small id="dayRel"></small></button>
+      <input type="date" id="dayPick" tabindex="-1" aria-hidden="true">
+    </div>
+    <button class="nav-btn" id="dayNext" type="button" aria-label="اليوم التالي">‹</button>
+    <button class="btn ghost" id="dayToday" type="button" hidden>اليوم</button>
+  </div>
   <div class="grid two">
     <!-- مهام اليوم -->
     <section class="card" id="tasks" aria-labelledby="tasksTitle">
@@ -362,9 +444,10 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       <div class="prog"><div class="prog-track"><div class="prog-fill" id="progFill"></div></div><span id="progTxt"></span></div>
       <div class="add">
         <label class="sr" for="taskInput">مهمة جديدة</label>
-        <input class="field" id="taskInput" placeholder="اكتب مهمة لهذا اليوم ثم اضغط إدخال" autocomplete="off">
+        <input class="field" id="taskInput" placeholder="مهمة جديدة لهذا اليوم" autocomplete="off">
         <button class="btn" id="taskAdd">أضف</button>
       </div>
+      <div class="quick" id="mainQuick" hidden></div>
       <ul class="list" id="taskList"></ul>
     </section>
 
@@ -397,27 +480,41 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     </section>
   </div>
 
+  </div><!-- /dayZone -->
+
   <!-- القاعدة الرئيسية -->
   <section class="card" id="base" style="margin-top:16px" aria-labelledby="baseTitle">
     <div class="card-head">
       <div><h2 id="baseTitle">القاعدة الرئيسية</h2><p class="sub" id="baseSub"></p></div>
-      <div class="seg" id="viewSwitch" role="group" aria-label="طريقة العرض">
-        <button data-v="table" aria-pressed="true">قائمة</button>
-        <button data-v="board" aria-pressed="false">لوحة</button>
-      </div>
+    </div>
+    <div class="seg tabs" id="baseTabs" role="group" aria-label="أقسام القاعدة">
+      <button type="button" data-bt="days" aria-pressed="true">الأيام</button>
+      <button type="button" data-bt="mains" aria-pressed="false">المهام الرئيسية</button>
+      <button type="button" data-bt="items" aria-pressed="false">العناصر</button>
     </div>
     <div class="tools">
       <label class="sr" for="search">بحث</label>
-      <input class="field" id="search" type="search" placeholder="ابحث عن يوم أو مهمة أو ملاحظة أو عنصر">
-      <label class="sr" for="statusFilter">تصفية بالحالة</label>
-      <select class="select" id="statusFilter" style="width:auto;min-width:140px">
-        <option value="all">كل الحالات</option>
-        <option value="0">جديد</option>
-        <option value="1">قيد التنفيذ</option>
-        <option value="2">مكتمل</option>
-      </select>
+      <input class="field" id="search" type="search" placeholder="ابحث عن يوم أو مهمة أو ملاحظة" autocomplete="off">
+      <span class="item-tools" id="itemTools" hidden>
+        <label class="sr" for="statusFilter">تصفية بالحالة</label>
+        <select class="select" id="statusFilter" style="width:auto;min-width:140px">
+          <option value="all">كل الحالات</option>
+          <option value="0">جديد</option>
+          <option value="1">قيد التنفيذ</option>
+          <option value="2">مكتمل</option>
+        </select>
+        <div class="seg" id="viewSwitch" role="group" aria-label="طريقة العرض">
+          <button data-v="table" aria-pressed="true">قائمة</button>
+          <button data-v="board" aria-pressed="false">لوحة</button>
+        </div>
+      </span>
     </div>
-    <div class="base-add" role="group" aria-label="إضافة عنصر">
+    <div class="main-add" id="mainAddForm" role="group" aria-label="إضافة مهمة رئيسية" hidden>
+      <input class="field" id="mtName" placeholder="اسم المهمة الرئيسية (تتكرر في أيام كثيرة)" aria-label="اسم المهمة الرئيسية" autocomplete="off">
+      <select class="select" id="mtPrio" aria-label="الأولوية الافتراضية"><option value="0">عادية</option><option value="1" selected>مهمة</option><option value="2">عاجلة</option></select>
+      <button class="btn" id="mtAdd">أضف مهمة رئيسية</button>
+    </div>
+    <div class="base-add" id="itemAddForm" role="group" aria-label="إضافة عنصر" hidden>
       <input class="field" id="bName" placeholder="اسم العنصر" aria-label="اسم العنصر" autocomplete="off">
       <input class="field" id="bCat" placeholder="التصنيف" aria-label="التصنيف" list="cats" autocomplete="off">
       <datalist id="cats"></datalist>
@@ -439,9 +536,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     <div class="srow"><div><b>التاريخ الهجري</b></div><button type="button" class="sw" role="switch" data-setting="showHijri" aria-label="إظهار التاريخ الهجري"></button></div>
 
     <h3>المهام الرئيسية</h3>
-    <p class="sub">أنشئ قائمة مهام تستخدمها في أي يوم. إضافتها إلى يوم لا يحذفها من هذه القائمة.</p>
-    <div class="main-task-tools"><input class="field" id="mainTaskInput" placeholder="اسم المهمة الرئيسية" autocomplete="off"><button class="btn" id="mainTaskAdd">إضافة</button></div>
-    <div class="main-task-list" id="mainTaskList"></div>
+    <div class="srow"><div><b>إدارة المهام الرئيسية</b><p class="sub">أصبحت في القاعدة الرئيسية، تبويب «المهام الرئيسية»</p></div><button type="button" class="abtn" id="goMains">فتح</button></div>
 
     <h3>التقويم والمظهر</h3>
     <div class="srow"><div><b>بداية الأسبوع</b></div>
@@ -459,6 +554,16 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   </div>
 </div>
 </div>
+
+<div class="overlay" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+  <div class="sheet">
+    <h2 id="dlgTitle"></h2>
+    <p class="sub" id="dlgMsg"></p>
+    <input class="field" id="dlgInput" autocomplete="off" aria-label="النص" hidden style="margin-top:12px">
+    <div class="dlg-actions" id="dlgActions"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toastMsg"></span><button type="button" id="toastUndo" hidden>تراجع</button></div>
 
 <script>
 (function(){
@@ -488,14 +593,36 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   let state = {tasks:[], notes:[], base:[], mainTasks:[]};
   const DEFAULTS = {clockFmt:'12', theme:'auto', weekStart:'0', showSec:true, showHijri:true};
   let settings = Object.assign({}, DEFAULTS);
-  let ui = {sel: todayKey(), calY:0, calM:0, calExpanded:false, filter:'all', noteView:'day', noteQ:'', editing:null, view:'table', q:'', st:'all'};
+  let ui = {sel: todayKey(), calY:0, calM:0, calExpanded:false, filter:'all', noteView:'day', noteQ:'', editing:null, view:'table', q:'', st:'all', baseTab:'days', mainScope:'day', openMains:new Set()};
   { const t = new Date(); ui.calY = t.getFullYear(); ui.calM = t.getMonth(); }
   let saveTimer;
+
+  /* ---------- تنظيف البيانات وتوحيد التواريخ (دون حذف أي سجل) ---------- */
+  function normDate(v){
+    const m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(String(v||''));
+    if(!m) return todayKey();
+    const k = m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]);
+    return isNaN(dparse(k)) ? todayKey() : k;
+  }
+  function clean(src){
+    const uniq = arr => { const seen = new Set(); return (Array.isArray(arr)?arr:[]).filter(Boolean).map(o=>{ o = Object.assign({}, o); if(!o.id || seen.has(o.id)) o.id = uid(); seen.add(o.id); return o; }); };
+    const mainTasks = uniq(src.mainTasks).map(m=>{ m.name = String(m.name||'مهمة رئيسية'); m.prio = [0,1,2].includes(m.prio) ? m.prio : 1; return m; });
+    const mainIds = new Set(mainTasks.map(m=>m.id));
+    const pairs = new Set();
+    const tasks = uniq(src.tasks).map(t=>{
+      t.text = String(t.text||''); t.date = normDate(t.date); t.done = !!t.done; t.prio = [0,1,2].includes(t.prio) ? t.prio : 0;
+      if(t.mainId && !mainIds.has(t.mainId)) delete t.mainId;
+      return t;
+    }).filter(t=>{ if(!t.mainId) return true; const k = t.date+'|'+t.mainId; if(pairs.has(k)) return false; pairs.add(k); return true; });
+    const notes = uniq(src.notes).map(n=>{ n.title = String(n.title||''); n.text = String(n.text||''); n.date = normDate(n.date); n.created = Number(n.created)||Date.now(); return n; });
+    const base = uniq(src.base).map(b=>{ b.status = [0,1,2].includes(b.status) ? b.status : 0; return b; });
+    return {tasks, notes, base, mainTasks};
+  }
 
   async function load(){
     let raw = await store.get(KEY);
     if(raw){
-      try{ const s = JSON.parse(raw); if(s && Array.isArray(s.tasks)){ state = {tasks:s.tasks, notes:s.notes||[], base:s.base||[], mainTasks:s.mainTasks||[]}; return; } }catch(e){}
+      try{ const s = JSON.parse(raw); if(s && Array.isArray(s.tasks)){ state = clean(s); return; } }catch(e){}
     }
     // ترحيل بيانات النسخة الأولى
     raw = await store.get(OLD_KEY);
@@ -561,7 +688,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   $('#setClose').addEventListener('click', closeSettings);
   document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
   document.getElementById('homeBrand')?.addEventListener('click',()=>{const home=document.querySelector('.hero')||document.querySelector('.wrap');if(home){home.scrollIntoView({behavior:'smooth',block:'start'});window.scrollTo({top:0,behavior:'smooth'});}});
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#settings').hidden) closeSettings(); });
+  document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return; if(dlgDone){ dlgDone(null); return; } if(!$('#settings').hidden) closeSettings(); });
   $('#settings').addEventListener('click', e=>{
     if(e.target.id==='settings'){ closeSettings(); return; }
     const sw = e.target.closest('.sw');
@@ -596,7 +723,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       $('#wk').textContent = fWk.format(d);
       $('#gr').textContent = fGr.format(d);
       $('#hij').textContent = fH ? fH.format(d) : '';
-      renderCal();
+      renderCal(); renderDayBar();
     }
   }
 
@@ -635,18 +762,101 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     $('#calGrid').innerHTML=h;
     $('#toggleCal').textContent=ui.calExpanded?'إخفاء الشهر':'عرض الشهر';
     $('#toggleCal').setAttribute('aria-expanded',String(ui.calExpanded));
+    $('#prevM').setAttribute('aria-label', ui.calExpanded?'الشهر السابق':'الأسبوع السابق');
+    $('#nextM').setAttribute('aria-label', ui.calExpanded?'الشهر التالي':'الأسبوع التالي');
   }
+  /* ---------- فتح يوم محدد: دالة واحدة لكل المصادر (التقويم، القاعدة، البحث، الملاحظات، الشريط) ---------- */
+  function syncSegs(){
+    document.querySelectorAll('#taskFilter button').forEach(x=>x.setAttribute('aria-pressed', String(x.dataset.f===ui.filter)));
+    document.querySelectorAll('#noteView button').forEach(x=>x.setAttribute('aria-pressed', String(x.dataset.n===ui.noteView)));
+    $('#noteSearch').value = ui.noteQ;
+  }
+  function openDay(date, opts){
+    opts = opts || {};
+    const key = normDate(date), d = dparse(key);
+    ui.sel = key; ui.calY = d.getFullYear(); ui.calM = d.getMonth();
+    if(opts.reset){ ui.filter = 'all'; ui.noteView = 'day'; ui.noteQ = ''; }
+    syncSegs();
+    renderAll();
+    if(opts.scroll){
+      const zone = $('#dayZone');
+      zone.scrollIntoView({behavior:'smooth', block:'start'});
+      zone.classList.add('central-day-open'); setTimeout(()=>zone.classList.remove('central-day-open'), 1600);
+    }
+  }
+  function goDay(delta){ const d = dparse(ui.sel); d.setDate(d.getDate()+delta); openDay(dkey(d), {}); }
+  function renderDayBar(){
+    const d = dparse(ui.sel), diff = Math.round((d - dparse(todayKey()))/864e5);
+    const rel = diff===0 ? 'اليوم' : diff===1 ? 'غدًا' : diff===-1 ? 'أمس' : diff>0 ? 'بعد '+fmtDays(diff) : 'قبل '+fmtDays(-diff);
+    $('#dayName').textContent = fDay.format(d);
+    $('#dayRel').textContent = rel+' • '+d.getFullYear()+' • اضغط لاختيار تاريخ';
+    $('#dayPick').value = ui.sel;
+    $('#dayToday').hidden = diff===0;
+  }
+  $('#dayPrev').onclick = ()=>goDay(-1);
+  $('#dayNext').onclick = ()=>goDay(1);
+  $('#dayToday').onclick = ()=>openDay(todayKey(), {});
+  $('#dayPickBtn').onclick = ()=>{ const i = $('#dayPick'); try{ i.showPicker(); }catch(e){ i.focus(); i.click(); } };
+  $('#dayPick').addEventListener('change', e=>{ if(e.target.value) openDay(e.target.value, {reset:true}); });
+
   $('#calGrid').addEventListener('click', e=>{
     const c = e.target.closest('[data-d]'); if(!c) return;
-    ui.sel = c.dataset.d; const picked=dparse(ui.sel); ui.calY=picked.getFullYear(); ui.calM=picked.getMonth(); renderAll();
+    openDay(c.dataset.d, {reset:true});
   });
-  $('#prevM').onclick = ()=>{ ui.calExpanded=true; ui.calM--; if(ui.calM<0){ui.calM=11;ui.calY--;} renderCal(); };
-  $('#nextM').onclick = ()=>{ ui.calExpanded=true; ui.calM++; if(ui.calM>11){ui.calM=0;ui.calY++;} renderCal(); };
-  $('#goToday').onclick = ()=>{ const t=new Date(); ui.sel=dkey(t); ui.calY=t.getFullYear(); ui.calM=t.getMonth(); renderAll(); };
+  function shiftCal(n){
+    if(ui.calExpanded){ ui.calM += n; if(ui.calM<0){ui.calM=11;ui.calY--;} if(ui.calM>11){ui.calM=0;ui.calY++;} renderCal(); }
+    else goDay(7*n);
+  }
+  $('#prevM').onclick = ()=>shiftCal(-1);
+  $('#nextM').onclick = ()=>shiftCal(1);
+  $('#goToday').onclick = ()=>openDay(todayKey(), {});
   $('#toggleCal').onclick = ()=>{ ui.calExpanded=!ui.calExpanded; renderCal(); };
   const selLabel = () => (ui.sel===todayKey() ? 'اليوم، ' : '') + fDay.format(dparse(ui.sel));
 
+  /* ---------- أدوات مشتركة: حوار، إشعار، تراجع ---------- */
+  let dlgDone = null;
+  function ask(o){
+    return new Promise(resolve=>{
+      const el = $('#dlg'), inp = $('#dlgInput'), box = $('#dlgActions'), prev = document.activeElement;
+      $('#dlgTitle').textContent = o.title||''; $('#dlgMsg').textContent = o.msg||''; $('#dlgMsg').hidden = !o.msg;
+      inp.hidden = !o.input; inp.value = o.value||''; box.innerHTML = '';
+      const finish = v=>{
+        el.hidden = true; dlgDone = null;
+        document.body.style.overflow = $('#settings').hidden ? '' : 'hidden';
+        if(prev && prev.isConnected && prev.focus) prev.focus({preventScroll:true});
+        resolve(v);
+      };
+      dlgDone = finish;
+      (o.actions||[]).forEach(a=>{
+        const b = document.createElement('button'); b.type='button'; b.className = 'btn '+(a.kind||''); b.textContent = a.label;
+        b.onclick = ()=>{ if(a.needsInput && !inp.value.trim()){ inp.focus(); return; } finish({id:a.id, value:inp.value.trim()}); };
+        box.appendChild(b);
+      });
+      el.hidden = false; document.body.style.overflow = 'hidden';
+      setTimeout(()=>{ if(o.input){ inp.focus(); inp.select(); } else { const f = box.querySelector('button'); if(f) f.focus(); } }, 30);
+    });
+  }
+  $('#dlg').addEventListener('click', e=>{ if(e.target.id==='dlg' && dlgDone) dlgDone(null); });
+  $('#dlgInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const f = $('#dlgActions .btn:not(.ghost)'); if(f) f.click(); } });
+  let toastTimer, undoFn = null;
+  function toast(msg, undo){
+    $('#toastMsg').textContent = msg; undoFn = undo||null; $('#toastUndo').hidden = !undo; $('#toast').hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ $('#toast').hidden = true; undoFn = null; }, undo ? 7000 : 2800);
+  }
+  $('#toastUndo').onclick = ()=>{ if(undoFn) undoFn(); $('#toast').hidden = true; undoFn = null; };
+  function snapshotUndo(){ const snap = JSON.stringify(state); return ()=>{ state = JSON.parse(snap); renderAll(); save(); toast('تم التراجع'); }; }
+
   /* ---------- المهام ---------- */
+  const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>';
+  const ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10.5 11v5M13.5 11v5"/></svg>';
+  const fmtDays = n => n===1 ? 'يوم' : n===2 ? 'يومين' : n<=10 ? n+' أيام' : n+' يومًا';
+  const mainOf = t => t && t.mainId ? state.mainTasks.find(m=>m.id===t.mainId) : null;
+  const linksOf = m => state.tasks.filter(t=>t.mainId===m.id);
+  function addMainTo(m, dates){
+    let added = 0;
+    dates.forEach(date=>{ if(!state.tasks.some(x=>x.date===date && x.mainId===m.id)){ state.tasks.push({id:uid(), mainId:m.id, text:m.name, date, done:false, prio:[0,1,2].includes(m.prio)?m.prio:1}); added++; } });
+    return added;
+  }
   function renderTasks(){
     const day = state.tasks.filter(t=>t.date===ui.sel);
     const total = day.length, done = day.filter(t=>t.done).length;
@@ -654,20 +864,29 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     $('#tasksSub').textContent = selLabel() + (total ? ' • متبقي '+(total-done) : '');
     $('#progFill').style.width = (total ? Math.round(done/total*100) : 0)+'%';
     $('#progTxt').textContent = done+' من '+total;
+    $('#taskInput').setAttribute('aria-label','مهمة جديدة ليوم '+ui.sel);
+    // اختصار: إضافة مهمة رئيسية إلى اليوم المحدد بنقرة
+    const avail = state.mainTasks.filter(m=>!day.some(t=>t.mainId===m.id));
+    const q = $('#mainQuick');
+    q.hidden = !avail.length;
+    q.innerHTML = avail.length ? '<span>من المهام الرئيسية:</span>'+avail.slice(0,8).map(m=>'<button type="button" class="chip" data-quick="'+esc(m.id)+'">+ '+esc(m.name)+'</button>').join('')+(avail.length>8?'<span>و'+(avail.length-8)+' أخرى في القاعدة</span>':'') : '';
     let items = day.filter(t => ui.filter==='all' || (ui.filter==='done'?t.done:!t.done));
     items = items.slice().sort((a,b)=> a.done-b.done || (Number(b.prio)||0)-(Number(a.prio)||0));
     if(!items.length){
       $('#taskList').innerHTML = '<li class="empty">'+(total?'لا توجد مهام في هذا العرض.':'لا توجد مهام لهذا اليوم. اكتب أول مهمة في الحقل أعلاه.')+'</li>';
       return;
     }
-    $('#taskList').innerHTML = items.map(t=>`
-      <li class="task ${t.done?'done':''}" data-id="${t.id}">
+    $('#taskList').innerHTML = items.map(t=>{
+      const m = mainOf(t), p = [0,1,2].includes(t.prio) ? t.prio : 0, n = m ? linksOf(m).length : 0;
+      return `
+      <li class="task p${p} ${t.done?'done':''}" data-id="${esc(t.id)}">
         <button class="check" role="checkbox" aria-checked="${t.done}" aria-label="إنجاز: ${esc(t.text)}" data-a="toggle">✓</button>
-        <span class="t-text">${esc(t.text)}</span>
-        <button class="icon-btn" data-a="edit" aria-label="تعديل المهمة">✎</button>
-        <button class="chip ${t.prio?'p'+t.prio:''}" data-a="prio" title="غيّر الأولوية">${PRIO[Number.isInteger(t.prio)&&t.prio>=0&&t.prio<=2?t.prio:0]}</button>
-        <button class="icon-btn" data-a="del" aria-label="حذف المهمة">✕</button>
-      </li>`).join('');
+        <div class="t-body"><span class="t-text">${esc(t.text)}</span><span class="t-sub"><button class="chip ${p?'p'+p:''}" data-a="prio" title="غيّر الأولوية">${PRIO[p]}</button>${m?`<span class="t-meta">◆ مهمة رئيسية • في ${fmtDays(n)}</span>`:''}</span></div>
+        <div class="t-actions">
+          <button class="icon-btn" data-a="edit" aria-label="تعديل المهمة">${ICON_EDIT}</button>
+          <button class="icon-btn" data-a="del" aria-label="حذف المهمة">${ICON_DEL}</button>
+        </div>
+      </li>`;}).join('');
   }
   function addTask(){
     const el = $('#taskInput'), text = el.value.trim();
@@ -677,23 +896,51 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   }
   $('#taskAdd').onclick = addTask;
   $('#taskInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
+  $('#mainQuick').addEventListener('click', e=>{
+    const b = e.target.closest('[data-quick]'); if(!b) return;
+    const m = state.mainTasks.find(x=>x.id===b.dataset.quick); if(!m) return;
+    addMainTo(m, [ui.sel]); renderAll(); save(); toast('أُضيفت «'+m.name+'» إلى '+selLabel());
+  });
   $('#taskFilter').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b) return;
-    ui.filter = b.dataset.f;
-    document.querySelectorAll('#taskFilter button').forEach(x=>x.setAttribute('aria-pressed', x===b));
-    renderTasks();
+    ui.filter = b.dataset.f; syncSegs(); renderTasks();
   });
-  $('#taskList').addEventListener('click', e=>{
+  $('#taskList').addEventListener('click', async e=>{
     const btn = e.target.closest('[data-a]'); if(!btn) return;
     const li = btn.closest('[data-id]'); const t = state.tasks.find(x=>x.id===li.dataset.id); if(!t) return;
-    if(btn.dataset.a==='toggle') t.done = !t.done;
-    if(btn.dataset.a==='edit'){ const next = window.prompt('تعديل نص المهمة', t.text); if(next===null) return; if(!next.trim()){ window.alert('لا يمكن أن تكون المهمة فارغة.'); return; } t.text=next.trim(); }
-    if(btn.dataset.a==='prio') t.prio = (t.prio+1)%3;
-    if(btn.dataset.a==='del'){
-      // المهام المضافة من الإعدادات مرتبطة بمعرّف رئيسي؛ حذف أي نسخة يحذفها من كل الأيام.
-      state.tasks = t.mainId ? state.tasks.filter(x=>x.mainId!==t.mainId) : state.tasks.filter(x=>x!==t);
+    const a = btn.dataset.a, main = mainOf(t);
+    if(a==='toggle'){ t.done = !t.done; }
+    else if(a==='prio'){ t.prio = ((Number(t.prio)||0)+1)%3; }
+    else if(a==='edit'){
+      const n = main ? linksOf(main).length : 0;
+      const r = await ask({
+        title:'تعديل المهمة', msg: main ? 'هذه المهمة مرتبطة بمهمة رئيسية موجودة في '+fmtDays(n)+'. اختر نطاق التعديل.' : '',
+        input:true, value:t.text,
+        actions: main
+          ? [{id:'all',label:'تعديل في كل الأيام ('+n+')',needsInput:true},{id:'one',label:'هذا اليوم فقط (يفك الارتباط)',kind:'ghost',needsInput:true},{id:'cancel',label:'إلغاء',kind:'ghost'}]
+          : [{id:'save',label:'حفظ',needsInput:true},{id:'cancel',label:'إلغاء',kind:'ghost'}]
+      });
+      if(!r || r.id==='cancel') return;
+      if(r.id==='all'){ main.name = r.value; state.tasks.forEach(x=>{ if(x.mainId===main.id) x.text = r.value; }); }
+      else if(r.id==='one'){ t.text = r.value; delete t.mainId; }
+      else t.text = r.value;
     }
-    renderTasks(); renderCal(); renderBase(); save();
+    else if(a==='del'){
+      const undo = snapshotUndo();
+      if(main){
+        const n = linksOf(main).length;
+        const r = await ask({
+          title:'حذف المهمة', msg:'«'+t.text+'» مرتبطة بمهمة رئيسية وموجودة في '+fmtDays(n)+'.',
+          actions:[{id:'one',label:'حذف من هذا اليوم فقط'},{id:'all',label:'حذف نهائي من كل الأيام ومن القائمة',kind:'danger'},{id:'cancel',label:'إلغاء',kind:'ghost'}]
+        });
+        if(!r || r.id==='cancel') return;
+        if(r.id==='one'){ state.tasks = state.tasks.filter(x=>x!==t); toast('حُذفت من هذا اليوم فقط', undo); }
+        else { state.tasks = state.tasks.filter(x=>x.mainId!==main.id); state.mainTasks = state.mainTasks.filter(x=>x.id!==main.id); toast('حُذفت نهائيًا من '+fmtDays(n), undo); }
+      }else{
+        state.tasks = state.tasks.filter(x=>x!==t); toast('حُذفت المهمة', undo);
+      }
+    }
+    renderAll(); save();
   });
 
   /* ---------- الملاحظات ---------- */
@@ -717,7 +964,8 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       items = state.notes.filter(n=>n.date===ui.sel).sort((a,b)=>b.created-a.created);
       $('#notesSub').textContent = selLabel();
     }
-    $('#noteWhere').textContent = ui.editing ? 'أنت تعدّل ملاحظة محفوظة' : 'ستُحفظ في: ' + selLabel();
+    const editingNote = ui.editing ? state.notes.find(x=>x.id===ui.editing) : null;
+    $('#noteWhere').textContent = editingNote ? 'أنت تعدّل ملاحظة بتاريخ '+fShort.format(dparse(editingNote.date)) : 'ستُحفظ في: ' + selLabel();
     $('#noteSave').textContent = ui.editing ? 'حفظ التعديل' : 'حفظ الملاحظة';
     $('#noteCancel').hidden = !ui.editing;
     if(!items.length){
@@ -754,8 +1002,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   $('#noteCancel').onclick = ()=>{ clearEditor(); renderNotes(); };
   $('#noteView').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b) return;
-    ui.noteView = b.dataset.n;
-    document.querySelectorAll('#noteView button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    ui.noteView = b.dataset.n; syncSegs();
     renderNotes();
   });
   $('#noteSearch').addEventListener('input', e=>{ ui.noteQ = e.target.value; renderNotes(); });
@@ -765,8 +1012,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     const li = btn.closest('[data-id]'); const n = state.notes.find(x=>x.id===li.dataset.id); if(!n) return;
     const a = btn.dataset.a;
     if(a==='goto'){
-      const d = dparse(n.date); ui.sel = n.date; ui.calY = d.getFullYear(); ui.calM = d.getMonth();
-      renderAll(); window.scrollTo({top:0,behavior:'smooth'}); return;
+      openDay(n.date, {reset:true, scroll:true}); return;
     }
     if(a==='nedit'){
       ui.editing = n.id; $('#noteTitle').value = n.title||''; $('#noteText').value = n.text;
@@ -786,29 +1032,70 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
 
   /* ---------- القاعدة الرئيسية ---------- */
   const fD = v => v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short'}).format(dparse(v)) : '—';
-  function renderBase(){
+  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
+  function scopeDates(scope){
+    const out = [];
+    if(scope==='month'){ const n = new Date(ui.calY, ui.calM+1, 0).getDate(); for(let d=1; d<=n; d++) out.push(dkey(new Date(ui.calY, ui.calM, d))); }
+    else if(scope==='week'){ const ws = Number(settings.weekStart)||0, s0 = dparse(ui.sel), off = (s0.getDay()-ws+7)%7; for(let i=0;i<7;i++){ const d = new Date(s0); d.setDate(s0.getDate()-off+i); out.push(dkey(d)); } }
+    else out.push(ui.sel);
+    return out;
+  }
+  function daysHTML(){
+    const q = ui.q.trim().toLowerCase(), tk = todayKey();
+    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
+    const rows = days.map(date=>({date, tasks:state.tasks.filter(t=>t.date===date), notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
+      if(!q) return true;
+      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
+    });
+    if(!rows.length) return '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد. أضف مهمة أو ملاحظة في أي يوم وستظهر هنا تلقائيًا.')+'</div>';
+    return '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+rows.map(d=>
+      '<tr class="'+(d.date===ui.sel?'is-sel':'')+'"><td class="date-cell" data-label="التاريخ"><button type="button" class="datebtn" data-central-date="'+esc(d.date)+'">'+esc(fShortBase(d.date))+'</button>'+(d.date===tk?'<span class="mini-tag">اليوم</span>':'')+'<br><span class="muted-cell">'+esc(d.date)+'</span></td>'+
+      '<td class="content-cell" data-label="المهام">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+(mainOf(t)?'◆ ':'')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td>'+
+      '<td class="content-cell" data-label="الملاحظات">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc((n.title||n.text).slice(0,240))+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td>'+
+      '<td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
+  }
+  function mainsHTML(){
+    const q = ui.q.trim().toLowerCase();
+    if(!state.mainTasks.length) return '<div class="empty">لا توجد مهام رئيسية بعد. أنشئ مهمة تتكرر (مثل «مراجعة الأسبوع») ثم أضفها إلى يوم أو أسبوع أو شهر بضغطة واحدة.</div>';
+    const list = state.mainTasks.filter(m=>!q || String(m.name).toLowerCase().includes(q));
+    if(!list.length) return '<div class="empty">لا توجد مهام رئيسية مطابقة للبحث.</div>';
+    const scopes = [['day','اليوم المحدد'],['week','أسبوع اليوم المحدد'],['month','شهر '+fMonth.format(new Date(ui.calY,ui.calM,1))]];
+    return '<div class="mlist">'+list.map(m=>{
+      const links = linksOf(m).sort((a,b)=>a.date.localeCompare(b.date)), done = links.filter(t=>t.done).length, onSel = links.some(t=>t.date===ui.sel);
+      const p = [0,1,2].includes(m.prio) ? m.prio : 1;
+      const stat = links.length ? 'في '+fmtDays(links.length)+' • منجز '+done+' • متبقي '+(links.length-done) : 'لم تُضف إلى أي يوم بعد';
+      return '<article class="mcard" data-main-id="'+esc(m.id)+'">'+
+        '<div class="mhead"><b class="mname">'+esc(m.name)+'</b><button class="chip '+(p?'p'+p:'')+'" data-ma="prio" title="الأولوية الافتراضية للأيام الجديدة">'+PRIO[p]+'</button></div>'+
+        '<p class="sub" style="margin:0">'+stat+'</p>'+
+        '<div class="madd"><select class="select main-scope" aria-label="نطاق إضافة '+esc(m.name)+'">'+scopes.map(o=>'<option value="'+o[0]+'"'+(ui.mainScope===o[0]?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select><button class="btn" data-ma="add">أضف</button></div>'+
+        (onSel?'<div><button class="chip" data-ma="removeDay">إزالة من اليوم المحدد فقط</button></div>':'')+
+        (links.length?'<details class="mdays"'+(ui.openMains.has(m.id)?' open':'')+' data-det="'+esc(m.id)+'"><summary>الأيام المرتبطة ('+links.length+')</summary><div class="daychips">'+links.map(t=>'<button type="button" class="chip '+(t.done?'done':'')+'" data-central-date="'+esc(t.date)+'" title="فتح اليوم">'+(t.done?'✓ ':'')+esc(fShortBase(t.date))+'</button>').join('')+'</div></details>':'')+
+        '<div class="mfoot"><button class="link" data-ma="rename">تعديل الاسم</button><button class="link danger" data-ma="delete">حذف نهائي</button></div>'+
+      '</article>';
+    }).join('')+'</div>';
+  }
+  function itemsHTML(){
     const q = ui.q.trim().toLowerCase();
     const items = state.base.filter(b =>
       (ui.st==='all' || String(b.status)===ui.st) &&
       (!q || String(b.name||'').toLowerCase().includes(q) || String(b.cat||'').toLowerCase().includes(q)));
-    $('#baseSub').textContent = (new Set([...state.tasks.map(t=>t.date),...state.notes.map(n=>n.date)]).size)+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة';
-    $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
-    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
-    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
-    const matchedDays = days.map(date=>({date,tasks:state.tasks.filter(t=>t.date===date),notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
-      if(!q) return true;
-      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
-    });
-    let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
-    if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
-    else html += '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+matchedDays.map(d=>'<tr><td class="date-cell">'+esc(fShortBase(d.date))+'<br><span class="muted-cell">'+esc(d.date)+'</span></td><td class="content-cell">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td><td class="content-cell">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc(n.title||n.text).slice(0,240)+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td><td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
-    html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
-    if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
-    else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
-    else html += '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel">✕</button></div></div>').join('')+'</div>').join('')+'</div>';
-    $('#baseView').innerHTML = html;
+    if(!items.length) return '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
+    if(ui.view==='table') return '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">'+ICON_DEL+'</button></div>').join('')+'</div>';
+    return '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">'+ICON_DEL+'</button></div></div>').join('')+'</div>').join('')+'</div>';
   }
-  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
+  function renderBase(){
+    const tab = ui.baseTab;
+    const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
+    $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
+    document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
+    $('#itemTools').hidden = tab!=='items'; $('#itemAddForm').hidden = tab!=='items'; $('#mainAddForm').hidden = tab!=='mains';
+    $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : tab==='mains' ? 'ابحث في المهام الرئيسية' : 'ابحث في العناصر';
+    $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
+    $('#baseView').innerHTML = tab==='days' ? daysHTML() : tab==='mains' ? mainsHTML() : itemsHTML();
+  }
+  $('#baseTabs').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; ui.baseTab = b.dataset.bt; renderBase(); });
+  $('#goMains').onclick = ()=>{ closeSettings(); ui.baseTab = 'mains'; renderBase(); $('#base').scrollIntoView({behavior:'smooth',block:'start'}); };
   function addBase(){
     const n = $('#bName'), name = n.value.trim();
     if(!name){ n.focus(); return; }
@@ -818,6 +1105,15 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   }
   $('#bAdd').onclick = addBase;
   $('#bName').addEventListener('keydown', e=>{ if(e.key==='Enter') addBase(); });
+  function addMain(){
+    const i = $('#mtName'), name = i.value.trim();
+    if(!name){ i.focus(); return; }
+    if(state.mainTasks.some(m=>String(m.name).trim().toLowerCase()===name.toLowerCase())){ toast('توجد مهمة رئيسية بالاسم نفسه'); i.focus(); return; }
+    state.mainTasks.push({id:uid(), name, prio:Number($('#mtPrio').value)||0, created:Date.now()});
+    i.value=''; i.focus(); renderAll(); save(); toast('أُضيفت المهمة الرئيسية «'+name+'»');
+  }
+  $('#mtAdd').onclick = addMain;
+  $('#mtName').addEventListener('keydown', e=>{ if(e.key==='Enter') addMain(); });
   $('#search').addEventListener('input', e=>{ ui.q = e.target.value; renderBase(); });
   $('#statusFilter').addEventListener('change', e=>{ ui.st = e.target.value; renderBase(); });
   $('#viewSwitch').addEventListener('click', e=>{
@@ -826,40 +1122,50 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     document.querySelectorAll('#viewSwitch button').forEach(x=>x.setAttribute('aria-pressed', x===b));
     renderBase();
   });
-  $('#baseView').addEventListener('click', e=>{
+  $('#baseView').addEventListener('toggle', e=>{
+    const d = e.target.closest && e.target.closest('[data-det]'); if(!d) return;
+    if(d.open) ui.openMains.add(d.dataset.det); else ui.openMains.delete(d.dataset.det);
+  }, true);
+  $('#baseView').addEventListener('change', e=>{ if(e.target.classList.contains('main-scope')) ui.mainScope = e.target.value; });
+  $('#baseView').addEventListener('click', async e=>{
     const dayBtn = e.target.closest('[data-central-date]');
-    if(dayBtn){ const date=dayBtn.dataset.centralDate; const d=dparse(date); ui.sel=date; ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); const dailyPanels=document.querySelector('#tasks')?.parentElement || document.querySelector('#tasks'); if(dailyPanels){ dailyPanels.scrollIntoView({behavior:'smooth',block:'start'}); dailyPanels.classList.add('central-day-open'); setTimeout(()=>dailyPanels.classList.remove('central-day-open'),1600); } const taskInput=document.querySelector('#taskInput'); if(taskInput) taskInput.setAttribute('aria-label','مهمة جديدة ليوم '+date); return; }
-    const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const el = btn.closest('[data-id]'); const b = state.base.find(x=>x.id===el.dataset.id); if(!b) return;
-    if(btn.dataset.a==='status') b.status = (b.status+1)%3;
-    if(btn.dataset.a==='bdel') state.base = state.base.filter(x=>x!==b);
-    renderBase(); save();
-  });
-
-  /* ---------- المهام الرئيسية ---------- */
-  function renderMainTasks(){
-    const list=$('#mainTaskList'); if(!state.mainTasks.length){list.innerHTML='<div class="sub">لا توجد مهام رئيسية بعد.</div>';return;}
-    list.innerHTML=state.mainTasks.map(t=>'<div class="main-task" data-main-id="'+t.id+'"><span>'+esc(t.name)+'</span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><select class="select main-scope" aria-label="نطاق إضافة '+esc(t.name)+'" style="min-height:34px;padding:4px 6px;width:auto;max-width:125px;font-size:.8rem"><option value="day">هذا اليوم</option><option value="month">الشهر المعروض</option></select><button class="chip" data-main-action="add">إضافة</button><button class="link danger" data-main-action="delete">حذف</button></span></div>').join('');
-  }
-  $('#mainTaskAdd').onclick=()=>{const input=$('#mainTaskInput'),name=input.value.trim();if(!name){input.focus();return;}state.mainTasks=state.mainTasks||[];state.mainTasks.push({id:uid(),name});input.value='';renderMainTasks();save();};
-  $('#mainTaskInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#mainTaskAdd').click();});
-  $('#mainTaskList').addEventListener('click',e=>{
-    const b=e.target.closest('[data-main-action]');if(!b)return;const el=b.closest('[data-main-id]'),t=(state.mainTasks||[]).find(x=>x.id===el.dataset.mainId);if(!t)return;
-    if(b.dataset.mainAction==='delete'){
-      // حذف المهمة الرئيسية يحذف كل النسخ اليومية المرتبطة بها كذلك.
-      state.mainTasks=state.mainTasks.filter(x=>x.id!==t.id);
-      state.tasks=state.tasks.filter(x=>x.mainId!==t.id);
-      renderAll();save();return;
+    if(dayBtn){ openDay(dayBtn.dataset.centralDate, {reset:true, scroll:true}); return; }
+    const ma = e.target.closest('[data-ma]');
+    if(ma){
+      const el = ma.closest('[data-main-id]'); const m = el && state.mainTasks.find(x=>x.id===el.dataset.mainId); if(!m) return;
+      const a = ma.dataset.ma;
+      if(a==='prio'){ m.prio = ((Number(m.prio)||0)+1)%3; renderBase(); save(); return; }
+      if(a==='add'){
+        const scope = ui.mainScope || 'day', n = addMainTo(m, scopeDates(scope));
+        renderAll(); save();
+        toast(n ? 'أُضيفت «'+m.name+'» إلى '+fmtDays(n) : 'المهمة موجودة بالفعل في النطاق المحدد'); return;
+      }
+      if(a==='removeDay'){
+        const undo = snapshotUndo();
+        state.tasks = state.tasks.filter(t=>!(t.mainId===m.id && t.date===ui.sel));
+        renderAll(); save(); toast('أُزيلت من '+selLabel()+' فقط', undo); return;
+      }
+      if(a==='rename'){
+        const r = await ask({title:'تعديل اسم المهمة الرئيسية', msg:'سيتغير الاسم في كل الأيام المرتبطة ('+linksOf(m).length+').', input:true, value:m.name, actions:[{id:'save',label:'حفظ',needsInput:true},{id:'cancel',label:'إلغاء',kind:'ghost'}]});
+        if(!r || r.id!=='save') return;
+        if(state.mainTasks.some(x=>x!==m && String(x.name).trim().toLowerCase()===r.value.toLowerCase())){ toast('توجد مهمة رئيسية بالاسم نفسه'); return; }
+        m.name = r.value; state.tasks.forEach(t=>{ if(t.mainId===m.id) t.text = r.value; });
+        renderAll(); save(); toast('تم تعديل الاسم في كل الأيام'); return;
+      }
+      if(a==='delete'){
+        const n = linksOf(m).length, undo = snapshotUndo();
+        const r = await ask({title:'حذف نهائي', msg:'ستُحذف «'+m.name+'» من القائمة الرئيسية ومن '+fmtDays(n)+'. لن تتأثر المهام العادية ولا الملاحظات.', actions:[{id:'del',label:'حذف نهائي',kind:'danger'},{id:'cancel',label:'إلغاء',kind:'ghost'}]});
+        if(!r || r.id!=='del') return;
+        state.mainTasks = state.mainTasks.filter(x=>x.id!==m.id); state.tasks = state.tasks.filter(t=>t.mainId!==m.id); ui.openMains.delete(m.id);
+        renderAll(); save(); toast('حُذفت نهائيًا', undo); return;
+      }
+      return;
     }
-    const scope=el.querySelector('.main-scope')?.value||'day';
-    const dates=[];
-    if(scope==='month'){
-      const yy=ui.calY, mm=ui.calM, days=new Date(yy,mm+1,0).getDate();
-      for(let d=1;d<=days;d++) dates.push(dkey(new Date(yy,mm,d)));
-    }else dates.push(ui.sel);
-    let added=0;
-    dates.forEach(date=>{if(!state.tasks.some(x=>x.date===date&&x.mainId===t.id)){state.tasks.push({id:uid(),mainId:t.id,text:t.name,date,done:false,prio:1});added++;}});
-    renderAll();save();flash(added ? (scope==='month'?'أُضيفت المهمة إلى '+added+' يومًا في الشهر المعروض':'أُضيفت المهمة إلى '+selLabel()) : 'المهمة موجودة بالفعل في النطاق المحدد');
+    const btn = e.target.closest('[data-a]'); if(!btn) return;
+    const el = btn.closest('[data-id]'); const b = el && state.base.find(x=>x.id===el.dataset.id); if(!b) return;
+    if(btn.dataset.a==='status') b.status = (b.status+1)%3;
+    if(btn.dataset.a==='bdel'){ const undo = snapshotUndo(); state.base = state.base.filter(x=>x!==b); toast('حُذف العنصر', undo); }
+    renderBase(); save();
   });
 
   /* ---------- نسخ احتياطي ومسح ---------- */
@@ -876,13 +1182,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     try{
       const s = JSON.parse(await f.text());
       if(!s || !Array.isArray(s.tasks)) throw new Error('bad');
-      const t = todayKey();
-      state = {
-        tasks: s.tasks.map(x=>Object.assign({date:t}, x)),
-        notes: Array.isArray(s.notes) ? s.notes : [],
-        base: Array.isArray(s.base) ? s.base : [],
-        mainTasks: Array.isArray(s.mainTasks) ? s.mainTasks : []
-      };
+      state = clean(s);
       clearEditor(); renderAll(); save(); flash('تمت استعادة النسخة ✓');
     }catch(err){ flash('الملف غير صالح'); }
     e.target.value = '';
@@ -894,7 +1194,7 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     rArmed=false; this.textContent='مسح'; renderAll(); save(); flash('تم مسح البيانات');
   };
 
-  function renderAll(){ renderCal(); renderTasks(); renderNotes(); renderBase(); renderStats(); renderMainTasks(); }
+  function renderAll(){ renderCal(); renderDayBar(); renderTasks(); renderNotes(); renderBase(); renderStats(); }
 
   /* ---------- بدء التشغيل ---------- */
   (async function init(){
