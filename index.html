@@ -525,6 +525,10 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .report-lists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.report-lists section{min-width:0;padding:15px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.report-lists h4{margin-bottom:10px}.report-line{display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid var(--line);min-width:0}.report-line>span:nth-child(2){flex:1;min-width:0;overflow-wrap:anywhere}.report-line small,.report-note small{color:var(--muted);font-size:.7rem}.report-check{color:var(--accent);font-size:1.1rem}.report-check.is-done{color:var(--ok)}.report-note{padding:10px 0;border-top:1px solid var(--line)}.report-note p{font-size:.86rem;overflow-wrap:anywhere;margin:4px 0}
 @media(max-width:560px){.header-icon-btn{width:41px;height:41px;min-width:41px;border-radius:14px!important}.brand-actions{gap:7px}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.report-lists{grid-template-columns:1fr}.report-metric{padding:13px}}
 
+
+.tools[hidden]{display:none!important}.report-export-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.report-export-actions .btn{min-height:40px}
+@media print{body.report-print-mode *{visibility:hidden!important}body.report-print-mode #reportPanel,body.report-print-mode #reportPanel *{visibility:visible!important}body.report-print-mode #reportPanel{position:absolute!important;inset:0 auto auto 0!important;width:100%!important;margin:0!important;box-shadow:none!important;border:0!important;background:#fff!important;color:#111!important}body.report-print-mode .report-export-actions,body.report-print-mode .report-tabs{display:none!important}body.report-print-mode .report-metric,body.report-print-mode .report-progress,body.report-print-mode .report-lists section{background:#fff!important;color:#111!important;border-color:#ddd!important}body.report-print-mode .sub,body.report-print-mode small,body.report-print-mode .report-metric span{color:#444!important}body.report-print-mode .report-track{background:#eee!important}body.report-print-mode .report-track span{background:#555!important}}
+
 </style>
 </head>
 <body>
@@ -550,8 +554,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
       <span class="brand-copy"><strong>NEXORA</strong><small>نظّم يومك، واحتفظ بأفكارك</small></span>
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
-      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1.8-1.6 2.8-1.3-.5a7.8 7.8 0 0 1-1.7 1l-.2 1.4h-3.3l-.2-1.4a7.8 7.8 0 0 1-1.7-1l-1.3.5-1.6-2.8 1.1-.8a7.6 7.6 0 0 1 0-2l-1.1-.8 1.6-2.8 1.3.5a7.8 7.8 0 0 1 1.7-1l.2-1.4h3.3l.2 1.4a7.8 7.8 0 0 1 1.7 1l1.3-.5 1.6 2.8-1.1.8a7.6 7.6 0 0 1 0 2Z"/></svg></button>
       <button class="brand-action header-icon-btn theme-toggle" id="quickTheme" type="button" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
+      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1.8-1.6 2.8-1.3-.5a7.8 7.8 0 0 1-1.7 1l-.2 1.4h-3.3l-.2-1.4a7.8 7.8 0 0 1-1.7-1l-1.3.5-1.6-2.8 1.1-.8a7.6 7.6 0 0 1 0-2l-1.1-.8 1.6-2.8 1.3.5a7.8 7.8 0 0 1 1.7-1l.2-1.4h3.3l.2 1.4a7.8 7.8 0 0 1 1.7 1l1.3-.5 1.6 2.8-1.1.8a7.6 7.6 0 0 1 0 2Z"/></svg></button>
     </div>
   </header>
 
@@ -1335,15 +1339,53 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     const tasks=state.tasks.filter(t=>dates.includes(t.date)), notes=state.notes.filter(n=>dates.includes(n.date));
     const done=tasks.filter(t=>t.done).length, pending=tasks.length-done;
     const title=mode==='daily'?'التقرير اليومي':mode==='weekly'?'التقرير الأسبوعي':'التقرير الشهري';
-    return '<div class="report-panel"><div class="report-head"><div><span class="report-kicker">NEXORA INSIGHTS</span><h3>'+title+'</h3><p class="sub">'+(mode==='daily'?fShortBase(dates[0]):mode==='weekly'?'من '+fShortBase(dates[0])+' إلى '+fShortBase(dates[6]):new Intl.DateTimeFormat('ar-EG',{month:'long',year:'numeric'}).format(d))+'</p></div><div class="report-mark">▤</div></div><div class="seg report-tabs" role="group" aria-label="نوع التقرير"><button data-report="daily" aria-pressed="'+(mode==='daily')+'">يومي</button><button data-report="weekly" aria-pressed="'+(mode==='weekly')+'">أسبوعي</button><button data-report="monthly" aria-pressed="'+(mode==='monthly')+'">شهري</button></div><div class="report-metrics"><div class="report-metric"><span>إجمالي المهام</span><strong>'+tasks.length+'</strong></div><div class="report-metric"><span>المكتملة</span><strong>'+done+'</strong></div><div class="report-metric"><span>المتبقية</span><strong>'+pending+'</strong></div><div class="report-metric"><span>الملاحظات</span><strong>'+notes.length+'</strong></div></div><div class="report-progress"><div><span>إنجاز المهام</span><b>'+(tasks.length?Math.round(done/tasks.length*100):0)+'%</b></div><div class="report-track"><span style="width:'+(tasks.length?Math.round(done/tasks.length*100):0)+'%"></span></div></div><div class="report-lists"><section><h4>ملخص المهام</h4>'+(tasks.length?tasks.slice(0,8).map(t=>'<div class="report-line"><span class="report-check '+(t.done?'is-done':'')+'">'+(t.done?'✓':'○')+'</span><span>'+esc(t.text)+'</span><small>'+esc(t.date||'')+'</small></div>').join(''):'<div class="empty">لا توجد مهام خلال هذه الفترة</div>')+'</section><section><h4>الملاحظات المسجلة</h4>'+(notes.length?notes.slice(0,6).map(n=>'<div class="report-note"><b>'+esc(n.title||'ملاحظة')+'</b><p>'+esc(String(n.text||'').slice(0,180))+'</p><small>'+esc(n.date||'')+'</small></div>').join(''):'<div class="empty">لا توجد ملاحظات خلال هذه الفترة</div>')+'</section></div></div>';
+    return '<div class="report-panel" id="reportPanel"><div class="report-head"><div><span class="report-kicker">NEXORA INSIGHTS</span><h3>'+title+'</h3><p class="sub">'+(mode==='daily'?fShortBase(dates[0]):mode==='weekly'?'من '+fShortBase(dates[0])+' إلى '+fShortBase(dates[6]):new Intl.DateTimeFormat('ar-EG',{month:'long',year:'numeric'}).format(d))+'</p></div><div class="report-mark">▤</div></div><div class="report-export-actions"><button type="button" class="btn" data-export-report="pdf">تصدير PDF</button><button type="button" class="btn ghost" data-export-report="image">تصدير صورة</button></div><div class="seg report-tabs" role="group" aria-label="نوع التقرير"><button data-report="daily" aria-pressed="'+(mode==='daily')+'">يومي</button><button data-report="weekly" aria-pressed="'+(mode==='weekly')+'">أسبوعي</button><button data-report="monthly" aria-pressed="'+(mode==='monthly')+'">شهري</button></div><div class="report-metrics"><div class="report-metric"><span>إجمالي المهام</span><strong>'+tasks.length+'</strong></div><div class="report-metric"><span>المكتملة</span><strong>'+done+'</strong></div><div class="report-metric"><span>المتبقية</span><strong>'+pending+'</strong></div><div class="report-metric"><span>الملاحظات</span><strong>'+notes.length+'</strong></div></div><div class="report-progress"><div><span>إنجاز المهام</span><b>'+(tasks.length?Math.round(done/tasks.length*100):0)+'%</b></div><div class="report-track"><span style="width:'+(tasks.length?Math.round(done/tasks.length*100):0)+'%"></span></div></div><div class="report-lists"><section><h4>ملخص المهام</h4>'+(tasks.length?tasks.slice(0,8).map(t=>'<div class="report-line"><span class="report-check '+(t.done?'is-done':'')+'">'+(t.done?'✓':'○')+'</span><span>'+esc(t.text)+'</span><small>'+esc(t.date||'')+'</small></div>').join(''):'<div class="empty">لا توجد مهام خلال هذه الفترة</div>')+'</section><section><h4>الملاحظات المسجلة</h4>'+(notes.length?notes.slice(0,6).map(n=>'<div class="report-note"><b>'+esc(n.title||'ملاحظة')+'</b><p>'+esc(String(n.text||'').slice(0,180))+'</p><small>'+esc(n.date||'')+'</small></div>').join(''):'<div class="empty">لا توجد ملاحظات خلال هذه الفترة</div>')+'</section></div></div>';
   }
   $('#baseView').addEventListener('click',e=>{const b=e.target.closest('[data-report]');if(!b)return;window.nexoraReportMode=b.dataset.report;renderBase();});
+  $('#baseView').addEventListener('click',e=>{
+    const b=e.target.closest('[data-export-report]'); if(!b) return;
+    const panel=$('#reportPanel'); if(!panel) return;
+    if(b.dataset.exportReport==='pdf'){
+      document.body.classList.add('report-print-mode');
+      const cleanup=()=>{document.body.classList.remove('report-print-mode');window.removeEventListener('afterprint',cleanup);};
+      window.addEventListener('afterprint',cleanup); window.print(); setTimeout(cleanup,1800); return;
+    }
+    exportReportImage(panel);
+  });
+  function exportReportImage(panel){
+    const mode=window.nexoraReportMode||'daily';
+    const title=panel.querySelector('.report-head h3')?.textContent||'تقرير NEXORA';
+    const period=panel.querySelector('.report-head .sub')?.textContent||'';
+    const metrics=[...panel.querySelectorAll('.report-metric')].map(el=>({label:el.querySelector('span')?.textContent||'',value:el.querySelector('strong')?.textContent||''}));
+    const taskLines=[...panel.querySelectorAll('.report-lists section:first-child .report-line')].map(el=>el.innerText.trim());
+    const noteLines=[...panel.querySelectorAll('.report-lists section:last-child .report-note')].map(el=>el.innerText.trim());
+    const width=1200, pad=64, lineH=42; let height=300+metrics.length*92+Math.max(taskLines.length,noteLines.length,1)*lineH+170;
+    height=Math.max(700,Math.min(2200,height));
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d');ctx.fillStyle='#f5f7fb';ctx.fillRect(0,0,width,height);
+    ctx.fillStyle='#fff';roundRect(ctx,28,28,width-56,height-56,28);ctx.fill();
+    ctx.direction='rtl';ctx.textAlign='right';ctx.fillStyle='#26345c';ctx.font='bold 42px sans-serif';ctx.fillText(title,width-pad,100);
+    ctx.fillStyle='#65708a';ctx.font='24px sans-serif';ctx.fillText(period,width-pad,145);
+    ctx.fillStyle='#5267dc';ctx.font='bold 22px sans-serif';ctx.fillText('NEXORA • التقارير',width-pad,190);
+    const gap=16, cardW=(width-pad*2-gap*3)/4; metrics.forEach((m,i)=>{const x=pad+i*(cardW+gap);ctx.fillStyle='#eef1ff';roundRect(ctx,x,220,cardW,100,18);ctx.fill();ctx.fillStyle='#5d6780';ctx.font='20px sans-serif';ctx.fillText(m.label,x+cardW-18,255);ctx.fillStyle='#26345c';ctx.font='bold 34px sans-serif';ctx.fillText(m.value,x+cardW-18,300);});
+    let y=370;ctx.fillStyle='#26345c';ctx.font='bold 27px sans-serif';ctx.fillText('ملخص المهام',width-pad,y);ctx.fillText('الملاحظات المسجلة',width/2-20,y);y+=42;
+    const max=Math.floor((height-y-80)/lineH);ctx.font='20px sans-serif';
+    for(let i=0;i<Math.min(max,Math.max(taskLines.length,noteLines.length));i++){
+      if(taskLines[i]){ctx.fillStyle='#edf7f1';roundRect(ctx,width/2+10,y-28,width/2-pad-10,34,8);ctx.fill();ctx.fillStyle='#25364b';ctx.fillText(taskLines[i].slice(0,44),width-pad-12,y-5);}
+      if(noteLines[i]){ctx.fillStyle='#f1f3f8';roundRect(ctx,pad,y-28,width/2-pad-10,34,8);ctx.fill();ctx.fillStyle='#25364b';ctx.fillText(noteLines[i].replace(/\n/g,' ').slice(0,44),width/2-20,y-5);}
+      y+=lineH;
+    }
+    ctx.direction='rtl';ctx.textAlign='right';ctx.fillStyle='#7b8497';ctx.font='18px sans-serif';ctx.fillText('تم إنشاء التقرير بواسطة NEXORA',width-pad,height-48);
+    const a=document.createElement('a');a.download='NEXORA-report-'+mode+'.png';a.href=canvas.toDataURL('image/png');a.click();
+  }
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
   function renderBase(){
     const tab = ui.baseTab;
     const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
     $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
     document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
-    $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = true;
+    $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = true; $('.tools').hidden = tab==='reports';
     $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : 'ابحث في المهام الرئيسية والمهام والملاحظات والتواريخ';
     $('#baseView').innerHTML = tab==='days' ? daysHTML() : tab==='mains' ? mainsHTML() : reportsHTML();
   }
