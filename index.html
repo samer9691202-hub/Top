@@ -372,6 +372,13 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   .base-day-table tbody tr:hover{background:var(--surface)}
   .base-day-table tbody tr.is-sel{background:var(--accent-soft)}
 }
+
+/* القاعدة الرئيسية المطوّرة */
+.central-add{margin:14px 0;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,var(--surface),var(--surface-2));box-shadow:0 10px 28px rgba(15,55,65,.07)}
+.central-add-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.central-add-head strong{font-size:1.08rem}.central-add-head p{margin:2px 0 0}.central-add-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.central-add-grid label{display:grid;gap:6px;font-size:.9rem;font-weight:600}.central-add-grid .field,.central-add-grid .select{width:100%;min-width:0}.central-wide{grid-column:1/-1}.central-add-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.base-tools-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.base-add-btn{white-space:nowrap}.search-results{margin:14px 0}.search-results h3{font-size:1rem;margin:12px 0 8px}.search-hit{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 13px;margin:7px 0;border:1px solid var(--line);border-radius:13px;background:var(--surface)}.search-hit .hit-main{min-width:0}.search-hit .hit-title{font-weight:600;overflow-wrap:anywhere}.search-hit .hit-meta{font-size:.83rem;color:var(--muted)}.priority-tag{display:inline-flex;padding:2px 9px;border-radius:999px;font-size:.78rem;background:var(--surface-2);border:1px solid var(--line);white-space:nowrap}.priority-tag.p1{background:var(--amber-soft);color:var(--amber)}.priority-tag.p2{background:var(--rose-soft);color:var(--rose)}
+@media(max-width:650px){.central-add-grid{grid-template-columns:1fr 1fr}.central-add-grid .central-wide{grid-column:1/-1}.search-hit{align-items:flex-start}.central-add{padding:13px}}
+@media(max-width:420px){.central-add-grid{grid-template-columns:1fr}.central-add-grid .central-wide{grid-column:auto}}
+
 </style>
 </head>
 <body>
@@ -503,13 +510,13 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       <div><h2 id="baseTitle">القاعدة الرئيسية</h2><p class="sub" id="baseSub"></p></div>
     </div>
     <div class="seg tabs" id="baseTabs" role="group" aria-label="أقسام القاعدة">
-      <button type="button" data-bt="days" aria-pressed="true">الأيام</button>
+      <button type="button" data-bt="days" aria-pressed="true">الأيام والسجل</button>
       <button type="button" data-bt="mains" aria-pressed="false">المهام الرئيسية</button>
-      <button type="button" data-bt="items" aria-pressed="false">إضافة سريعة</button>
     </div>
     <div class="tools">
       <label class="sr" for="search">بحث</label>
       <input class="field" id="search" type="search" placeholder="ابحث عن يوم أو مهمة أو ملاحظة" autocomplete="off">
+      <button type="button" class="btn base-add-btn" id="centralAddOpen">＋ إضافة</button>
       <span class="item-tools" id="itemTools" hidden>
         <label class="sr" for="statusFilter">تصفية بالحالة</label>
         <select class="select" id="statusFilter" style="width:auto;min-width:140px">
@@ -529,13 +536,17 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
       <select class="select" id="mtPrio" aria-label="الأولوية الافتراضية"><option value="0">عادية</option><option value="1" selected>مهمة</option><option value="2">عاجلة</option></select>
       <button class="btn" id="mtAdd">أضف مهمة رئيسية</button>
     </div>
-    <div class="base-add" id="itemAddForm" role="group" aria-label="إضافة سريعة" hidden>
-      <input class="field" id="quickTaskName" placeholder="اكتب مهمة جديدة" aria-label="اسم المهمة الجديدة" autocomplete="off">
-      <input class="field" id="quickTaskDate" type="date" aria-label="تاريخ المهمة">
-      <button class="btn" id="quickTaskAdd" type="button">إضافة مهمة لليوم</button>
-      <input class="field" id="quickNoteTitle" placeholder="عنوان ملاحظة (اختياري)" aria-label="عنوان الملاحظة">
-      <input class="field" id="quickNoteText" placeholder="ملاحظة سريعة" aria-label="نص الملاحظة" autocomplete="off">
-      <button class="btn ghost" id="quickNoteAdd" type="button">حفظ الملاحظة</button>
+    <div class="central-add" id="centralAddForm" hidden aria-label="إضافة مهمة أو ملاحظة">
+      <div class="central-add-head"><div><strong>إضافة جديدة</strong><p class="sub">أضف مباشرة إلى اليوم المحدد أو وزّع المهمة على أيام الشهر.</p></div><button type="button" class="icon-btn" id="centralAddClose" aria-label="إغلاق نموذج الإضافة">✕</button></div>
+      <div class="central-add-grid">
+        <label>نوع الإضافة<select class="select" id="centralKind"><option value="task">مهمة</option><option value="note">ملاحظة</option></select></label>
+        <label id="centralTitleWrap">عنوان الملاحظة<input class="field" id="centralTitle" placeholder="عنوان اختياري"></label>
+        <label class="central-wide">النص أو اسم المهمة<input class="field" id="centralText" placeholder="اكتب ما تريد إضافته" autocomplete="off" required></label>
+        <label>التاريخ<input class="field" id="centralDate" type="date"></label>
+        <label id="centralScopeWrap">نطاق المهمة<select class="select" id="centralScope"><option value="day">هذا اليوم فقط</option><option value="month">كل أيام الشهر</option></select></label>
+        <label id="centralPrioWrap">الأهمية<select class="select" id="centralPrio"><option value="0">عادية</option><option value="1">مهمة</option><option value="2">عاجلة</option></select></label>
+      </div>
+      <div class="central-add-actions"><button type="button" class="btn" id="centralAddSave">إضافة الآن</button><button type="button" class="btn ghost" id="centralAddCancel">إلغاء</button></div>
     </div>
     <div id="baseView"></div>
   </section>
@@ -1067,11 +1078,12 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
   }
   function mainsHTML(){
     const q = ui.q.trim().toLowerCase();
-    if(!state.mainTasks.length) return '<div class="empty">لا توجد مهام رئيسية بعد. أنشئ مهمة تتكرر (مثل «مراجعة الأسبوع») ثم أضفها إلى يوم أو أسبوع أو شهر بضغطة واحدة.</div>';
-    const list = state.mainTasks.filter(m=>!q || String(m.name).toLowerCase().includes(q) || linksOf(m).some(t=>String(t.text||'').toLowerCase().includes(q) || t.date.includes(q) || fShortBase(t.date).toLowerCase().includes(q))); 
-    if(!list.length) return '<div class="empty">لا توجد مهام رئيسية مطابقة للبحث.</div>';
+    const list = state.mainTasks.filter(m=>!q || String(m.name).toLowerCase().includes(q) || linksOf(m).some(t=>String(t.text||'').toLowerCase().includes(q) || t.date.includes(q) || fShortBase(t.date).toLowerCase().includes(q)));
+    const taskHits = q ? state.tasks.filter(t=>String(t.text||'').toLowerCase().includes(q) || String(t.date||'').includes(q) || fShortBase(t.date).toLowerCase().includes(q)) : [];
+    const noteHits = q ? state.notes.filter(n=>String(n.title||'').toLowerCase().includes(q) || String(n.text||'').toLowerCase().includes(q) || String(n.date||'').includes(q) || fShortBase(n.date).toLowerCase().includes(q)) : [];
     const scopes = [['day','اليوم المحدد'],['week','أسبوع اليوم المحدد'],['month','شهر '+fMonth.format(new Date(ui.calY,ui.calM,1))]];
-    return '<div class="mlist">'+list.map(m=>{
+    let html = '';
+    if(list.length) html += '<div class="mlist">'+list.map(m=>{
       const links = linksOf(m).sort((a,b)=>a.date.localeCompare(b.date)), done = links.filter(t=>t.done).length, onSel = links.some(t=>t.date===ui.sel);
       const matchedLinks = q ? links.filter(t=>String(t.text||'').toLowerCase().includes(q)||t.date.includes(q)||fShortBase(t.date).toLowerCase().includes(q)) : links;
       const p = [0,1,2].includes(m.prio) ? m.prio : 1;
@@ -1085,6 +1097,13 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
         '<div class="mfoot"><button class="link" data-ma="rename">تعديل الاسم</button><button class="link danger" data-ma="delete">حذف نهائي</button></div>'+
       '</article>';
     }).join('')+'</div>';
+    else if(!q) html += '<div class="empty">لا توجد مهام رئيسية بعد. استخدم «إضافة» لإنشاء مهمة أو ملاحظة، أو أضف مهمة رئيسية متكررة من الحقل أعلاه.</div>';
+    if(q){
+      html += '<section class="search-results"><h3>نتائج المهام ('+taskHits.length+')</h3>'+(taskHits.length?taskHits.map(t=>'<div class="search-hit"><div class="hit-main"><div class="hit-title">'+(t.done?'✓ ':'')+esc(t.text)+'</div><div class="hit-meta">'+esc(fShortBase(t.date))+'</div></div><span class="priority-tag '+(Number(t.prio)?'p'+Number(t.prio):'')+'">'+PRIO[[0,1,2].includes(Number(t.prio))?Number(t.prio):0]+'</span><button class="chip" data-central-date="'+esc(t.date)+'">فتح اليوم</button></div>').join(''):'<p class="sub">لا توجد مهام مطابقة.</p>')+'</section>';
+      html += '<section class="search-results"><h3>نتائج الملاحظات ('+noteHits.length+')</h3>'+(noteHits.length?noteHits.map(n=>'<div class="search-hit"><div class="hit-main"><div class="hit-title">'+esc(n.title||n.text.slice(0,100))+'</div><div class="hit-meta">'+esc(fShortBase(n.date))+' • '+esc(n.text.slice(0,180))+'</div></div><button class="chip" data-central-date="'+esc(n.date)+'">فتح اليوم</button></div>').join(''):'<p class="sub">لا توجد ملاحظات مطابقة.</p>')+'</section>';
+      if(!list.length && !taskHits.length && !noteHits.length) html = '<div class="empty">لا توجد نتائج مطابقة في المهام الرئيسية أو المهام أو الملاحظات.</div>';
+    }
+    return html;
   }
   function itemsHTML(){
     const q = ui.q.trim().toLowerCase();
@@ -1100,28 +1119,47 @@ body{background:radial-gradient(ellipse at 10% 0%,rgba(8,126,139,.07),transparen
     const nDays = new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)]).size;
     $('#baseSub').textContent = nDays+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة • '+state.mainTasks.length+' مهمة رئيسية';
     document.querySelectorAll('#baseTabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.bt===tab)));
-    $('#itemTools').hidden = true; $('#itemAddForm').hidden = tab!=='items'; $('#mainAddForm').hidden = tab!=='mains';
-    $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : tab==='mains' ? 'ابحث عن مهمة رئيسية أو مهمة مرتبطة أو تاريخ' : 'إضافة سريعة: اكتب مهمة أو ملاحظة';
-    if(tab==='items') { $('#quickTaskDate').value = ui.sel; $('#baseView').innerHTML = '<div class="empty">أضف مهمة مباشرة إلى اليوم المحدد، أو احفظ ملاحظة سريعة. اختر تاريخًا مختلفًا إذا أردت إضافتها ليوم آخر.</div>'; return; }
+    $('#itemTools').hidden = true; $('#centralAddForm').hidden = true; $('#mainAddForm').hidden = tab!=='mains';
+    $('#search').placeholder = tab==='days' ? 'ابحث عن يوم أو مهمة أو ملاحظة' : 'ابحث في المهام الرئيسية والمهام والملاحظات والتواريخ';
     $('#baseView').innerHTML = tab==='days' ? daysHTML() : mainsHTML();
   }
   $('#baseTabs').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; ui.baseTab = b.dataset.bt; renderBase(); });
-  $('#goMains').onclick = ()=>{ closeSettings(); ui.baseTab = 'mains'; renderBase(); $('#base').scrollIntoView({behavior:'smooth',block:'start'}); };
-  function addQuickTask(){
-    const input=$('#quickTaskName'), name=input.value.trim(), date=$('#quickTaskDate').value||ui.sel;
-    if(!name){input.focus();return;}
-    state.tasks.push({id:uid(),text:name,done:false,prio:0,date});
-    input.value=''; ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth();
-    renderAll(); save(); toast('أُضيفت المهمة إلى '+fShortBase(date));
+  const centralKind = $('#centralKind');
+  function syncCentralKind(){
+    const note = centralKind.value==='note';
+    $('#centralTitleWrap').hidden = !note;
+    $('#centralScopeWrap').hidden = note;
+    $('#centralPrioWrap').hidden = note;
+    $('#centralText').placeholder = note ? 'اكتب نص الملاحظة' : 'اكتب اسم المهمة';
   }
-  $('#quickTaskAdd').onclick=addQuickTask;
-  $('#quickTaskName').addEventListener('keydown',e=>{if(e.key==='Enter')addQuickTask();});
-  $('#quickNoteAdd').onclick=()=>{
-    const title=$('#quickNoteTitle').value.trim(), text=$('#quickNoteText').value.trim(), date=$('#quickTaskDate').value||ui.sel;
-    if(!text){$('#quickNoteText').focus();return;}
-    state.notes.push({id:uid(),title,text,date,created:Date.now()}); $('#quickNoteTitle').value=''; $('#quickNoteText').value='';
-    ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth(); renderAll(); save(); toast('حُفظت الملاحظة في '+fShortBase(date));
+  function openCentralAdd(){
+    $('#centralDate').value = ui.sel || todayKey();
+    $('#centralKind').value='task'; $('#centralText').value=''; $('#centralTitle').value=''; $('#centralScope').value='day'; $('#centralPrio').value='0';
+    syncCentralKind(); $('#centralAddForm').hidden=false; $('#centralText').focus();
+  }
+  $('#centralAddOpen').onclick=openCentralAdd;
+  $('#centralAddClose').onclick=()=>$('#centralAddForm').hidden=true;
+  $('#centralAddCancel').onclick=()=>$('#centralAddForm').hidden=true;
+  centralKind.addEventListener('change',syncCentralKind);
+  $('#centralAddSave').onclick=()=>{
+    const kind=$('#centralKind').value, text=$('#centralText').value.trim(), date=$('#centralDate').value||ui.sel||todayKey();
+    if(!text){$('#centralText').focus();toast(kind==='note'?'اكتب نص الملاحظة أولًا':'اكتب اسم المهمة أولًا');return;}
+    if(kind==='note'){
+      state.notes.push({id:uid(),title:$('#centralTitle').value.trim(),text,date,created:Date.now()});
+      ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth();
+      renderAll(); save(); $('#centralAddForm').hidden=true; toast('تمت إضافة الملاحظة إلى '+fShortBase(date)); return;
+    }
+    const prio=Number($('#centralPrio').value)||0, scope=$('#centralScope').value;
+    const dates=scope==='month'?(()=>{const d=dparse(date), n=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return Array.from({length:n},(_,i)=>dkey(new Date(d.getFullYear(),d.getMonth(),i+1)));})():[date];
+    let added=0;
+    dates.forEach(day=>{ if(!state.tasks.some(t=>t.date===day && String(t.text).trim().toLowerCase()===text.toLowerCase())){state.tasks.push({id:uid(),text,done:false,prio,date:day});added++;} });
+    ui.sel=date; const d=dparse(date); ui.calY=d.getFullYear(); ui.calM=d.getMonth();
+    renderAll(); save(); $('#centralAddForm').hidden=true;
+    toast(added?'أُضيفت المهمة إلى '+(scope==='month'?'أيام الشهر ('+added+' يوم)':'اليوم المحدد'):'المهمة موجودة مسبقًا في النطاق المحدد');
   };
+  $('#centralText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#centralAddSave').click();}});
+
+  $('#goMains').onclick = ()=>{ closeSettings(); ui.baseTab = 'mains'; renderBase(); $('#base').scrollIntoView({behavior:'smooth',block:'start'}); };
   function addMain(){
     const i = $('#mtName'), name = i.value.trim();
     if(!name){ i.focus(); return; }
