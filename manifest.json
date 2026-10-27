@@ -1,16 +1,16 @@
 {
   "id": "/",
-  "name": "NEXORA | نكسورا",
-  "short_name": "NEXORA",
-  "description": "نكسورا — مساحة عربية لتنظيم اليوم والمهام والملاحظات والأهداف، مع دعم العمل دون اتصال.",
+  "name": "لُبّ | LUBB",
+  "short_name": "لُبّ",
+  "description": "لُبّ — تطبيق ذكي لتنظيم المهام والملاحظات ومتابعة الإنتاجية.",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0A0C12",
-  "theme_color": "#0A0C12",
+  "background_color": "#0B1020",
+  "theme_color": "#0B1020",
   "categories": [
     "productivity",
     "utilities"
