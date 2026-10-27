@@ -1,4 +1,4 @@
-const CACHE = 'nexora-v43-fixes-4';
+const CACHE = 'lubb-v52-offline-1';
 const BASE = self.registration.scope;
 const FILES = [
   './',
@@ -23,7 +23,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key.startsWith('nexora-') && key !== CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => (key.startsWith('nexora-') || key.startsWith('lubb-')) && key !== CACHE).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });

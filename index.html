@@ -476,8 +476,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .footer-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 .app-footer p{font-size:.86rem}
 .footer-note{font-size:.73rem;opacity:.88;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px}
-.footer-version{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.02em;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 18%,transparent)}
-.footer-version::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.8}
+.version-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:.74rem;font-weight:800;letter-spacing:.02em;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 18%,transparent)}
+.version-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8}
 @media(max-width:900px){
  .wrap{padding-top:18px}
  .brandbar{align-items:flex-start;flex-direction:column;gap:12px;margin-bottom:16px;padding:14px;border-radius:21px}
@@ -930,7 +930,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <footer class="app-footer">
     <div class="footer-mark"><span class="footer-dot"></span><strong>LUBB</strong></div>
     <p>مساحة هادئة لتنظيم يومك ومتابعة ما يهمك.</p>
-    <div class="footer-note"><span>بياناتك محفوظة على هذا الجهاز · تذكّر إنشاء نسخة احتياطية دوريًا</span><span class="footer-version" aria-label="رقم الإصدار 51">الإصدار V51</span></div>
+    <div class="footer-note"><span>بياناتك محفوظة على هذا الجهاز · تذكّر إنشاء نسخة احتياطية دوريًا</span></div>
   </footer>
 
   <div class="overlay" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
@@ -956,6 +956,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
     <p class="setmsg" id="setMsg" aria-live="polite"></p>
     <p class="about">LUBB • تُحفظ بياناتك تلقائيًا على هذا الجهاز.</p>
+    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 52">الإصدار V52</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
   </div>
 </div>
 </div>
