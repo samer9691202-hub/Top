@@ -690,6 +690,49 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   :root:not([data-theme="dark"]) .card,:root:not([data-theme="dark"]) .ncard,:root:not([data-theme="dark"]) .mcard,:root:not([data-theme="dark"]) .kcard,:root:not([data-theme="dark"]) .task,:root:not([data-theme="dark"]) .row{background:rgba(255,255,255,.84)!important;}
 }
 
+
+
+/* LUBB v51 — calmer light canvas, refined clock and settings control */
+:root:not([data-theme="dark"]) body{
+  background:
+    radial-gradient(ellipse at 92% 0%,rgba(124,58,237,.105),transparent 38%),
+    radial-gradient(ellipse at 4% 36%,rgba(59,130,246,.075),transparent 34%),
+    linear-gradient(145deg,#f3f5fb 0%,#f8f9fd 52%,#f2f3fb 100%) !important;
+  background-attachment:fixed !important;
+}
+:root:not([data-theme="dark"]) .hero{
+  background:linear-gradient(128deg,#40318d 0%,#6245bb 48%,#3979c9 100%);
+  box-shadow:0 22px 50px -28px rgba(69,55,155,.55),inset 0 1px 0 rgba(255,255,255,.24);
+}
+:root:not([data-theme="dark"]) .hero::before{background:radial-gradient(circle,rgba(255,255,255,.17),transparent 70%)}
+:root:not([data-theme="dark"]) .clock{
+  display:inline-flex;align-items:center;gap:14px;margin-top:16px;padding:13px 18px 13px 20px;
+  border:1px solid rgba(255,255,255,.24);border-radius:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.17),rgba(255,255,255,.075));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 12px 26px rgba(25,24,79,.12);
+  -webkit-backdrop-filter:blur(16px) saturate(145%);backdrop-filter:blur(16px) saturate(145%);
+}
+:root:not([data-theme="dark"]) .hm{font-size:clamp(3.2rem,12vw,5.25rem);font-weight:700;letter-spacing:-.045em;text-shadow:0 3px 18px rgba(12,16,45,.13)}
+:root:not([data-theme="dark"]) .clock .side{gap:7px;justify-items:center}
+:root:not([data-theme="dark"]) .clock .sec{display:grid;place-items:center;min-width:42px;min-height:36px;padding:3px 8px;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18);font-size:1.12rem;font-weight:750;font-variant-numeric:tabular-nums}
+:root:not([data-theme="dark"]) .clock .ap{min-width:42px;text-align:center;background:rgba(12,16,45,.17);border-color:rgba(255,255,255,.18);font-weight:800}
+:root:not([data-theme="dark"]) .datepanel{background:rgba(255,255,255,.105);border-color:rgba(255,255,255,.23);box-shadow:inset 0 1px 0 rgba(255,255,255,.13)}
+:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{
+  position:relative;isolation:isolate;color:#fff !important;border:1px solid rgba(255,255,255,.86) !important;
+  border-radius:16px !important;background:linear-gradient(140deg,rgba(124,58,237,.92),rgba(59,130,246,.9)) !important;
+  box-shadow:0 9px 22px rgba(92,65,190,.22),inset 0 1px 0 rgba(255,255,255,.4) !important;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+:root:not([data-theme="dark"]) .header-icon-btn#quickSettings:hover{transform:translateY(-2px);filter:saturate(1.1);box-shadow:0 13px 27px rgba(92,65,190,.29),inset 0 1px 0 rgba(255,255,255,.45) !important}
+.header-icon-btn#quickSettings svg{width:23px;height:23px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+.report-export-meta{align-items:center;position:relative;overflow:hidden}
+.report-export-meta::before{content:"";width:4px;position:absolute;inset-block:0;inset-inline-start:0;background:linear-gradient(180deg,#7C3AED,#3B82F6)}
+@media(max-width:560px){
+ :root:not([data-theme="dark"]) .clock{gap:10px;padding:10px 13px 10px 15px;border-radius:19px}
+ :root:not([data-theme="dark"]) .hm{font-size:clamp(3rem,15vw,4.25rem)}
+ :root:not([data-theme="dark"]) .clock .sec{min-width:37px;min-height:32px;font-size:1rem}
+}
+@media(prefers-reduced-motion:reduce){:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{transition:none}}
 </style>
 </head>
 <body>
@@ -714,7 +757,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
       <button class="brand-action header-icon-btn theme-toggle" id="quickTheme" type="button" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
-      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.08-.03a1.7 1.7 0 0 0-1.8.34 1.7 1.7 0 0 0-.67 1.36V22h-3.4v-.1a1.7 1.7 0 0 0-1.1-1.58 1.7 1.7 0 0 0-1.82.34l-.08.06-2.94-1.7.03-.08a1.7 1.7 0 0 0-.34-1.8 1.7 1.7 0 0 0-1.36-.67H4.4v-3.4h.1a1.7 1.7 0 0 0 1.58-1.1 1.7 1.7 0 0 0-.34-1.82l-.06-.08 1.7-2.94.08.03a1.7 1.7 0 0 0 1.8-.34 1.7 1.7 0 0 0 .67-1.36V5.4h3.4v.1a1.7 1.7 0 0 0 1.1 1.58 1.7 1.7 0 0 0 1.82-.34l.08-.06 2.94 1.7-.03.08a1.7 1.7 0 0 0 .34 1.8 1.7 1.7 0 0 0 1.36.67h.1v3.4h-.1a1.7 1.7 0 0 0-1.58 1.1Z" transform="translate(-1.5 -1.5) scale(1.08)"/></svg></button>
+      <button class="brand-action brand-action-primary header-icon-btn" id="quickSettings" type="button" aria-label="الإعدادات" title="الإعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z"/><path d="m19.4 15 .05.03a1.8 1.8 0 0 1-1.8 3.12l-.05-.03a1.8 1.8 0 0 0-2.7 1.56v.06a1.8 1.8 0 0 1-3.6 0v-.06a1.8 1.8 0 0 0-2.7-1.56l-.05.03a1.8 1.8 0 0 1-1.8-3.12l.05-.03a1.8 1.8 0 0 0 0-3.12l-.05-.03a1.8 1.8 0 0 1 1.8-3.12l.05.03a1.8 1.8 0 0 0 2.7-1.56v-.06a1.8 1.8 0 0 1 3.6 0v.06a1.8 1.8 0 0 0 2.7 1.56l.05-.03a1.8 1.8 0 0 1 1.8 3.12l-.05.03a1.8 1.8 0 0 0 0 3.12Z"/></svg></button>
     </div>
   </header>
 
