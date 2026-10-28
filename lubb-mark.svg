@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+ <linearGradient id="violet" x1=".05" y1=".05" x2=".9" y2=".95"><stop stop-color="#E9B7FF"/><stop offset=".42" stop-color="#8758FF"/><stop offset="1" stop-color="#4A35D9"/></linearGradient>
+ <linearGradient id="cyan" x1=".1" y1=".1" x2=".9" y2=".9"><stop stop-color="#8EF7F0"/><stop offset=".5" stop-color="#35D9E8"/><stop offset="1" stop-color="#338CFF"/></linearGradient>
+ <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFC7F1"/><stop offset=".55" stop-color="#A66BFF"/><stop offset="1" stop-color="#6A4CFF"/></linearGradient>
+ <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF" stop-opacity=".9"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".42"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+<!-- soft shadow -->
+<g opacity=".18" filter="url(#shadow)" transform="translate(0 8)"><path d="M142 118 C142 78 174 55 207 67 C233 76 246 97 246 128 L246 263 C246 296 226 323 196 340 L151 365 C117 384 82 365 82 328 C82 308 93 290 111 278 L160 244 C174 234 181 219 181 202 L181 132 C181 122 174 116 164 121 Z" fill="#3426A8"/><path d="M196 330 L342 211 C366 192 393 197 411 217 C431 241 421 269 398 288 L277 389 C248 412 211 410 189 386 C173 367 176 346 196 330Z" fill="#148EBC"/></g>
+<!-- left flowing ribbon -->
+<path d="M142 118 C142 78 174 55 207 67 C233 76 246 97 246 128 L246 263 C246 296 226 323 196 340 L151 365 C117 384 82 365 82 328 C82 308 93 290 111 278 L160 244 C174 234 181 219 181 202 L181 132 C181 122 174 116 164 121 Z" fill="url(#violet)"/>
+<!-- crossing ribbon -->
+<path d="M168 286 L328 139 C352 117 382 120 402 141 C425 165 418 196 394 218 L242 353 C213 379 176 376 155 352 C139 333 145 307 168 286Z" fill="url(#pink)"/>
+<!-- lower right ribbon -->
+<path d="M194 337 L332 246 C357 230 385 239 398 262 C411 285 401 309 378 325 L275 399 C247 419 211 412 192 390 C179 374 179 350 194 337Z" fill="url(#cyan)"/>
+<!-- controlled glossy strokes -->
+<path d="M101 326 C105 308 117 294 135 281 L170 257" fill="none" stroke="url(#shine)" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+<path d="M172 287 L327 145 C349 125 377 127 396 146" fill="none" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="6" stroke-linecap="round"/>
+<path d="M201 385 C221 403 247 403 269 387 L373 313" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/>
+<!-- orbit dot -->
+<circle cx="378" cy="112" r="47" fill="url(#cyan)"/>
+<circle cx="378" cy="112" r="42" fill="url(#violet)" opacity=".58"/>
+<circle cx="378" cy="112" r="43" fill="none" stroke="#FFFFFF" stroke-opacity=".8" stroke-width="5"/>
+<circle cx="363" cy="96" r="10" fill="#FFFFFF" opacity=".48"/>
+</svg>
