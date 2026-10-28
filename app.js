@@ -1,488 +1,58 @@
-
-(function(){
-  const $ = s => document.querySelector(s);
-  const STATUS = ['جديد','قيد التنفيذ','مكتمل'];
-  const PRIO = ['عادية','مهمة','عاجلة'];
-  const KEY = 'plan-state-v2', OLD_KEY = 'plan-state-v1';
-  const uid = () => Math.random().toString(36).slice(2,9);
-  const pad = n => String(n).padStart(2,'0');
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const dkey = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-  const dparse = k => new Date(k+'T00:00:00');
-  const todayKey = () => dkey(new Date());
-
-  /* ---------- التخزين: يعمل داخل Claude وخارجه ---------- */
-  const store = {
-    async get(k){
-      try{ if(window.storage){ const r = await window.storage.get(k); if(r && r.value != null) return r.value; } }catch(e){}
-      try{ return localStorage.getItem(k); }catch(e){ return null; }
-    },
-    async set(k,v){
-      try{ if(window.storage){ await window.storage.set(k,v); return true; } }catch(e){}
-      try{ localStorage.setItem(k,v); return true; }catch(e){ return false; }
-    }
-  };
-
-  let state = {tasks:[], notes:[], base:[], mainTasks:[]};
-  const DEFAULTS = {clockFmt:'12', theme:'auto', weekStart:'0', showSec:true, showHijri:true};
-  let settings = Object.assign({}, DEFAULTS);
-  let ui = {sel: todayKey(), calY:0, calM:0, calExpanded:false, filter:'all', noteView:'day', noteQ:'', editing:null, view:'table', q:'', st:'all'};
-  { const t = new Date(); ui.calY = t.getFullYear(); ui.calM = t.getMonth(); }
-  let saveTimer;
-
-  async function load(){
-    let raw = await store.get(KEY);
-    if(raw){
-      try{ const s = JSON.parse(raw); if(s && Array.isArray(s.tasks)){ state = {tasks:s.tasks, notes:s.notes||[], base:s.base||[], mainTasks:s.mainTasks||[]}; return; } }catch(e){}
-    }
-    // ترحيل بيانات النسخة الأولى
-    raw = await store.get(OLD_KEY);
-    if(raw){
-      try{
-        const s = JSON.parse(raw), t = todayKey();
-        state.tasks = (s.tasks||[]).map(x=>Object.assign({date:t}, x));
-        state.base = s.base || []; state.mainTasks = s.mainTasks || [];
-        if(s.note && String(s.note).trim()) state.notes.push({id:uid(), title:'', text:String(s.note), date:t, created:Date.now()});
-        save();
-      }catch(e){}
-    }
-  }
-  function renderStats(){
-    const total = state.tasks.length, done = state.tasks.filter(t=>t.done).length;
-    const dayTasks = state.tasks.filter(t=>t.date===ui.sel), dayDone = dayTasks.filter(t=>t.done).length;
-    $('#statTasks').textContent = dayTasks.length;
-    $('#statDone').textContent = (dayTasks.length ? Math.round(dayDone/dayTasks.length*100) : 0) + '%';
-    $('#statNotes').textContent = state.notes.filter(n=>n.date===ui.sel).length;
-    $('#statBase').textContent = state.base.length;
-  }
-  function save(){
-    renderStats();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(()=>{ store.set(KEY, JSON.stringify(state)); }, 250);
-  }
-
-  /* ---------- الإعدادات ---------- */
-  async function loadSettings(){
-    try{
-      const raw = await store.get('plan-settings-v1');
-      if(raw){ settings = Object.assign({}, DEFAULTS, JSON.parse(raw)); return; }
-      const old = await store.get('plan-h24');
-      if(old !== null) settings.clockFmt = old==='1' ? '24' : '12';
-    }catch(e){}
-  }
-  function saveSettings(){ store.set('plan-settings-v1', JSON.stringify(settings)); }
-  function applySettings(){
-    const r = document.documentElement;
-    if(settings.theme==='auto'){ r.setAttribute('data-theme', window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } else { r.setAttribute('data-theme', settings.theme); }
-    document.querySelectorAll('#settings [data-setting]').forEach(g=>{
-      const k = g.dataset.setting;
-      if(g.classList.contains('sw')) g.setAttribute('aria-checked', String(!!settings[k]));
-      else g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(String(settings[k])===b.dataset.val)));
-    });
-    tick(); renderCal();
-  }
-  // Keep the automatic theme synchronized with the device while Auto is selected.
-  if(window.matchMedia){
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const onSystemThemeChange = ()=>{ if(settings.theme==='auto') applySettings(); };
-    if(systemTheme.addEventListener) systemTheme.addEventListener('change', onSystemThemeChange);
-    else if(systemTheme.addListener) systemTheme.addListener(onSystemThemeChange);
-  }
-  let opener = null;
-  function openSettings(){
-    const panel=$('#settings'); if(!panel.hidden) return;
-    opener = document.activeElement;
-    panel.hidden = false; document.body.style.overflow = 'hidden';
-    const closeButton = $('#setClose');
-    if(closeButton) closeButton.focus({preventScroll:true});
-  }
-  function closeSettings(){
-    $('#settings').hidden = true; document.body.style.overflow = '';
-    if(opener && opener.focus) opener.focus();
-  }
-  // الإعدادات تستخدم نفس آلية استجابة أزرار الواجهة: نقرة واحدة واضحة ومتوافقة مع اللمس والماوس ولوحة المفاتيح.
-  const settingsButton = $('#openSettings');
-  settingsButton.addEventListener('click', openSettings);
-  $('#setClose').addEventListener('click', closeSettings);
-  document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
-  document.getElementById('homeBrand')?.addEventListener('click',()=>{const home=document.querySelector('.hero')||document.querySelector('.wrap');if(home){home.scrollIntoView({behavior:'smooth',block:'start'});window.scrollTo({top:0,behavior:'smooth'});}});
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#settings').hidden) closeSettings(); });
-  $('#settings').addEventListener('click', e=>{
-    if(e.target.id==='settings'){ closeSettings(); return; }
-    const sw = e.target.closest('.sw');
-    if(sw){ const k = sw.dataset.setting; settings[k] = !settings[k]; saveSettings(); applySettings(); return; }
-    const b = e.target.closest('.seg button'); if(!b) return;
-    const g = b.closest('[data-setting]'); if(!g) return;
-    settings[g.dataset.setting] = b.dataset.val; saveSettings(); applySettings();
-  });
-
-  /* ---------- الساعة والتاريخ ---------- */
-  const fWk = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{weekday:'long'});
-  const fGr = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-  let fH; try{ fH = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}); }catch(e){}
-  let lastDay = -1;
-  function tick(){
-    const d = new Date(), h = d.getHours(), m = d.getMinutes(), sc = d.getSeconds();
-    const h24 = settings.clockFmt==='24';
-    $('#hh').textContent = h24 ? pad(h) : String(h%12||12);
-    $('#mm').textContent = pad(m);
-    $('#sec').textContent = pad(sc);
-    $('#sec').hidden = !settings.showSec;
-    $('#ap').textContent = h24 ? '' : (h<12 ? 'ص' : 'م');
-    $('#hij').hidden = !settings.showHijri || !fH;
-    const secs = h*3600+m*60+sc;
-    $('#dayFill').style.width = (secs/864)+'%';
-    $('#dayPct').textContent = Math.round(secs/864)+'%';
-    const rem = 86400-secs;
-    $('#left').textContent = Math.floor(rem/3600)+' س '+pad(Math.floor(rem%3600/60))+' د';
-    if(lastDay !== d.getDate()){
-      lastDay = d.getDate();
-      $('#greetText').textContent = h<5 ? 'ليلة هادئة' : h<12 ? 'صباح الخير' : h<17 ? 'نهارك سعيد' : h<21 ? 'مساء الخير' : 'ليلة سعيدة';
-      $('#wk').textContent = fWk.format(d);
-      $('#gr').textContent = fGr.format(d);
-      $('#hij').textContent = fH ? fH.format(d) : '';
-      renderCal();
-    }
-  }
-
-  /* ---------- التقويم ---------- */
-  const WD = ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
-  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{month:'long',year:'numeric'});
-  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{weekday:'long',day:'numeric',month:'long'});
-  function dayInfo(){
-    const m = {};
-    state.tasks.forEach(t=>{ const o = m[t.date] || (m[t.date]={open:0,done:0,notes:0}); t.done ? o.done++ : o.open++; });
-    state.notes.forEach(n=>{ const o = m[n.date] || (m[n.date]={open:0,done:0,notes:0}); o.notes++; });
-    return m;
-  }
-  function renderCal(){
-    const y = ui.calY, mo = ui.calM, info = dayInfo(), tk = todayKey();
-    $('#calTitle').textContent = fMonth.format(new Date(y,mo,1));
-    const ws = Number(settings.weekStart)||0;
-    let dates = [], h = '';
-    if(ui.calExpanded){
-      const first = (new Date(y,mo,1).getDay()-ws+7)%7, days = new Date(y,mo+1,0).getDate();
-      h = [0,1,2,3,4,5,6].map(i=>'<div class="wd" role="columnheader">'+WD[(ws+i)%7]+'</div>').join('');
-      for(let i=0;i<first;i++) h += '<div class="cell blank" aria-hidden="true"></div>';
-      for(let d=1;d<=days;d++) dates.push(dkey(new Date(y,mo,d)));
-    }else{
-      const selected = dparse(ui.sel), offset = (selected.getDay()-ws+7)%7;
-      for(let i=0;i<7;i++){ const d=new Date(selected); d.setDate(selected.getDate()-offset+i); dates.push(dkey(d)); }
-      h = dates.map(k=>'<div class="wd" role="columnheader">'+WD[dparse(k).getDay()]+'</div>').join('');
-    }
-    dates.forEach(k=>{
-      const o=info[k], d=dparse(k).getDate();
-      const cls='cell'+(k===tk?' today':'')+(k===ui.sel?' sel':''); let dots='';
-      if(o){if(o.open)dots+='<i></i>';else if(o.done)dots+='<i class="ok"></i>';if(o.notes)dots+='<i class="n"></i>';}
-      h+='<button class="'+cls+'" data-d="'+k+'" role="gridcell" aria-selected="'+(k===ui.sel)+'" aria-label="'+fDay.format(dparse(k))+'"><span>'+d+'</span><span class="dots">'+dots+'</span></button>';
-    });
-    $('#calGrid').classList.toggle('compact',!ui.calExpanded);
-    $('#calGrid').innerHTML=h;
-    $('#toggleCal').textContent=ui.calExpanded?'إخفاء الشهر':'عرض الشهر';
-    $('#toggleCal').setAttribute('aria-expanded',String(ui.calExpanded));
-  }
-  $('#calGrid').addEventListener('click', e=>{
-    const c = e.target.closest('[data-d]'); if(!c) return;
-    ui.sel = c.dataset.d; const picked=dparse(ui.sel); ui.calY=picked.getFullYear(); ui.calM=picked.getMonth(); renderAll();
-  });
-  $('#prevM').onclick = ()=>{ ui.calExpanded=true; ui.calM--; if(ui.calM<0){ui.calM=11;ui.calY--;} renderCal(); };
-  $('#nextM').onclick = ()=>{ ui.calExpanded=true; ui.calM++; if(ui.calM>11){ui.calM=0;ui.calY++;} renderCal(); };
-  $('#goToday').onclick = ()=>{ const t=new Date(); ui.sel=dkey(t); ui.calY=t.getFullYear(); ui.calM=t.getMonth(); renderAll(); };
-  $('#toggleCal').onclick = ()=>{ ui.calExpanded=!ui.calExpanded; renderCal(); };
-  const selLabel = () => (ui.sel===todayKey() ? 'اليوم، ' : '') + fDay.format(dparse(ui.sel));
-
-  /* ---------- المهام ---------- */
-  function renderTasks(){
-    const day = state.tasks.filter(t=>t.date===ui.sel);
-    const total = day.length, done = day.filter(t=>t.done).length;
-    $('#tasksTitle').textContent = ui.sel===todayKey() ? 'مهام اليوم' : 'مهام اليوم المحدد';
-    $('#tasksSub').textContent = selLabel() + (total ? ' • متبقي '+(total-done) : '');
-    $('#progFill').style.width = (total ? Math.round(done/total*100) : 0)+'%';
-    $('#progTxt').textContent = done+' من '+total;
-    let items = day.filter(t => ui.filter==='all' || (ui.filter==='done'?t.done:!t.done));
-    items = items.slice().sort((a,b)=> a.done-b.done || (Number(b.prio)||0)-(Number(a.prio)||0));
-    if(!items.length){
-      $('#taskList').innerHTML = '<li class="empty">'+(total?'لا توجد مهام في هذا العرض.':'لا توجد مهام لهذا اليوم. اكتب أول مهمة في الحقل أعلاه.')+'</li>';
-      return;
-    }
-    $('#taskList').innerHTML = items.map(t=>`
-      <li class="task ${t.done?'done':''}" data-id="${t.id}">
-        <button class="check" role="checkbox" aria-checked="${t.done}" aria-label="إنجاز: ${esc(t.text)}" data-a="toggle">✓</button>
-        <span class="t-text">${esc(t.text)}</span>
-        <button class="icon-btn" data-a="edit" aria-label="تعديل المهمة">✎</button>
-        <button class="chip ${t.prio?'p'+t.prio:''}" data-a="prio" title="غيّر الأولوية">${PRIO[Number.isInteger(t.prio)&&t.prio>=0&&t.prio<=2?t.prio:0]}</button>
-        <button class="icon-btn" data-a="del" aria-label="حذف المهمة">✕</button>
-      </li>`).join('');
-  }
-  function addTask(){
-    const el = $('#taskInput'), text = el.value.trim();
-    if(!text){ el.focus(); return; }
-    state.tasks.push({id:uid(), text, done:false, prio:0, date:ui.sel});
-    el.value=''; el.focus(); renderTasks(); renderCal(); renderBase(); save();
-  }
-  $('#taskAdd').onclick = addTask;
-  $('#taskInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
-  $('#taskFilter').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    ui.filter = b.dataset.f;
-    document.querySelectorAll('#taskFilter button').forEach(x=>x.setAttribute('aria-pressed', x===b));
-    renderTasks();
-  });
-  $('#taskList').addEventListener('click', e=>{
-    const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const li = btn.closest('[data-id]'); const t = state.tasks.find(x=>x.id===li.dataset.id); if(!t) return;
-    if(btn.dataset.a==='toggle') t.done = !t.done;
-    if(btn.dataset.a==='edit'){ const next = window.prompt('تعديل نص المهمة', t.text); if(next===null) return; if(!next.trim()){ window.alert('لا يمكن أن تكون المهمة فارغة.'); return; } t.text=next.trim(); }
-    if(btn.dataset.a==='prio') t.prio = (t.prio+1)%3;
-    if(btn.dataset.a==='del'){
-      // المهمة المرتبطة بالقائمة الرئيسية تُحذف من كل الأيام، لا من اليوم الحالي فقط.
-      if(t.mainId){ state.tasks = state.tasks.filter(x=>x.mainId!==t.mainId); }
-      else { state.tasks = state.tasks.filter(x=>x!==t); }
-    }
-    renderTasks(); renderCal(); renderBase(); save();
-  });
-
-  /* ---------- الملاحظات ---------- */
-  const fTime = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{hour:'numeric',minute:'2-digit'});
-  const fShort = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'});
-  let msgTimer;
-  function flash(msg){
-    $('#noteMsg').textContent = msg; $('#setMsg').textContent = msg; clearTimeout(msgTimer);
-    msgTimer = setTimeout(()=>{ $('#noteMsg').textContent=''; $('#setMsg').textContent=''; }, 2500);
-  }
-  function renderNotes(){
-    const all = ui.noteView==='all';
-    $('#noteSearchWrap').hidden = !all;
-    let items;
-    if(all){
-      const q = ui.noteQ.trim().toLowerCase();
-      items = state.notes.filter(n=>!q || n.text.toLowerCase().includes(q) || (n.title||'').toLowerCase().includes(q));
-      items.sort((a,b)=> b.date.localeCompare(a.date) || b.created-a.created);
-      $('#notesSub').textContent = state.notes.length ? state.notes.length+' ملاحظة محفوظة' : '';
-    }else{
-      items = state.notes.filter(n=>n.date===ui.sel).sort((a,b)=>b.created-a.created);
-      $('#notesSub').textContent = selLabel();
-    }
-    $('#noteWhere').textContent = ui.editing ? 'أنت تعدّل ملاحظة محفوظة' : 'ستُحفظ في: ' + selLabel();
-    $('#noteSave').textContent = ui.editing ? 'حفظ التعديل' : 'حفظ الملاحظة';
-    $('#noteCancel').hidden = !ui.editing;
-    if(!items.length){
-      $('#noteList').innerHTML = '<li class="empty">'+(all ? (state.notes.length?'لا توجد نتائج مطابقة.':'لا توجد ملاحظات محفوظة بعد.') : 'لا توجد ملاحظات محفوظة لهذا اليوم.')+'</li>';
-      return;
-    }
-    $('#noteList').innerHTML = items.map(n=>`
-      <li class="ncard ${ui.editing===n.id?'editing':''}" data-id="${n.id}">
-        <div class="nhead">
-          <span class="ntitle">${esc(n.title || 'بدون عنوان')}</span>
-          ${all ? '<button class="chip" data-a="goto" title="افتح هذا اليوم">'+fShort.format(dparse(n.date))+'</button>' : ''}
-        </div>
-        <p class="nbody">${esc(n.text)}</p>
-        <div class="nfoot">
-          <span>${fTime.format(new Date(n.created))}</span>
-          <span><button class="link" data-a="nedit">تعديل</button><button class="link danger" data-a="ndel">حذف</button></span>
-        </div>
-      </li>`).join('');
-  }
-  function clearEditor(){ $('#noteTitle').value=''; $('#noteText').value=''; ui.editing=null; }
-  $('#noteSave').onclick = ()=>{
-    const text = $('#noteText').value.trim(), title = $('#noteTitle').value.trim();
-    if(!text){ $('#noteText').focus(); flash('اكتب نص الملاحظة أولًا'); return; }
-    if(ui.editing){
-      const n = state.notes.find(x=>x.id===ui.editing);
-      if(n){ n.text = text; n.title = title; }
-    }else{
-      state.notes.push({id:uid(), title, text, date:ui.sel, created:Date.now()});
-    }
-    const wasEditing = !!ui.editing;
-    clearEditor(); renderNotes(); renderCal(); renderBase(); save();
-    flash(wasEditing ? 'تم حفظ التعديل ✓' : 'تم حفظ الملاحظة ✓');
-  };
-  $('#noteCancel').onclick = ()=>{ clearEditor(); renderNotes(); };
-  $('#noteView').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    ui.noteView = b.dataset.n;
-    document.querySelectorAll('#noteView button').forEach(x=>x.setAttribute('aria-pressed', x===b));
-    renderNotes();
-  });
-  $('#noteSearch').addEventListener('input', e=>{ ui.noteQ = e.target.value; renderNotes(); });
-  const armed = new Map();
-  $('#noteList').addEventListener('click', e=>{
-    const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const li = btn.closest('[data-id]'); const n = state.notes.find(x=>x.id===li.dataset.id); if(!n) return;
-    const a = btn.dataset.a;
-    if(a==='goto'){
-      const d = dparse(n.date); ui.sel = n.date; ui.calY = d.getFullYear(); ui.calM = d.getMonth();
-      renderAll(); window.scrollTo({top:0,behavior:'smooth'}); return;
-    }
-    if(a==='nedit'){
-      ui.editing = n.id; $('#noteTitle').value = n.title||''; $('#noteText').value = n.text;
-      renderNotes(); $('#noteText').focus(); return;
-    }
-    if(a==='ndel'){
-      if(!armed.get(n.id)){
-        armed.set(n.id,true); btn.textContent = 'تأكيد الحذف؟';
-        setTimeout(()=>{ armed.delete(n.id); if(btn.isConnected) btn.textContent='حذف'; }, 3000);
-        return;
-      }
-      state.notes = state.notes.filter(x=>x!==n);
-      if(ui.editing===n.id) clearEditor();
-      renderNotes(); renderCal(); renderBase(); save();
-    }
-  });
-
-  /* ---------- القاعدة الرئيسية ---------- */
-  const fD = v => v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short'}).format(dparse(v)) : '—';
-  function renderBase(){
-    const q = ui.q.trim().toLowerCase();
-    const items = state.base.filter(b =>
-      (ui.st==='all' || String(b.status)===ui.st) &&
-      (!q || String(b.name||'').toLowerCase().includes(q) || String(b.cat||'').toLowerCase().includes(q)));
-    $('#baseSub').textContent = (new Set([...state.tasks.map(t=>t.date),...state.notes.map(n=>n.date)]).size)+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة';
-    $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
-    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
-    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
-    const matchedDays = days.map(date=>({date,tasks:state.tasks.filter(t=>t.date===date),notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
-      if(!q) return true;
-      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
-    });
-    let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
-    if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
-    else html += '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+matchedDays.map(d=>'<tr><td class="date-cell">'+esc(fShortBase(d.date))+'<br><span class="muted-cell">'+esc(d.date)+'</span></td><td class="content-cell">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td><td class="content-cell">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc(n.title||n.text).slice(0,240)+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td><td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
-    html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
-    if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
-    else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
-    else html += '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel">✕</button></div></div>').join('')+'</div>').join('')+'</div>';
-    $('#baseView').innerHTML = html;
-  }
-  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
-  function addBase(){
-    const n = $('#bName'), name = n.value.trim();
-    if(!name){ n.focus(); return; }
-    state.base.push({id:uid(), name, cat:$('#bCat').value.trim(), status:0, date:$('#bDate').value});
-    n.value=''; $('#bCat').value=''; $('#bDate').value=''; n.focus();
-    renderBase(); save();
-  }
-  $('#bAdd').onclick = addBase;
-  $('#bName').addEventListener('keydown', e=>{ if(e.key==='Enter') addBase(); });
-  $('#search').addEventListener('input', e=>{ ui.q = e.target.value; renderBase(); });
-  $('#statusFilter').addEventListener('change', e=>{ ui.st = e.target.value; renderBase(); });
-  $('#viewSwitch').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    ui.view = b.dataset.v;
-    document.querySelectorAll('#viewSwitch button').forEach(x=>x.setAttribute('aria-pressed', x===b));
-    renderBase();
-  });
-  $('#baseView').addEventListener('click', e=>{
-    const btn = e.target.closest('[data-a]'); if(!btn) return;
-    const el = btn.closest('[data-id]'); if(!el) return;
-    if(btn.dataset.a==='open-record'){
-      const [type, id] = el.dataset.id.split(':');
-      const record = type==='task' ? state.tasks.find(x=>String(x.id)===id) : type==='note' ? state.notes.find(x=>String(x.id)===id) : null;
-      const date = record && record.date;
-      if(date){ ui.sel=date; renderCal(); renderTasks(); renderNotes(); renderStats(); const target=document.getElementById(type==='task'?'tasks':type==='note'?'notes':'calendar'); if(target) target.scrollIntoView({behavior:'smooth',block:'start'}); }
-      return;
-    }
-    const b = state.base.find(x=>String(x.id)===el.dataset.id); if(!b) return;
-    if(btn.dataset.a==='status') b.status = (b.status+1)%3;
-    if(btn.dataset.a==='bdel') state.base = state.base.filter(x=>x!==b);
-    renderBase(); save();
-  });
-
-  /* ---------- المهام الرئيسية ---------- */
-  function renderMainTasks(){
-    const list=$('#mainTaskList'); if(!state.mainTasks.length){list.innerHTML='<div class="sub">لا توجد مهام رئيسية بعد.</div>';return;}
-    list.innerHTML=state.mainTasks.map(t=>'<div class="main-task" data-main-id="'+t.id+'"><span>'+esc(t.name)+'</span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><select class="select main-scope" aria-label="نطاق إضافة '+esc(t.name)+'" style="min-height:34px;padding:4px 6px;width:auto;max-width:125px;font-size:.8rem"><option value="day">هذا اليوم</option><option value="month">الشهر المعروض</option></select><button class="chip" data-main-action="add">إضافة</button><button class="link danger" data-main-action="delete">حذف</button></span></div>').join('');
-  }
-  $('#mainTaskAdd').onclick=()=>{const input=$('#mainTaskInput'),name=input.value.trim();if(!name){input.focus();return;}state.mainTasks=state.mainTasks||[];state.mainTasks.push({id:uid(),name});input.value='';renderMainTasks();save();};
-  $('#mainTaskInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#mainTaskAdd').click();});
-  $('#mainTaskList').addEventListener('click',e=>{
-    const b=e.target.closest('[data-main-action]');if(!b)return;const el=b.closest('[data-main-id]'),t=(state.mainTasks||[]).find(x=>x.id===el.dataset.mainId);if(!t)return;
-    if(b.dataset.mainAction==='delete'){
-      // حذف المهمة الرئيسية يزيل كذلك كل نسخها المضافة إلى الأيام المختلفة.
-      state.tasks=state.tasks.filter(x=>x.mainId!==t.id);
-      state.mainTasks=state.mainTasks.filter(x=>x.id!==t.id);
-      renderAll();save();flash('تم حذف المهمة الرئيسية وجميع نسخها من الأيام');return;
-    }
-    const scope=el.querySelector('.main-scope')?.value||'day';
-    const dates=[];
-    if(scope==='month'){
-      const yy=ui.calY, mm=ui.calM, days=new Date(yy,mm+1,0).getDate();
-      for(let d=1;d<=days;d++) dates.push(dkey(new Date(yy,mm,d)));
-    }else dates.push(ui.sel);
-    let added=0;
-    dates.forEach(date=>{if(!state.tasks.some(x=>x.date===date&&x.mainId===t.id)){state.tasks.push({id:uid(),mainId:t.id,text:t.name,date,done:false,prio:1});added++;}});
-    renderAll();save();flash(added ? (scope==='month'?'أُضيفت المهمة إلى '+added+' يومًا في الشهر المعروض':'أُضيفت المهمة إلى '+selLabel()) : 'المهمة موجودة بالفعل في النطاق المحدد');
-  });
-
-  /* ---------- نسخ احتياطي ومسح ---------- */
-  $('#export').onclick = ()=>{
-    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'plan-backup.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
-  };
-  $('#importBtn').onclick = ()=> $('#importFile').click();
-  $('#importFile').addEventListener('change', async e=>{
-    const f = e.target.files[0]; if(!f) return;
-    try{
-      const s = JSON.parse(await f.text());
-      if(!s || !Array.isArray(s.tasks)) throw new Error('bad');
-      const t = todayKey();
-      state = {
-        tasks: s.tasks.map(x=>Object.assign({date:t}, x)),
-        notes: Array.isArray(s.notes) ? s.notes : [],
-        base: Array.isArray(s.base) ? s.base : [],
-        mainTasks: Array.isArray(s.mainTasks) ? s.mainTasks : []
-      };
-      clearEditor(); renderAll(); save(); flash('تمت استعادة النسخة ✓');
-    }catch(err){ flash('الملف غير صالح'); }
-    e.target.value = '';
-  });
-  let rArmed = false;
-  $('#reset').onclick = function(){
-    if(!rArmed){ rArmed = true; this.textContent = 'تأكيد المسح'; setTimeout(()=>{ rArmed=false; this.textContent='مسح'; },4000); return; }
-    state = {tasks:[],notes:[],base:[],mainTasks:[]}; clearEditor();
-    rArmed=false; this.textContent='مسح'; renderAll(); save(); flash('تم مسح البيانات');
-  };
-
-  function renderAll(){ renderCal(); renderTasks(); renderNotes(); renderBase(); renderStats(); renderMainTasks(); }
-
-  /* ---------- بدء التشغيل ---------- */
-  (async function init(){
-    tick(); setInterval(tick, 1000);
-    await load(); await loadSettings();
-    applySettings(); renderAll();
-  })();
-})();
-if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
-
-/* أدوات PWA: حالة الاتصال والتثبيت */
-(function(){
-  const badge=document.getElementById('netStatus');
-  const label=document.getElementById('netStatusText');
-  const install=document.getElementById('installApp');
-  function updateConnection(){
-    const online=navigator.onLine;
-    badge.classList.toggle('offline',!online);
-    label.textContent=online?'متصل بالإنترنت':'وضع عدم الاتصال';
-    badge.setAttribute('aria-label',label.textContent);
-  }
-  window.addEventListener('online',updateConnection);
-  window.addEventListener('offline',updateConnection);
-  updateConnection();
-  let installPrompt=null;
-  window.addEventListener('beforeinstallprompt',event=>{
-    event.preventDefault(); installPrompt=event; install.hidden=false;
-  });
-  install.addEventListener('click',async()=>{
-    if(!installPrompt)return;
-    installPrompt.prompt();
-    await installPrompt.userChoice;
-    installPrompt=null; install.hidden=true;
-  });
-  window.addEventListener('appinstalled',()=>{
-    install.hidden=true; installPrompt=null;
-    if(typeof flash==='function') flash('تم تثبيت نكسورا بنجاح ✓');
-  });
-})();
+let courses=[
+{id:1,name:'أساسيات التصوير الفوتوغرافي',category:'تصوير وإبداع',status:'todo',instructor:'Skillshare',start:'2025-03-10',end:'2025-04-10',review:'2025-03-10',rating:4.7,progress:0,image:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=80',symbol:'📷',learned:['فهم مثلث التعريض: فتحة العدسة وسرعة الغالق وISO.','استخدام الضوء الطبيعي لصناعة صور متوازنة.','تجربة زوايا مختلفة قبل تثبيت التكوين.'],description:'مدخل عملي لفهم الكاميرا والتكوين والإضاءة، مع تمارين بسيطة تساعد على بناء عين تصويرية أكثر وعيًا.',sections:[['مثلث التعريض',['فتحة العدسة تتحكم في عمق المجال.','سرعة الغالق تؤثر في تجميد الحركة أو إظهارها.','ISO أعلى يزيد الحساسية وقد يضيف تشويشًا.']],['قواعد التكوين',['قاعدة الأثلاث نقطة بداية وليست قانونًا ثابتًا.','انتبه للخلفية والمساحة السلبية.']]]},
+{id:2,name:'إنتاجية عالية في العمل والدراسة',category:'إنتاجية وإدارة وقت',status:'progress',instructor:'Udemy',start:'2025-02-01',end:'2025-03-01',review:'2025-02-18',rating:4.6,progress:62,image:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',symbol:'⏱️',learned:['قسّم المشاريع الكبيرة إلى خطوات صغيرة قابلة للتنفيذ.','حدّد أهم ثلاث أولويات لليوم.','اجمع المهام المتشابهة لتقليل التنقل الذهني.'],description:'استراتيجيات عملية لبناء نظام عمل يومي يساعد على التركيز وتقليل التشتت وإنجاز المهم أولًا.',sections:[['إدارة الأولويات',['ميّز بين المهم والعاجل.','خصص وقتًا للعمل العميق دون إشعارات.']],['مراجعة أسبوعية',['راجع ما أنجزته وما تعطل.','حوّل الدروس المستفادة إلى تعديلات صغيرة في خطتك.']]]},
+{id:3,name:'إدارة التوتر والرفاه',category:'صحة نفسية',status:'done',instructor:'Coursera',start:'2025-01-10',end:'2025-01-25',review:'2025-02-02',rating:4.8,progress:100,image:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',symbol:'🌿',learned:['التنفس البطيء يساعد على تهدئة الاستجابة الجسدية للتوتر.','تسمية الشعور تجعل التعامل معه أوضح.','النوم والحركة والراحة أساسيات وليست رفاهية.'],description:'مقدمة في فهم مصادر التوتر وبناء عادات يومية تدعم التوازن والرفاه النفسي.',sections:[['أدوات يومية',['جرّب التوقف لدقيقة وملاحظة التنفس.','اكتب ما تستطيع التحكم فيه وما لا تستطيع.']],['مقارنة سريعة',[ 'الاستجابة التلقائية قد تزيد الضغط.','الاستجابة الواعية تتيح اختيار خطوة صغيرة مناسبة.']]]},
+{id:4,name:'مهارات التواصل الفعّال',category:'تواصل وقيادة',status:'done',instructor:'LinkedIn Learning',start:'2024-11-15',end:'2024-12-14',review:'2025-01-05',rating:4.5,progress:100,image:'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80',symbol:'💬',learned:['الاستماع الفعّال يتطلب الانتباه وعدم المقاطعة.','اسأل أسئلة مفتوحة لتوضيح المقصود.','قدّم الملاحظات حول السلوك لا الشخص.'],description:'تطوير مهارات الاستماع والتعبير الواضح والتعاون في بيئة العمل.',sections:[['الاستماع',['أعد صياغة ما فهمته قبل تقديم الرد.','لاحظ نبرة الصوت ولغة الجسد.']],['تقديم الملاحظات',['اذكر موقفًا محددًا وأثره.','اقترح خطوة عملية قابلة للتجربة.']]]},
+{id:5,name:'التفكير الإبداعي وحل المشكلات',category:'مهارات ناعمة',status:'progress',instructor:'Udemy',start:'2025-01-20',end:'2025-02-20',review:'2025-02-12',rating:4.4,progress:48,image:'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80',symbol:'💡',learned:['افصل بين توليد الأفكار وتقييمها.','عرّف المشكلة قبل القفز إلى الحل.','اختبر الفكرة بنموذج صغير قبل التوسع.'],description:'طرق عملية لتوسيع الخيارات وتحليل المشكلة واختيار حلول يمكن اختبارها.',sections:[['خطوات الحل',['اكتب المشكلة في جملة واضحة.','ولّد عدة حلول دون تقييم فوري.','اختبر الحل الأقل تكلفة والأسرع تعلّمًا.']],['مثال تطبيقي',['بدلًا من قول «التفاعل ضعيف»، اسأل: في أي خطوة يتوقف المستخدمون؟']]]},
+{id:6,name:'تطوير العادات الإيجابية',category:'صحة نفسية',status:'todo',instructor:'Coursera',start:'2025-04-01',end:'2025-04-21',review:'—',rating:4.3,progress:0,image:'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=900&q=80',symbol:'🌱',learned:['ابدأ بعادة صغيرة يسهل تكرارها.','اربط العادة الجديدة بإشارة موجودة في يومك.','تابع الاستمرارية بدل انتظار الكمال.'],description:'تصميم عادات مستدامة بالاعتماد على خطوات صغيرة وبيئة تساعد على الاستمرار.',sections:[['بناء العادة',['اجعل السلوك واضحًا وصغيرًا.','جهّز البيئة لتسهيل السلوك المرغوب.']],['المتابعة',['إذا فاتك يوم، ارجع في اليوم التالي دون جلد الذات.']]]},
+{id:7,name:'التواصل والقيادة للفِرق',category:'تواصل وقيادة',status:'done',instructor:'LinkedIn Learning',start:'2024-10-01',end:'2024-10-30',review:'2025-01-12',rating:4.7,progress:100,image:'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',symbol:'🤝',learned:['وضوح الأدوار يقلل تكرار الجهد.','الاجتماع الجيد ينتهي بقرارات ومسؤوليات واضحة.','الأمان النفسي يساعد الفريق على مشاركة المخاطر مبكرًا.'],description:'مبادئ قيادة الفريق وتيسير التعاون واتخاذ القرار بصورة واضحة.',sections:[['اجتماعات فعالة',['حدد هدف الاجتماع مسبقًا.','اختم بالخطوة التالية والمسؤول والموعد.']],['قيادة الفريق',['اطلب الآراء المختلفة.','تابع التقدم دون إدارة دقيقة لكل تفصيل.']]]},
+{id:8,name:'التخطيط الأسبوعي وإدارة الوقت',category:'إنتاجية وإدارة وقت',status:'progress',instructor:'Udemy',start:'2025-03-01',end:'2025-03-15',review:'2025-03-04',rating:4.6,progress:35,image:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80',symbol:'🗓️',learned:['خطط على أساس الوقت المتاح فعلًا.','اترك مساحة للطوارئ بين المهام.','راجع نهاية الأسبوع لتقدير الجهد بشكل أفضل.'],description:'بناء خطة أسبوعية واقعية تجمع بين الأولويات والمرونة ومراجعة الإنجاز.',sections:[['خريطة الأسبوع',['ابدأ بالمواعيد الثابتة.','وزّع المهام الكبيرة على فترات متعددة.']],['مراجعة الخطة',['قارن الوقت المتوقع بالفعلي وعدّل تقديراتك.']]]},
+{id:9,name:'مبادئ التصميم البصري',category:'تصوير وإبداع',status:'done',instructor:'Skillshare',start:'2024-09-05',end:'2024-09-25',review:'2024-10-01',rating:4.9,progress:100,image:'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80',symbol:'🎨',learned:['التباين يوجّه الانتباه إلى الأهم.','التكرار يصنع اتساقًا بصريًا.','المساحات الفارغة تساعد على وضوح المحتوى.'],description:'أساسيات التكوين والتباين والتسلسل الهرمي البصري لتصميم واجهات واضحة.',sections:[['مبادئ أساسية',['استخدم أحجامًا محدودة للعناوين.','حافظ على اتساق المسافات والألوان.']],['مقارنة',['واجهة مزدحمة: عناصر كثيرة تتنافس.','واجهة منظمة: تسلسل واضح ومساحة تنفس.']]]},
+{id:10,name:'التركيز والعمل العميق',category:'إنتاجية وإدارة وقت',status:'todo',instructor:'Coursera',start:'2025-05-01',end:'2025-05-20',review:'—',rating:4.5,progress:0,image:'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80',symbol:'🎯',learned:['خصص جلسات تركيز قصيرة كبداية.','أبعد الهاتف عن مجال النظر.','دوّن المشتتات بدل متابعتها فورًا.'],description:'استراتيجيات لبناء فترات تركيز ذات جودة عالية وتقليل التشتت الرقمي.',sections:[['جلسة تركيز',['حدد نتيجة واحدة للجلسة.','أغلق التنبيهات غير الضرورية.','خذ استراحة قصيرة بعد الجلسة.']],['قياس التقدم',['قِس عدد الجلسات الجيدة بدل ساعات الجلوس فقط.']]]}
+];
+ 
+const baseCategories=['إنتاجية وإدارة وقت','مهارات ناعمة','تواصل وقيادة','تصوير وإبداع','صحة نفسية'];
+const STORAGE_KEY='learnly_courses_v2';
+const THEME_KEY='learnly_theme_v1';
+let activeCategory='الكل',currentCourseId=null;
+const $=s=>document.querySelector(s);
+const statusNames={todo:'لم تبدأ',progress:'قيد التنفيذ',done:'تم'};
+const statusClasses={todo:'todo',progress:'progress',done:'done'};
+const fmt=d=>!d||d==='—'?'—':new Date(d+'T00:00:00').toLocaleDateString('ar',{year:'numeric',month:'2-digit',day:'2-digit'});
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function safeUrl(value,{image=false}={}){const v=String(value||'').trim();if(!v)return '';if(image&&/^data:image\/(?:jpeg|png|webp|gif);base64,/i.test(v))return v;try{const u=new URL(v,location.href);return ['http:','https:'].includes(u.protocol)?v:''}catch{return ''}}
+function normalizeCourse(c,i){c=c&&typeof c==='object'?c:{};const rating=Number(c.rating),progress=Number(c.progress);return {id:Number.isSafeInteger(Number(c.id))&&Number(c.id)>0?Number(c.id):Date.now()+i,name:String(c.name||'كورس جديد').slice(0,180),category:String(c.category||'غير مصنف').slice(0,100),status:['todo','progress','done'].includes(c.status)?c.status:'todo',instructor:String(c.instructor||'').slice(0,180),start:isValidDate(c.start)?String(c.start):'',end:isValidDate(c.end)?String(c.end):'',review:isValidDate(c.review)?String(c.review):'',rating:Number.isFinite(rating)?Math.max(0,Math.min(5,rating)):0,progress:c.status==='done'?100:Number.isFinite(progress)?Math.max(0,Math.min(100,progress)):0,image:safeUrl(c.image,{image:true}),link:safeUrl(c.link),symbol:String(c.symbol||'🎓').slice(0,12),learned:Array.isArray(c.learned)?c.learned.slice(0,500).map(x=>String(x).slice(0,2000)):[],description:String(c.description||'').slice(0,10000),sections:Array.isArray(c.sections)?c.sections.slice(0,200).filter(Array.isArray).map(s=>[String(s[0]||'').slice(0,300),Array.isArray(s[1])?s[1].slice(0,500).map(x=>String(x).slice(0,2000)):[]]):[]}}
+function isValidDate(value){if(value==null||value===''||value==='—')return true;const v=String(value).trim();const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v);if(!m)return false;const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]);const dt=new Date(Date.UTC(y,mo-1,d));return dt.getUTCFullYear()===y&&dt.getUTCMonth()===mo-1&&dt.getUTCDate()===d}
+function uniqueCourseIds(list){const used=new Set();return list.map((c,i)=>{let id=c.id;if(used.has(id)){id=Date.now()+i;while(used.has(id))id++;c={...c,id}}used.add(c.id);return c})}
+function saveCourses(){try{const payload=JSON.stringify(courses);localStorage.setItem(STORAGE_KEY,payload);const check=localStorage.getItem(STORAGE_KEY);if(check!==payload)throw new Error('Storage verification failed');return true}catch(e){showToast('تعذر حفظ التغييرات في المتصفح. جرّب فتح البرنامج من نفس المتصفح، وتأكد من عدم استخدام وضع التصفح الخفي أو امتلاء مساحة التخزين.');return false}}
+function loadCourses(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))courses=uniqueCourseIds(parsed.map(normalizeCourse))}}catch(e){showToast('تعذر قراءة البيانات المحفوظة؛ تم تحميل البيانات الافتراضية.')}}
+function allCategories(){return ['الكل',...new Set([...baseCategories,...courses.map(c=>c.category).filter(Boolean)])]}
+function renderChips(){const cats=allCategories();if(!cats.includes(activeCategory))activeCategory='الكل';$('#categoryChips').innerHTML=cats.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');$('#categoryChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{activeCategory=b.dataset.cat;renderChips();renderCourses()});$('#categoryOptions').innerHTML=cats.filter(c=>c!=='الكل').map(c=>`<option value="${esc(c)}"></option>`).join('')}
+function getFiltered(){const q=$('#searchInput').value.trim().toLowerCase(),st=$('#statusFilter').value,sort=$('#sortSelect').value;let list=courses.filter(c=>(activeCategory==='الكل'||c.category===activeCategory)&&(st==='all'||c.status===st)&&(`${c.name} ${c.instructor} ${c.category} ${c.description}`.toLowerCase().includes(q)));list.sort((a,b)=>sort==='rating'?b.rating-a.rating:sort==='name'?a.name.localeCompare(b.name,'ar'):sort==='oldest'?(a.start||'').localeCompare(b.start||''):((b.start||'').localeCompare(a.start||'')));return list}
+function renderCourses(){const list=getFiltered();$('#courseGrid').innerHTML=list.length?list.map(c=>`<article class="course-card" data-id="${c.id}"><div class="course-cover">${c.image?`<img loading="lazy" src="${esc(c.image)}" alt="غلاف ${esc(c.name)}" onerror="this.style.display='none'">`:`<div class="no-image">${esc(c.symbol||'🎓')}</div>`}<div class="cover-overlay"></div><span class="status ${statusClasses[c.status]}">${statusNames[c.status]}</span><span class="cover-symbol">${esc(c.symbol||'🎓')}</span></div><div class="card-body"><span class="cat-label">${esc(c.category)}</span><h3 class="card-title">${esc(c.name)}</h3><div class="instructor">${c.instructor?'بواسطة '+esc(c.instructor):'لم يحدد المقدم'}</div>${c.status==='progress'?`<div class="progressbar" aria-label="نسبة الإنجاز ${c.progress}%"><span style="width:${c.progress}%"></span></div>`:''}<div class="meta-row"><span>◷ ${fmt(c.start)}</span><span class="rating">★ ${Number(c.rating).toFixed(1)}</span></div><div class="card-foot"><button class="btn btn-primary open-course" data-open="${c.id}">عرض التفاصيل ←</button><button class="btn btn-secondary platform" data-platform="${c.id}" title="فتح رابط المنصة">↗</button></div></div></article>`).join(''):'<div class="empty">لا توجد كورسات تطابق البحث أو الفلاتر الحالية.<br><button class="btn btn-secondary" style="margin-top:12px" id="clearFilters">مسح الفلاتر</button></div>';
+$('#courseGrid').querySelectorAll('[data-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();openDetail(+b.dataset.open)});
+$('#courseGrid').querySelectorAll('[data-platform]').forEach(b=>b.onclick=e=>{e.stopPropagation();const c=courses.find(x=>x.id===+b.dataset.platform);openLink(c)});
+$('#clearFilters')?.addEventListener('click',()=>{$('#searchInput').value='';$('#statusFilter').value='all';activeCategory='الكل';renderChips();renderCourses()})}
+function renderStats(){const total=courses.length,done=courses.filter(c=>c.status==='done').length,prog=courses.filter(c=>c.status==='progress').length,todo=courses.filter(c=>c.status==='todo').length;$('#totalCount').textContent=total;$('#doneCount').textContent=done;$('#progressCount').textContent=prog;$('#donutTotal').textContent=total;const p1=total?done/total*100:0,p2=total?(done+prog)/total*100:0;$('#donutChart').style.background=`conic-gradient(var(--green) 0 ${p1}%,var(--orange) ${p1}% ${p2}%,#a5adbb ${p2}% 100%)`;$('#statusLegend').innerHTML=`<span><i class="dot" style="background:var(--green)"></i> مكتملة <b>${done}</b></span><span><i class="dot" style="background:var(--orange)"></i> قيد التنفيذ <b>${prog}</b></span><span><i class="dot" style="background:#a5adbb"></i> لم تبدأ <b>${todo}</b></span>`;const cats=allCategories().filter(c=>c!=='الكل');$('#categoryBars').innerHTML=cats.map(c=>{const n=courses.filter(x=>x.category===c).length;return `<div class="bar-row"><span>${esc(c)}</span><div class="bar-track"><span style="width:${total?n/total*100:0}%"></span></div><b>${n}</b></div>`}).join('')||'<p class="editor-help">أضف كورسات لعرض الإحصائيات.</p>'}
+function refresh(){renderChips();renderCourses();renderStats();}
+function openLink(c){if(c?.link){window.open(c.link,'_blank','noopener,noreferrer')}else showToast('أضف رابط الكورس من زر تعديل أولًا.')}
+function openDetail(id,fromHistory=false){const c=courses.find(x=>x.id===id);if(!c)return;currentCourseId=id;if(!fromHistory){history.pushState({learnlyDetail:id},'',`#course-${id}`)}$('#mainPage').style.display='none';$('#detailView').style.display='block';window.scrollTo({top:0,behavior:'smooth'});$('#detailContent').innerHTML=`<div class="detail-layout"><article class="detail-main"><div class="detail-cover">${c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.style.display='none'">`:''}<span class="status ${statusClasses[c.status]}">${statusNames[c.status]}</span></div><div class="detail-content"><span class="cat-label">${esc(c.category)}</span><h1>${esc(c.name)}</h1><div class="instructor">${esc(c.instructor)} · <span class="rating">★ ${Number(c.rating).toFixed(1)}</span></div><p>${esc(c.description)}</p><div class="learned"><h3>✦ أهم ما تعلمته</h3><div class="learned-body" id="learnedBody"><ul>${c.learned.length?c.learned.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>لم تتم إضافة نقاط بعد. استخدم زر تعديل الكورس لتوثيق ما تعلمته.</li>'}</ul></div><button type="button" class="learned-more" id="learnedMore" ${!c.learned.length?'hidden':''}>قراءة المزيد</button></div>${c.sections.map(([title,items])=>`<h3>${esc(title)}</h3><ul>${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`).join('')}<div class="card-foot"><button class="btn btn-primary" id="detailOpenLink">↗ فتح الكورس</button></div></div></article><aside class="detail-side"><h3>معلومات الكورس</h3><div class="detail-info"><div class="info-row"><span>المقدم</span><b>${esc(c.instructor||'—')}</b></div><div class="info-row"><span>تاريخ البدء</span><b>${fmt(c.start)}</b></div><div class="info-row"><span>تاريخ الانتهاء</span><b>${fmt(c.end)}</b></div><div class="info-row"><span>الحالة</span><b>${statusNames[c.status]}</b></div><div class="info-row"><span>التصنيف</span><b>${esc(c.category)}</b></div><div class="info-row"><span>آخر مراجعة</span><b>${fmt(c.review)}</b></div><div class="info-row"><span>التقييم</span><b class="rating">★ ${Number(c.rating).toFixed(1)} / 5</b></div><div class="info-row"><span>التقدم</span><b>${c.progress}%</b></div></div><button class="btn btn-primary" id="editCourseFromDetail">✎ تعديل الكورس</button></aside></div>`;const learnedMore=$('#learnedMore'),learnedBody=$('#learnedBody');if(learnedMore&&learnedBody){requestAnimationFrame(()=>{learnedMore.hidden=learnedBody.scrollHeight<=learnedBody.clientHeight+2;});learnedMore.onclick=()=>{const expanded=learnedBody.classList.toggle('expanded');learnedMore.textContent=expanded?'عرض أقل':'قراءة المزيد';};}$('#detailOpenLink').onclick=()=>openLink(c);$('#editCourseFromDetail').onclick=()=>openEditor(c.id);}
+function backHome(fromHistory=false){$('#detailView').style.display='none';$('#mainPage').style.display='block';currentCourseId=null;if(location.hash.startsWith('#course-')||history.state?.learnlyDetail)history.replaceState({},'',location.pathname+location.search);window.scrollTo({top:0,behavior:'smooth'})}
+window.addEventListener('popstate',()=>{if($('#detailView').style.display==='block')backHome(true)})
+function showToast(msg){let t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('show'),3000)}
+function openEditor(id=null){const c=id?courses.find(x=>x.id===id):null;$('#courseForm').reset();$('#editId').value=c?c.id:'';$('#editorTitle').textContent=c?'تعديل الكورس':'إضافة كورس جديد';$('#fName').value=c?.name||'';$('#fInstructor').value=c?.instructor||'';$('#fCategory').value=c?.category||baseCategories[0];$('#fStatus').value=c?.status||'todo';$('#fStart').value=c?.start||'';$('#fEnd').value=c?.end||'';$('#fReview').value=c?.review&&c.review!=='—'?c.review:'';$('#fRating').value=c?.rating??0;$('#fProgress').value=c?.progress??0;$('#fLink').value=c?.link||'';$('#fImage').value=c?.image?.startsWith('data:')?'':(c?.image||'');$('#fImage').dataset.dataImage=c?.image?.startsWith('data:')?c.image:'';$('#fImageFile').value='';$('#fDescription').value=c?.description||'';$('#fLearned').value=(c?.learned||[]).join('\n');$('#fSections').value=(c?.sections||[]).map(s=>`${s[0]} | ${s[1].join('؛ ')}`).join('\n');$('#editorBackdrop').classList.add('open');$('#editorBackdrop').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>$('#fName').focus(),50)}
+function closeEditor(){$('#editorBackdrop').classList.remove('open');$('#editorBackdrop').setAttribute('aria-hidden','true');document.body.style.overflow=''}
+function parseSections(text){return text.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{const i=line.indexOf('|');if(i<0)return [line,[]];return [line.slice(0,i).trim(),line.slice(i+1).split(/[؛;]/).map(x=>x.trim()).filter(Boolean)]})}
+$('#courseForm').addEventListener('submit',e=>{e.preventDefault();const oldId=$('#editId').value;const status=$('#fStatus').value;let image=safeUrl($('#fImage').dataset.dataImage||$('#fImage').value.trim(),{image:true});const course=normalizeCourse({id:oldId?Number(oldId):Date.now(),name:$('#fName').value.trim(),instructor:$('#fInstructor').value.trim(),category:$('#fCategory').value.trim(),status,start:$('#fStart').value,end:$('#fEnd').value,review:$('#fReview').value,rating:$('#fRating').value,progress:status==='done'?100:$('#fProgress').value,image,link:safeUrl($('#fLink').value.trim()),symbol:'🎓',description:$('#fDescription').value.trim(),learned:$('#fLearned').value.split('\n').map(x=>x.trim()).filter(Boolean),sections:parseSections($('#fSections').value)});if(!course.name||!course.category){showToast('يرجى إدخال اسم الكورس والتصنيف.');return}if($('#fLink').value.trim()&&!course.link){showToast('رابط الكورس غير صالح؛ استخدم رابطًا يبدأ بـ https:// أو http://.');return}if($('#fImage').value.trim()&&!course.image){showToast('رابط الصورة غير صالح؛ استخدم رابطًا يبدأ بـ https:// أو http://.');return}const previousCourses=courses.map(c=>({...c}));if(oldId){const i=courses.findIndex(c=>c.id===Number(oldId));if(i>=0)courses[i]=course}else courses.unshift(course);if(!saveCourses()){courses=previousCourses;return}closeEditor();refresh();if(currentCourseId&&oldId&&currentCourseId===Number(oldId))openDetail(course.id);showToast(oldId?'تم حفظ تعديلات الكورس والتواريخ.':'تمت إضافة الكورس والتواريخ بنجاح.')});
+function renderDeleteManagement(){const box=$('#deleteCoursesList');if(!box)return;box.innerHTML=courses.length?courses.map(c=>`<div class="manage-course-row"><span>${esc(c.name)}</span><button class="btn btn-danger" data-delete-course="${c.id}">حذف</button></div>`).join(''):'<p class="editor-help">لا توجد كورسات لحذفها.</p>';box.querySelectorAll('[data-delete-course]').forEach(b=>b.onclick=()=>deleteCourse(Number(b.dataset.deleteCourse)))}
+function deleteCourse(id){const c=courses.find(x=>x.id===id);if(!c)return;if(!confirm(`هل تريد حذف كورس «${c.name}» نهائيًا؟ يمكنك الاحتفاظ بنسخة عبر التصدير أولًا.`))return;courses=courses.filter(x=>x.id!==id);saveCourses();if(currentCourseId===id)backHome();refresh();renderDeleteManagement();showToast('تم حذف الكورس.')}
+function exportData(){try{const payload={app:'Learnly',version:3,exportedAt:new Date().toISOString(),courses};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Learnly-backup-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('تم تجهيز نسخة احتياطية من الكورسات.')}catch(e){showToast('تعذر إنشاء النسخة الاحتياطية. حاول مرة أخرى.')}}
+function importData(file){if(!file)return;if(file.size>25*1024*1024){showToast('حجم الملف أكبر من الحد المسموح (25 MB).');return}if(!/\.json$/i.test(file.name)&&file.type!=='application/json'){showToast('اختر ملف نسخة احتياطية بصيغة JSON.');return}const reader=new FileReader();reader.onerror=()=>showToast('تعذرت قراءة الملف.');reader.onload=()=>{try{const parsed=JSON.parse(reader.result);const list=Array.isArray(parsed)?parsed:parsed?.courses;if(!Array.isArray(list)||list.length>5000)throw new Error('invalid');if(!list.every(c=>c&&typeof c==='object'&&!Array.isArray(c)))throw new Error('invalid');const imported=uniqueCourseIds(list.map(normalizeCourse));if(!imported.length){showToast('النسخة الاحتياطية لا تحتوي على كورسات.');return}if(!confirm(`سيتم استبدال المكتبة الحالية بـ ${imported.length} كورس من الملف. يُنصح بتصدير نسخة من مكتبتك الحالية أولًا. هل تريد المتابعة؟`))return;const previous=courses;courses=imported;if(!saveCourses()){courses=previous;return}activeCategory='الكل';backHome();refresh();showToast('تم استيراد البيانات بنجاح.')}catch(e){showToast('الملف غير صالح أو لا يتوافق مع بنية Learnly. لم يتم تغيير بياناتك.')}};reader.readAsText(file)}
+function resizeImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.82))};img.src=reader.result};reader.readAsDataURL(file)})}
+$('#fImageFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('اختر ملف صورة صالحًا.');return}try{const data=await resizeImage(file);$('#fImage').value='';$('#fImage').dataset.dataImage=data;showToast('تم تجهيز الصورة؛ احفظ الكورس لتطبيقها.')}catch(err){showToast('تعذر قراءة الصورة. جرّب صورة أخرى.')}});
+$('#fImage').addEventListener('input',()=>{$('#fImage').dataset.dataImage=''});
+$('#addCourseBtn').onclick=()=>openEditor();$('#exportBtn').onclick=exportData;$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').addEventListener('change',e=>{importData(e.target.files[0]);e.target.value='';closeSettings()});$('#toggleDeleteCourses').onclick=()=>{const panel=$('#deleteCoursesPanel'),button=$('#toggleDeleteCourses'),open=panel.hidden;panel.hidden=!open;button.setAttribute('aria-expanded',String(open));$('#deleteToggleIcon').textContent=open?'−':'＋';if(open)renderDeleteManagement()};$('#settingsBtn').onclick=()=>{const panel=$('#deleteCoursesPanel');if(panel){panel.hidden=true;$('#toggleDeleteCourses').setAttribute('aria-expanded','false');$('#deleteToggleIcon').textContent='＋'}const b=$('#settingsBackdrop');b.classList.add('open');b.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'};function closeSettings(){const b=$('#settingsBackdrop');b.classList.remove('open');b.setAttribute('aria-hidden','true');document.body.style.overflow=''}$('#closeSettings').onclick=closeSettings;$('#settingsBackdrop').addEventListener('click',e=>{if(e.target===$('#settingsBackdrop'))closeSettings()});$('#closeEditor').onclick=closeEditor;$('#cancelEditor').onclick=closeEditor;$('#editorBackdrop').addEventListener('click',e=>{if(e.target===$('#editorBackdrop'))closeEditor()});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEditor();closeSettings()}});
+$('#backBtn').onclick=backHome;$('#searchInput').addEventListener('input',renderCourses);$('#statusFilter').onchange=renderCourses;$('#sortSelect').onchange=renderCourses;function focusSearch(){$('#mainPage').style.display='block';$('#detailView').style.display='none';document.querySelector('#courses').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('#searchInput').focus(),350)}$('#focusSearch').onclick=focusSearch;$('#heroSearch').onclick=focusSearch;
+function applyTheme(theme){document.body.classList.toggle('dark',theme==='dark');document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#0b1223':'#f7f8fc';localStorage.setItem(THEME_KEY,theme)}const savedTheme=localStorage.getItem(THEME_KEY);if(savedTheme)document.body.classList.toggle('dark',savedTheme==='dark');$('#themeToggle').onclick=()=>{const next=document.body.classList.contains('dark')?'light':'dark';applyTheme(next);showToast(next==='dark'?'تم تفعيل الوضع الداكن':'تم تفعيل الوضع الفاتح')};
+$('#year').textContent=new Date().getFullYear();loadCourses();refresh();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
