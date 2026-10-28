@@ -1028,33 +1028,12 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <div class="sheet">
     <div class="sheet-head"><h2 id="setTitle" style="margin:0;font-size:1.2rem">الإعدادات</h2><button class="icon-btn" id="setClose" aria-label="إغلاق">✕</button></div>
 
-    <h3>الساعة والتاريخ</h3>
-    <div class="srow"><div><b>نظام الساعة</b></div>
-      <div class="seg" data-setting="clockFmt" role="group" aria-label="نظام الساعة"><button type="button" data-val="12">12 ساعة</button><button type="button" data-val="24">24 ساعة</button></div></div>
-    <div class="srow"><div><b>إظهار الثواني</b></div><button type="button" class="sw" role="switch" data-setting="showSec" aria-label="إظهار الثواني"></button></div>
-    <div class="srow"><div><b>التاريخ الهجري</b></div><button type="button" class="sw" role="switch" data-setting="showHijri" aria-label="إظهار التاريخ الهجري"></button></div>
-
     <h3>التقويم والمظهر</h3>
     <div class="srow"><div><b>بداية الأسبوع</b></div>
       <div class="seg" data-setting="weekStart" role="group" aria-label="بداية الأسبوع"><button type="button" data-val="6">السبت</button><button type="button" data-val="0">الأحد</button><button type="button" data-val="1">الاثنين</button></div></div>
     <div class="srow"><div><b>المظهر</b></div>
       <div class="seg" data-setting="theme" role="group" aria-label="المظهر"><button type="button" data-val="auto">تلقائي</button><button type="button" data-val="light">فاتح</button><button type="button" data-val="dark">داكن</button></div></div>
 
-
-    <h3>تخصيص الهوية</h3>
-    <div class="srow"><div><b>صورة شعار LUBB</b><p class="sub">اضغط على أي شعار في الصفحة لاختيار صورة أو إزالتها</p></div><button type="button" class="abtn" id="logoChoose">اختيار صورة</button></div>
-    <input type="file" id="logoFile" accept="image/*" hidden>
-    <div class="srow" id="logoActions" hidden><div><b>الشعار الحالي</b></div><button type="button" class="abtn danger" id="logoRemove">إزالة</button></div>
-
-    <h3>تخصيص بطاقة الساعة</h3>
-    <div class="srow"><div><b>محرر بطاقة الساعة</b><p class="sub">افتح البطاقة واسحب عناصرها باللمس لتغيير أماكنها</p></div><button type="button" class="abtn" id="openClockEditor">فتح التخصيص</button></div>
-    <div class="srow"><div><b>لون خلفية البطاقة</b><p class="sub">اختر لونًا أو استخدم صورة كخلفية</p></div><input type="color" id="heroColor" value="#312E81" aria-label="لون خلفية بطاقة الساعة" style="width:54px;height:38px;border:0;background:transparent"></div>
-    <div class="srow"><div><b>صورة خلفية البطاقة</b></div><button type="button" class="abtn" id="heroBgChoose">اختيار صورة</button></div>
-    <input type="file" id="heroBgFile" accept="image/*" hidden>
-    <div class="srow"><div><b>تكبير أو تصغير عناصر البطاقة</b><p class="sub">حجم الساعة والتاريخ وبقية العناصر</p></div><input type="range" id="heroScale" min="75" max="125" value="100" step="5" aria-label="حجم عناصر البطاقة" style="max-width:130px"></div>
-    <div class="srow"><div><b>موضع الساعة</b></div><div class="seg" id="clockPosition"><button type="button" data-pos="start">يمين</button><button type="button" data-pos="center">وسط</button><button type="button" data-pos="end">يسار</button></div></div>
-    <div class="srow"><div><b>موضع التاريخ</b></div><div class="seg" id="datePosition"><button type="button" data-pos="start">يمين</button><button type="button" data-pos="center">وسط</button><button type="button" data-pos="end">يسار</button></div></div>
-    <div class="srow"><div><b>إعادة ضبط بطاقة الساعة</b><p class="sub">إرجاع الألوان والأحجام والمواضع الافتراضية</p></div><button type="button" class="abtn" id="heroReset">إعادة ضبط</button></div>
 
     <h3>البيانات</h3>
     <div class="srow"><div><b>نسخة احتياطية</b><p class="sub" id="lastBackupTxt">تحميل ملف ببياناتك</p></div><button type="button" class="abtn" id="export">تحميل</button></div>
@@ -1063,10 +1042,11 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
     <p class="setmsg" id="setMsg" aria-live="polite"></p>
     <p class="about">LUBB • تُحفظ بياناتك تلقائيًا على هذا الجهاز.</p>
-    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 57">الإصدار V57</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
+    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 58">الإصدار V58</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
   </div>
 </div>
 </div>
+<input type="file" id="logoFile" accept="image/*" hidden>
 
 <div class="overlay" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
   <div class="sheet">
@@ -1995,7 +1975,10 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
   clone.querySelectorAll('button,a,input').forEach(el=>{el.style.pointerEvents='none'});}
  function enableDrag(){preview?.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-drag-key]');if(!el)return;e.preventDefault();const box=preview.getBoundingClientRect();el.setPointerCapture?.(e.pointerId);const move=ev=>{const x=Math.max(5,Math.min(95,(ev.clientX-box.left)/box.width*100));const y=Math.max(8,Math.min(92,(ev.clientY-box.top)/box.height*100));el.style.left=x+'%';el.style.top=y+'%';cfg.elementPositions[el.dataset.dragKey]={x:Math.round(x*10)/10,y:Math.round(y*10)/10};persist();apply()};const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up)};el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)});}
  enableDrag();
- $('#openClockEditor')?.addEventListener('click',()=>{refreshEditor();if(editor?.showModal)editor.showModal();else alert('يمكنك تغيير لون وخلفية البطاقة من إعدادات تخصيص بطاقة الساعة.');});
+ function openClockEditor(){refreshEditor();if(editor?.showModal)editor.showModal();else alert('متصفحك لا يدعم نافذة تخصيص الساعة.');}
+ $('#openClockEditor')?.addEventListener('click',openClockEditor);
+ const liveHero=$('.hero');
+ if(liveHero){liveHero.style.cursor='pointer';liveHero.setAttribute('tabindex','0');liveHero.setAttribute('role','button');liveHero.setAttribute('aria-label','اضغط لتخصيص بطاقة الساعة');liveHero.addEventListener('click',e=>{if(e.target.closest('a,button,input,select,textarea'))return;openClockEditor()});liveHero.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===liveHero){e.preventDefault();openClockEditor()}})}
  $('#closeClockEditor')?.addEventListener('click',()=>editor.close());
  $('#editorHeroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply();refreshEditor()});
  $('#editorHeroBgFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.heroBg=v);e.target.value=''});

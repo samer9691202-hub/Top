@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v57-touch-clock-editor';
+const CACHE = 'lubb-v58-clean-settings';
 const BASE = self.registration.scope;
 const FILES = [
   './',
