@@ -8,9 +8,9 @@
 <meta name="color-scheme" content="light dark">
 <title>LUBB</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" type="image/png" href="icons/lubb-logo-original.png">
-<link rel="alternate icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="alternate icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1989,6 +1989,22 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 })();
 </script>
 
+<style id="lubb-v60-glass-clock">
+/* بطاقة الساعة: تأثير زجاجي شفاف مع إبقاء الساعة ومعلوماتها */
+.hero{
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(124,58,237,.055))!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  box-shadow:0 18px 48px rgba(18,24,43,.10),inset 0 1px 0 rgba(255,255,255,.24)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%)!important;
+  backdrop-filter:blur(22px) saturate(145%)!important;
+}
+.hero::before,.hero::after{opacity:.12!important;pointer-events:none!important}
+.datepanel{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.23)!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important}
+:root:not([data-theme="dark"]) .hero{background:linear-gradient(135deg,rgba(255,255,255,.64),rgba(237,233,254,.30))!important;border-color:rgba(255,255,255,.72)!important;color:var(--ink)!important;box-shadow:0 18px 48px rgba(40,35,75,.09),inset 0 1px 0 rgba(255,255,255,.8)!important}
+:root:not([data-theme="dark"]) .hero .hm,:root:not([data-theme="dark"]) .hero .sec,:root:not([data-theme="dark"]) .hero .ap,:root:not([data-theme="dark"]) .hero .hero-title,:root:not([data-theme="dark"]) .hero .hero-subtitle{color:var(--ink)!important;text-shadow:none!important}
+:root:not([data-theme="dark"]) .hero .ap{background:rgba(124,58,237,.08)!important;border-color:rgba(124,58,237,.18)!important}
+:root:not([data-theme="dark"]) .hero .datepanel{background:rgba(255,255,255,.34)!important;border-color:rgba(100,116,139,.17)!important}
+</style>
 </body>
 </html>
 

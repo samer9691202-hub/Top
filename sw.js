@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v59-static-brand-clock';
+const CACHE = 'lubb-v60-glass-clock-browser-logo';
 const BASE = self.registration.scope;
 const FILES = [
   './',
