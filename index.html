@@ -8,8 +8,8 @@
 <meta name="color-scheme" content="light dark">
 <title>LUBB</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png?v=2">
-<link rel="apple-touch-icon" href="icons/icon-192.png?v=2">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -84,7 +84,7 @@ ul{margin:0;padding:0;list-style:none}
 .side-nav button:hover{background:var(--surface-3);color:var(--ink)}
 .side-nav button:active{transform:scale(.96)}
 .side-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.nav-brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(220,230,255,.5));border:1px solid rgba(255,255,255,.72);box-shadow:0 5px 15px rgba(91,75,220,.16);overflow:hidden}.nav-brand-mark img{width:100%;height:100%;object-fit:contain;padding:2px}
+.nav-brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;font-size:1.05rem}
 .side-nav .nav-brand{color:var(--ink)}
 .nav-brand-name{font-size:.6rem;letter-spacing:.12em;font-weight:700;color:var(--muted)}
 .nav-divider{background:var(--line)}
@@ -434,8 +434,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .wrap{max-width:1240px;padding-top:28px;padding-bottom:120px}
 .brandbar{display:flex;align-items:center;justify-content:space-between;gap:22px;margin:0 0 24px;padding:16px 18px;border:1px solid var(--line);border-radius:24px;background:color-mix(in srgb,var(--surface) 90%,transparent);box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .brand-lockup{display:flex;align-items:center;gap:12px;min-width:0;color:var(--ink);text-decoration:none}
-.brand-symbol{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(222,231,255,.62));border:1px solid rgba(255,255,255,.82);box-shadow:0 8px 18px -10px var(--accent);overflow:hidden}
-.brand-symbol img{width:100%;height:100%;object-fit:contain;padding:2px}
+.brand-symbol{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:16px;background:linear-gradient(135deg,#7C3AED,#3B82F6);color:white;box-shadow:0 8px 18px -10px var(--accent)}
+.brand-symbol svg{width:33px;height:33px}
 .brand-copy{display:grid;gap:0}
 .brand-copy strong{font-size:1.04rem;letter-spacing:.09em;font-weight:800;line-height:1.4}
 .brand-copy small{font-size:.76rem;color:var(--muted);font-weight:500}
@@ -491,7 +491,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
  .wrap{padding-inline:12px;padding-top:12px}
  .brandbar{padding:12px}
  .brand-symbol{width:43px;height:43px;border-radius:14px}
- .brand-symbol img{width:100%;height:100%;object-fit:contain;padding:2px}
+ .brand-symbol svg{width:29px;height:29px}
  .brand-copy strong{font-size:.98rem}
  .brand-copy small{font-size:.7rem}
  .brand-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
@@ -518,7 +518,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .side-nav>button:not(.nav-brand){margin-block:2px}
 .side-nav>button:not(.nav-brand):hover{transform:translateX(-3px);background:var(--accent-soft)!important;color:var(--accent)!important}
 .side-nav>button[aria-current="page"],.side-nav>button.active{background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--accent-2) 13%,transparent))!important;color:var(--accent)!important;box-shadow:inset -3px 0 0 var(--accent)}
-.side-nav .nav-brand-mark{background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(222,231,255,.58))!important;color:var(--ink)!important;box-shadow:0 8px 20px -8px var(--accent)!important}
+.side-nav .nav-brand-mark{background:linear-gradient(135deg,#7C3AED,#3B82F6)!important;color:#fff!important;box-shadow:0 8px 20px -8px var(--accent)!important}
 .report-panel{margin-top:16px;padding:clamp(14px,3vw,24px);border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,var(--surface),var(--surface-2));box-shadow:var(--shadow)}
 .report-export-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 16px;padding:10px 14px;border:1px solid var(--line-2);border-radius:12px;background:var(--surface-2);color:var(--muted);font-size:.82rem}.report-export-meta strong{color:var(--ink)}
 .report-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.report-head h3{font-size:1.25rem}.report-kicker{font-size:.68rem;letter-spacing:.14em;color:var(--accent);font-weight:800}.report-mark{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#7C3AED,#3B82F6);color:white;font-size:1.7rem;box-shadow:0 12px 24px -12px var(--accent)}
@@ -735,209 +735,6 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
  :root:not([data-theme="dark"]) .clock .sec{min-width:37px;min-height:32px;font-size:1rem}
 }
 @media(prefers-reduced-motion:reduce){:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{transition:none}}
-
-
-/* LUBB — redesigned “Orbit / Time Capsule” clock card */
-.hero{
-  --orbit-violet:#9b8cff;--orbit-cyan:#5be7df;--orbit-blue:#79a9ff;
-  position:relative;isolation:isolate;overflow:hidden;
-  display:grid;grid-template-areas:"main" "date" "prog";
-  gap:22px;padding:clamp(22px,3.2vw,38px);
-  color:#f7f8ff;border:1px solid rgba(205,221,255,.24)!important;
-  border-radius:32px!important;
-  background:
-    radial-gradient(ellipse at 82% 12%,rgba(93,220,228,.23),transparent 29%),
-    radial-gradient(ellipse at 12% 88%,rgba(143,101,255,.24),transparent 32%),
-    linear-gradient(135deg,#11182f 0%,#1b2450 48%,#172e4b 100%)!important;
-  box-shadow:0 28px 65px -30px rgba(30,42,91,.72),inset 0 1px 0 rgba(255,255,255,.15)!important;
-}
-.hero::before{
-  content:"";position:absolute;z-index:-1;pointer-events:none;
-  width:clamp(250px,42vw,470px);aspect-ratio:1;inset-block-start:-34%;inset-inline-end:-9%;
-  border-radius:50%;border:1px solid rgba(155,140,255,.25);
-  box-shadow:0 0 0 22px rgba(155,140,255,.035),0 0 0 54px rgba(91,231,223,.025),inset 0 0 65px rgba(91,231,223,.09);
-  background:radial-gradient(circle at 35% 38%,rgba(91,231,223,.15),transparent 60%);
-}
-.hero::after{
-  content:"";position:absolute;z-index:-1;pointer-events:none;
-  width:210px;height:210px;inset-block-end:-125px;inset-inline-start:28%;border-radius:50%;
-  background:rgba(121,169,255,.15);filter:blur(38px);
-}
-.hero>*{position:relative;z-index:1}
-.hero-main{grid-area:main;min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
-.hero-top{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:10px}
-.greet{display:flex;align-items:center;gap:10px;font-size:.96rem;font-weight:600;color:rgba(237,242,255,.88)}
-.greet .brand{padding:5px 12px;border-radius:999px;background:linear-gradient(135deg,rgba(155,140,255,.25),rgba(91,231,223,.12));border:1px solid rgba(201,215,255,.25);font-size:.72rem;font-weight:800;letter-spacing:.15em;color:#fff}
-.hero .clock{
-  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:12px;
-  width:clamp(238px,29vw,330px);aspect-ratio:1;margin:8px auto 2px;padding:28px;
-  border:1px solid rgba(207,224,255,.52)!important;border-radius:50%!important;
-  background:radial-gradient(circle at 32% 25%,rgba(255,255,255,.16),transparent 28%),radial-gradient(circle at 60% 70%,rgba(91,231,223,.18),transparent 46%),linear-gradient(145deg,rgba(92,100,188,.38),rgba(19,31,66,.76))!important;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.22),inset 0 -22px 45px rgba(4,10,29,.24),0 20px 42px rgba(2,7,24,.28),0 0 38px rgba(121,169,255,.13)!important;
-  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
-}
-.hero .clock::before{content:"";position:absolute;z-index:-1;inset:9px;border:1px solid rgba(219,231,255,.22);border-radius:50%;background:repeating-conic-gradient(from -3deg,rgba(226,236,255,.54) 0deg 1deg,transparent 1deg 15deg);mask:radial-gradient(circle,transparent 65%,#000 66%,#000 68%,transparent 69%);-webkit-mask:radial-gradient(circle,transparent 65%,#000 66%,#000 68%,transparent 69%)}
-.hero .clock::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid transparent;border-top-color:rgba(91,231,223,.85);border-left-color:rgba(155,140,255,.75);transform:rotate(-32deg);filter:drop-shadow(0 0 7px rgba(91,231,223,.45));pointer-events:none}
-.hero .hm{font-size:clamp(2.7rem,6.4vw,4.5rem);font-weight:700;line-height:1;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 3px 22px rgba(151,171,255,.24)}
-.hero .colon{opacity:.58;margin:0 .015em}
-.hero .clock .side{display:grid;gap:8px;justify-items:center;direction:rtl}
-.hero .clock .sec{display:grid;place-items:center;min-width:39px;min-height:34px;padding:4px 8px;border-radius:11px!important;background:linear-gradient(145deg,rgba(155,140,255,.34),rgba(91,231,223,.17))!important;border:1px solid rgba(220,232,255,.34)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)!important;color:#eafaff;font-size:1.08rem;font-weight:750}
-.hero .clock .ap{padding:3px 10px;border-radius:999px!important;background:rgba(236,243,255,.09)!important;border:1px solid rgba(220,232,255,.22)!important;color:#dfe8ff;font-size:.72rem;font-weight:800}
-.hero .datepanel{grid-area:date;align-self:center;min-width:0;min-height:180px;padding:24px;border-radius:25px!important;display:grid;align-content:center;gap:7px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035))!important;border:1px solid rgba(210,225,255,.19)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 35px rgba(3,8,26,.13)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.hero .datepanel::before{content:"التاريخ اليوم";display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:4px 10px;border-radius:999px;background:rgba(91,231,223,.10);border:1px solid rgba(91,231,223,.19);color:#9df4ed;font-size:.73rem;font-weight:700}
-.hero .wk{font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:800;line-height:1.25;color:#fff}
-.hero .gr{font-size:1rem;color:rgba(237,242,255,.84)}
-.hero .hij{margin-top:6px;padding-top:10px;border-top:1px solid rgba(221,232,255,.16);font-size:.86rem;color:rgba(220,231,255,.68)}
-.hero .dayprog{grid-area:prog;padding:17px 19px 14px;border-radius:20px;background:rgba(4,11,32,.26);border:1px solid rgba(207,224,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
-.hero .day-label{display:flex;justify-content:space-between;gap:12px;font-size:.82rem;color:rgba(228,236,255,.75);margin-bottom:11px}
-.hero .day-label b{color:#fff;font-variant-numeric:tabular-nums}
-.hero .day-track{height:8px;border-radius:999px;background:rgba(225,235,255,.12)!important;border:1px solid rgba(225,235,255,.09);overflow:hidden}
-.hero .day-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#a18bff 0%,#7da9ff 48%,#5be7df 100%)!important;box-shadow:0 0 18px rgba(91,231,223,.35);transition:width 1s linear}
-.hero .ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:.67rem;color:rgba(221,232,255,.52)}
-@media(min-width:760px){
-  .hero{grid-template-columns:minmax(0,1.15fr) minmax(230px,.85fr);grid-template-areas:"main date" "prog prog";gap:22px 34px;padding:34px 38px}
-  .hero-main{align-items:stretch}
-  .hero .clock{margin-inline:auto}
-  .hero .datepanel{min-height:230px}
-}
-@media(max-width:759px){
-  .hero{gap:17px;padding:23px 18px;border-radius:27px!important}
-  .hero-main{align-items:center}
-  .hero-top{justify-content:center;margin-bottom:6px}
-  .hero .clock{width:clamp(230px,72vw,300px);margin-top:12px}
-  .hero .datepanel{min-height:0;padding:19px 20px}
-  .hero .dayprog{padding:15px 14px 12px}
-}
-@media(max-width:360px){.hero .clock{width:218px;padding:20px}.hero .hm{font-size:2.55rem}.hero .clock .sec{min-width:33px;min-height:30px;font-size:.95rem}}
-@media(prefers-reduced-motion:reduce){.hero .day-fill{transition:none}}
-
-
-/* LUBB Glass Clock — refined single-side digital layout */
-.hero{
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-areas:"main" "prog"!important;
-  gap:18px!important;
-  padding:clamp(22px,4vw,38px)!important;
-  color:#f8faff!important;
-  border:1px solid rgba(255,255,255,.34)!important;
-  border-radius:30px!important;
-  background:
-    radial-gradient(ellipse at 88% 8%,rgba(107,231,239,.19),transparent 35%),
-    radial-gradient(ellipse at 8% 95%,rgba(179,120,255,.20),transparent 37%),
-    linear-gradient(135deg,rgba(255,255,255,.19),rgba(118,151,201,.13) 48%,rgba(255,255,255,.09))!important;
-  box-shadow:0 25px 60px rgba(37,53,91,.20),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.16)!important;
-  -webkit-backdrop-filter:blur(28px) saturate(165%)!important;
-  backdrop-filter:blur(28px) saturate(165%)!important;
-}
-.hero::before{width:290px!important;inset-block-start:-155px!important;inset-inline-end:-70px!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:0 0 0 18px rgba(255,255,255,.035),0 0 65px rgba(91,231,223,.12)!important;background:radial-gradient(circle,rgba(255,255,255,.13),transparent 68%)!important}
-.hero::after{width:240px!important;height:160px!important;inset-block-end:-95px!important;inset-inline-start:34%!important;background:linear-gradient(90deg,rgba(168,112,255,.18),rgba(91,231,223,.16))!important;filter:blur(35px)!important}
-.hero-main{grid-area:main!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;min-width:0!important}
-.hero-top{justify-content:flex-end!important;margin-bottom:4px!important}
-.greet{color:rgba(255,255,255,.76)!important}
-.greet .brand{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.18)!important;backdrop-filter:blur(12px)}
-.hero .clock{
-  width:auto!important;aspect-ratio:auto!important;align-self:flex-end!important;justify-content:flex-start!important;
-  margin:8px 0 13px!important;padding:0!important;gap:10px!important;direction:ltr!important;
-  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-}
-.hero .clock::before,.hero .clock::after{display:none!important;content:none!important}
-.hero .hm{font-size:clamp(3.1rem,9vw,5.3rem)!important;font-weight:650!important;letter-spacing:-.055em!important;line-height:1.02!important;color:#fff!important;text-shadow:0 3px 24px rgba(123,157,255,.28)!important;white-space:nowrap}
-.hero .clock .side{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-items:initial!important;gap:4px!important;direction:rtl!important}
-.hero .clock .sec{min-width:0!important;min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:.85rem!important;color:rgba(255,255,255,.7)!important}
-.hero .clock .ap{padding:2px 9px!important;border-radius:999px!important;background:rgba(255,255,255,.13)!important;border:1px solid rgba(255,255,255,.19)!important;color:#fff!important;font-size:.72rem!important}
-.hero .datepanel{grid-area:auto!important;align-self:flex-end!important;justify-items:end!important;text-align:right!important;width:100%!important;min-height:0!important;padding:0 2px 15px!important;margin:0 0 5px!important;gap:5px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.hero .datepanel::before{content:none!important;display:none!important}
-.hero .wk{font-size:clamp(1rem,2.8vw,1.28rem)!important;font-weight:650!important;line-height:1.35!important;color:rgba(255,255,255,.87)!important}
-.hero .gr{font-size:clamp(1.05rem,3vw,1.45rem)!important;font-weight:600!important;line-height:1.35!important;color:#fff!important}
-.hero .hij{margin:0!important;padding:0!important;border:0!important;font-size:.78rem!important;line-height:1.4!important;color:rgba(242,246,255,.66)!important}
-.hero .dayprog{grid-area:prog!important;width:100%!important;padding:14px 16px 12px!important;border-radius:22px!important;background:rgba(255,255,255,.085)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.19)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
-.hero .day-label{font-size:.78rem!important;color:rgba(255,255,255,.76)!important;margin-bottom:10px!important}
-.hero .day-label b{color:#fff!important;font-weight:750!important}
-.hero .day-track{height:13px!important;padding:2px!important;border:1px solid rgba(255,255,255,.19)!important;background:rgba(255,255,255,.09)!important;overflow:hidden!important}
-.hero .day-fill{position:relative!important;height:100%!important;border-radius:999px!important;background:linear-gradient(90deg,#b78aff 0%,#8d9cff 42%,#67e8e0 100%)!important;box-shadow:0 0 15px rgba(111,224,235,.35)!important}
-.hero .day-fill::after{content:"";position:absolute;right:0;top:50%;width:9px;height:9px;transform:translate(0,-50%);border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.19),0 0 12px rgba(255,255,255,.9)}
-.hero .ticks{margin-top:8px!important;color:rgba(255,255,255,.52)!important;font-size:.65rem!important}
-@media(min-width:760px){.hero{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"main" "prog"!important;padding:32px 38px!important}.hero-main{align-items:flex-end!important}.hero .clock{margin-inline:0!important}.hero .datepanel{min-height:0!important}}
-@media(max-width:759px){.hero{padding:22px 19px!important;gap:15px!important}.hero-main{align-items:flex-end!important}.hero-top{justify-content:flex-end!important}.hero .clock{width:auto!important;margin:8px 0 11px!important}.hero .datepanel{padding:0 2px 13px!important}.hero .dayprog{padding:13px 13px 11px!important}}
-@media(max-width:360px){.hero .hm{font-size:2.8rem!important}}
-
-
-
-/* LUBB — Alpine Sky Glass Clock, inspired by the supplied reference */
-.hero{
-  --glass-edge:rgba(255,255,255,.46);
-  position:relative!important;isolation:isolate!important;overflow:hidden!important;
-  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
-  grid-template-areas:"main" "prog"!important;
-  gap:18px!important;padding:clamp(18px,3vw,34px)!important;
-  color:#f8fcff!important;border:1px solid rgba(255,255,255,.58)!important;
-  border-radius:30px!important;
-  background-image:linear-gradient(115deg,rgba(22,91,145,.24),rgba(35,116,164,.12)),url('icons/clock-sky.svg')!important;
-  background-size:cover!important;background-position:center 56%!important;
-  box-shadow:0 24px 54px rgba(25,71,105,.23),inset 0 1px 0 rgba(255,255,255,.58)!important;
-}
-.hero::before{content:""!important;position:absolute!important;z-index:-1!important;inset:0!important;width:auto!important;height:auto!important;border:0!important;border-radius:inherit!important;background:linear-gradient(110deg,rgba(16,80,129,.13),rgba(255,255,255,.05) 48%,rgba(21,87,140,.18))!important;box-shadow:none!important;pointer-events:none!important}
-.hero::after{content:""!important;position:absolute!important;z-index:-1!important;inset:auto 0 0!important;width:auto!important;height:34%!important;border-radius:0!important;background:linear-gradient(0deg,rgba(9,43,79,.38),transparent)!important;filter:none!important;pointer-events:none!important}
-.hero>*{position:relative!important;z-index:1!important}
-.hero-main{grid-area:main!important;display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(220px,.95fr)!important;grid-template-areas:"top clock" "date clock"!important;align-items:center!important;gap:8px 20px!important;min-width:0!important}
-.hero-top{grid-area:top!important;align-self:end!important;justify-content:flex-start!important;width:100%!important;margin:0!important}
-.greet{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important;color:rgba(255,255,255,.96)!important;text-shadow:0 1px 8px rgba(17,55,91,.25)!important;font-size:clamp(.9rem,1.7vw,1.08rem)!important}
-.greet .brand{display:inline-flex!important;align-items:center!important;gap:7px!important;padding:5px 10px!important;border-radius:999px!important;background:rgba(255,255,255,.17)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32)!important;backdrop-filter:blur(14px) saturate(145%)!important;-webkit-backdrop-filter:blur(14px) saturate(145%)!important;letter-spacing:.13em!important;font-size:.68rem!important;color:#fff!important}
-.greet .brand::before{content:"";display:inline-block;width:18px;height:18px;background:url('icons/lubb-mark-exact.png?v=5') center/contain no-repeat;filter:drop-shadow(0 1px 3px rgba(38,75,150,.2))}
-.hero .clock{grid-area:clock!important;align-self:center!important;justify-self:stretch!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;width:100%!important;min-width:0!important;aspect-ratio:auto!important;margin:0!important;padding:clamp(20px,3vw,34px) clamp(14px,2vw,25px)!important;direction:ltr!important;border:1px solid var(--glass-edge)!important;border-radius:30px!important;background:linear-gradient(135deg,rgba(255,255,255,.31),rgba(230,246,255,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(255,255,255,.14),0 18px 35px rgba(20,64,103,.15)!important;-webkit-backdrop-filter:blur(24px) saturate(155%)!important;backdrop-filter:blur(24px) saturate(155%)!important}
-.hero .clock::before,.hero .clock::after{display:none!important;content:none!important}
-.hero .hm{font-size:clamp(3.2rem,7.8vw,6rem)!important;font-weight:350!important;letter-spacing:-.065em!important;line-height:1!important;color:#fff!important;text-shadow:0 2px 16px rgba(21,72,118,.2)!important;white-space:nowrap!important}
-.hero .colon{opacity:.78!important;margin:0 .025em!important}
-.hero .clock .side{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-items:initial!important;gap:7px!important;direction:rtl!important;min-width:0!important}
-.hero .clock .sec{padding:0!important;min-width:0!important;min-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:.78rem!important;font-weight:650!important;color:rgba(255,255,255,.88)!important}
-.hero .clock .ap{padding:3px 9px!important;border-radius:999px!important;background:rgba(255,255,255,.19)!important;border:1px solid rgba(255,255,255,.34)!important;color:#fff!important;font-size:.7rem!important;backdrop-filter:blur(8px)!important}
-.hero .datepanel{grid-area:date!important;align-self:start!important;justify-items:start!important;text-align:left!important;width:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:7px 2px 10px!important;gap:5px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.hero .datepanel::before{content:none!important;display:none!important}
-.hero .wk{font-size:clamp(1.55rem,3.6vw,2.7rem)!important;font-weight:350!important;line-height:1.16!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 2px 14px rgba(15,61,101,.25)!important}
-.hero .gr{font-size:clamp(1rem,2vw,1.25rem)!important;font-weight:500!important;line-height:1.4!important;color:rgba(255,255,255,.94)!important;text-shadow:0 1px 8px rgba(15,61,101,.2)!important}
-.hero .hij{margin:0!important;padding:0!important;border:0!important;font-size:.78rem!important;line-height:1.45!important;color:rgba(245,251,255,.82)!important}
-.hero .dayprog{grid-area:prog!important;width:100%!important;padding:13px 16px 11px!important;border-radius:20px!important;background:rgba(224,243,255,.17)!important;border:1px solid rgba(255,255,255,.37)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 8px 24px rgba(16,60,99,.12)!important;-webkit-backdrop-filter:blur(18px) saturate(145%)!important;backdrop-filter:blur(18px) saturate(145%)!important}
-.hero .day-label{font-size:.78rem!important;color:rgba(255,255,255,.94)!important;margin-bottom:10px!important}
-.hero .day-label b{color:#fff!important;font-weight:750!important}
-.hero .day-track{height:12px!important;padding:2px!important;border:1px solid rgba(255,255,255,.35)!important;background:rgba(255,255,255,.18)!important;overflow:hidden!important}
-.hero .day-fill{position:relative!important;height:100%!important;border-radius:999px!important;background:linear-gradient(90deg,#d9f5ff 0%,#a6e7ff 35%,#b9a9ff 70%,#f0d7ff 100%)!important;box-shadow:0 0 16px rgba(196,239,255,.45)!important}
-.hero .day-fill::after{content:"";position:absolute;right:0;top:50%;width:9px;height:9px;transform:translate(0,-50%);border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25),0 0 12px rgba(255,255,255,.95)}
-.hero .ticks{margin-top:8px!important;color:rgba(255,255,255,.78)!important;font-size:.65rem!important}
-@media(min-width:760px){.hero{padding:28px 32px!important}.hero-main{gap:7px 28px!important}}
-@media(max-width:600px){.hero{padding:18px!important;gap:14px!important;border-radius:24px!important}.hero-main{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"top" "clock" "date"!important;gap:8px!important}.hero-top{justify-content:flex-start!important}.hero .clock{padding:20px 15px!important;border-radius:24px!important}.hero .hm{font-size:clamp(3.2rem,14vw,4.7rem)!important}.hero .datepanel{padding:5px 2px 8px!important;text-align:left!important;justify-items:start!important}.hero .wk{font-size:1.65rem!important}.hero .dayprog{padding:12px 13px 10px!important}}
-@media(max-width:360px){.hero .hm{font-size:2.85rem!important}.hero .clock{gap:8px!important}}
-
-
-/* Final refinement: vivid alpine glass and the supplied logo artwork used without redrawing. */
-.brand-logo-exact{display:block;width:76px;height:88px;object-fit:contain;flex:none;filter:drop-shadow(0 4px 12px rgba(76,103,255,.22))}
-.brand-lockup{gap:14px!important}
-.brand-copy{align-self:center!important}
-.brand-copy small{font-size:.78rem!important;color:var(--muted)!important}
-.nav-brand-mark,.brand-symbol{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(228,239,255,.74))!important}
-.nav-brand-mark img,.brand-symbol img{padding:0!important;object-fit:contain!important}
-.hero{
- background-image:linear-gradient(115deg,rgba(9,73,128,.10),rgba(20,104,157,.04)),url('icons/clock-sky.svg?v=5')!important;
- background-size:cover!important;background-position:center 54%!important;
- border-color:rgba(255,255,255,.68)!important;
- box-shadow:0 24px 58px rgba(13,64,108,.28),inset 0 1px 0 rgba(255,255,255,.72)!important;
-}
-.hero::before{background:linear-gradient(110deg,rgba(12,83,139,.10),rgba(255,255,255,.015) 48%,rgba(11,72,125,.12))!important}
-.hero .clock{
- background:linear-gradient(135deg,rgba(255,255,255,.36),rgba(116,190,228,.22) 52%,rgba(20,83,137,.13))!important;
- border:1px solid rgba(255,255,255,.70)!important;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(255,255,255,.22),0 18px 36px rgba(10,54,96,.22)!important;
- -webkit-backdrop-filter:blur(18px) saturate(175%)!important;backdrop-filter:blur(18px) saturate(175%)!important;
-}
-.hero .hm{font-weight:420!important;text-shadow:0 2px 18px rgba(8,48,89,.34),0 0 1px rgba(255,255,255,.8)!important;color:#fff!important}
-.hero .wk,.hero .gr{color:#fff!important;text-shadow:0 2px 12px rgba(8,48,89,.42)!important}
-.hero .hij{color:rgba(255,255,255,.96)!important;text-shadow:0 1px 8px rgba(8,48,89,.35)!important}
-.hero .dayprog{background:rgba(12,71,119,.25)!important;border-color:rgba(255,255,255,.56)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 26px rgba(8,49,88,.20)!important}
-.hero .day-track{background:rgba(10,63,107,.25)!important;border-color:rgba(255,255,255,.58)!important;height:13px!important}
-.hero .day-fill{background:linear-gradient(90deg,#62e6f7 0%,#7c9dff 42%,#bd7bff 74%,#ffb8e8 100%)!important;box-shadow:0 0 18px rgba(107,224,255,.72)!important}
-.hero .day-label,.hero .ticks{color:rgba(255,255,255,.98)!important;text-shadow:0 1px 7px rgba(5,44,80,.38)!important}
-@media(max-width:600px){.brand-logo-exact{width:65px;height:76px}.brandbar{align-items:center!important}.brand-copy small{font-size:.7rem!important}}
-
 </style>
 </head>
 <body>
@@ -946,7 +743,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <button class="install-app" id="installApp" type="button" hidden>تثبيت التطبيق</button>
 </div>
 <nav class="side-nav" aria-label="التنقل السريع">
-  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><img src="icons/lubb-mark-exact.png?v=5" alt=""></span><span class="nav-brand-name">LUBB</span></button>
+  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><defs><linearGradient id="lubbMarkGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#A855F7"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M11 12a7 7 0 0 1 7-7h5v24H17a6 6 0 0 1-6-6V12Z" fill="url(#lubbMarkGrad)"/><path d="M23 29V14a7 7 0 0 1 14 0v4L23 29Z" fill="url(#lubbMarkGrad)"/><path d="M23 29 35 22v8a7 7 0 0 1-7 7H17a6 6 0 0 1-6-6v-3l12 1Z" fill="url(#lubbMarkGrad)"/><circle cx="37" cy="7" r="5" fill="#38BDF8"/></svg></span><span class="nav-brand-name">LUBB</span></button>
   <button type="button" data-jump="dayZone" aria-label="التاريخ" title="التاريخ"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3.5v4M16 3.5v4M4 9.5h16M8 13h2m4 0h2M8 16.5h2"/></svg><span>التاريخ</span></button>
   <button type="button" data-jump="tasks" aria-label="المهام" title="المهام"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="m7.5 9 1.7 1.7L12 8m2 1h2.5m-9 5 1.7 1.7L12 13m2 1h2.5"/></svg><span>المهام</span></button>
   <button type="button" data-jump="notes" aria-label="الملاحظات" title="الملاحظات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h9l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5a1.5 1.5 0 0 1 1-1.5Z"/><path d="M14.5 3.5V8H19M8 12h8M8 15.5h8"/></svg><span>الملاحظات</span></button>
@@ -957,7 +754,8 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <!-- هوية لُبّ وشريط الوصول السريع -->
   <header class="brandbar" aria-label="LUBB brand">
     <a class="brand-lockup" href="#" id="brandHome" aria-label="العودة إلى أعلى الصفحة">
-      <img class="brand-logo-exact" src="icons/lubb-logo-exact.png?v=5" alt="LUBB"><span class="brand-copy"><small>نظّم أفكارك · أنجز أهدافك</small></span>
+      <span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><defs><linearGradient id="lubbLogoGrad" x1="5" y1="3" x2="42" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#A855F7"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M8 14a8 8 0 0 1 8-8h7v27h-7a8 8 0 0 1-8-8V14Z" fill="url(#lubbLogoGrad)"/><path d="M23 33V15a8 8 0 0 1 16 0v6L23 33Z" fill="url(#lubbLogoGrad)"/><path d="M23 33 39 24v7a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8v-2l15 4Z" fill="url(#lubbLogoGrad)"/><circle cx="39" cy="7" r="5" fill="#38BDF8"/></svg></span>
+      <span class="brand-copy"><strong>LUBB</strong><small>نظّم أفكارك · أنجز أهدافك</small></span>
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
       <button class="brand-action header-icon-btn theme-toggle" id="quickTheme" type="button" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
@@ -982,11 +780,11 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
         <span class="hm"><span id="hh">--</span><span class="colon">:</span><span id="mm">--</span></span>
         <span class="side"><span class="sec" id="sec">00</span><span class="ap" id="ap"></span></span>
       </div>
-      <div class="datepanel" aria-label="التاريخ">
-        <div class="wk" id="wk"></div>
-        <div class="gr" id="gr"></div>
-        <div class="hij" id="hij"></div>
-      </div>
+    </div>
+    <div class="datepanel" aria-label="التاريخ">
+      <div class="wk" id="wk"></div>
+      <div class="gr" id="gr"></div>
+      <div class="hij" id="hij"></div>
     </div>
     <div class="dayprog">
       <div class="day-label"><span>مضى <b id="dayPct">0%</b></span><span>تبقّى <b id="left"></b></span></div>
