@@ -1,47 +1,488 @@
-(()=>{"use strict";
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
-const dateObj=s=>{const [y,m,d]=String(s||today()).split("-").map(Number);return new Date(y,m-1,d,12)};
-const dateLabel=(s,opts={weekday:"long",day:"numeric",month:"long",year:"numeric"})=>dateObj(s).toLocaleDateString("ar-QA",opts);
-const uid=()=>`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`;
-const defaultSettings={theme:"auto",timeFormat:"24",showSeconds:true,showHijri:true};
-let data={tasks:[],notes:[],settings:{...defaultSettings}},page="home",selectedDate=today(),calendarCursor=new Date(),editorType="task",toastTimer;
-const safeParse=(s,fallback)=>{try{return JSON.parse(s)||fallback}catch{return fallback}};
-function load(){const saved=safeParse(localStorage.getItem("lubb-data"),{});data.tasks=Array.isArray(saved.tasks)?saved.tasks:[];data.notes=Array.isArray(saved.notes)?saved.notes:[];data.settings={...defaultSettings,...(saved.settings||{})};}
-function persist(){try{localStorage.setItem("lubb-data",JSON.stringify(data));renderAll();}catch(e){notify("تعذر حفظ البيانات. قد تكون مساحة التخزين ممتلئة.");}}
-function notify(s){const t=$("#toast");t.textContent=s;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2600)}
-function applyTheme(){const t=data.settings.theme;document.body.classList.toggle("dark",t==="dark"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches));$("#themeSetting").value=t;$("#timeFormat").value=data.settings.timeFormat;$("#showSeconds").checked=data.settings.showSeconds;$("#showHijri").checked=data.settings.showHijri}
-const statusName={new:"جديد",doing:"قيد التنفيذ",done:"مكتمل"},priorityName={normal:"عادية",important:"مهمة",urgent:"عاجلة"};
-function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function taskMarkup(t){return `<div class="task-row ${t.status==="done"?"completed":""}"><input class="check-task" type="checkbox" data-check="${t.id}" ${t.status==="done"?"checked":""} aria-label="إكمال المهمة"><div class="task-main"><span class="task-title">${escapeHTML(t.title)}</span><div class="task-meta"><span>${dateLabel(t.date,{day:"numeric",month:"short"})}</span><span class="status status-${t.status}">${statusName[t.status]||statusName.new}</span><span class="priority priority-${t.priority}">${priorityName[t.priority]||priorityName.normal}</span></div></div><div class="row-actions"><button class="small-action" data-edit-task="${t.id}" aria-label="تعديل">✎</button><button class="small-action" data-delete-task="${t.id}" aria-label="حذف">×</button></div></div>`}
-function empty(title,sub){return `<div class="empty-state"><strong>${title}</strong>${sub}</div>`}
-function renderHome(){const d=today(),tasks=data.tasks.filter(t=>t.date===d),done=tasks.filter(t=>t.status==="done").length,rate=tasks.length?Math.round(done/tasks.length*100):0;
-$("#homeDone").textContent=done;$("#homeTotal").textContent=tasks.length;$("#homeRemaining").textContent=tasks.length-done;$("#homeRate").textContent=rate+"%";$("#taskProgress").style.width=rate+"%";$("#focusMessage").textContent=tasks.length?(rate===100?"رائع! أنجزت كل مهام اليوم.":`أنجزت ${done} من ${tasks.length} مهام، واصل التقدم.`):"أضف مهمة صغيرة لتبدأ يومك.";$("#metricTasks").textContent=data.tasks.length;$("#metricDone").textContent=data.tasks.filter(t=>t.status==="done").length;$("#metricNotes").textContent=data.notes.length;$("#metricToday").textContent=tasks.length;
-$("#homeTaskList").innerHTML=tasks.length?tasks.slice().sort((a,b)=>({urgent:0,important:1,normal:2}[a.priority]-({urgent:0,important:1,normal:2}[b.priority]))).slice(0,4).map(taskMarkup).join(""):empty("مساحة فارغة لبداية جديدة","لا توجد مهام مسجلة لهذا اليوم.");
-const notes=data.notes.slice().sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,3);$("#homeNoteList").innerHTML=notes.length?notes.map(n=>`<div class="note-mini" data-edit-note="${n.id}"><div class="note-mark">▤</div><div style="min-width:0"><strong>${escapeHTML(n.title||"ملاحظة بدون عنوان")}</strong><small>${n.date?dateLabel(n.date,{day:"numeric",month:"short"}):"بدون تاريخ"}</small><div class="note-preview">${escapeHTML(n.body||"لا توجد تفاصيل")}</div></div></div>`).join(""):empty("لم تدوّن شيئًا بعد","أفكارك الصغيرة تجد مكانها هنا.");}
-function renderTasks(){const q=$("#taskSearch").value.trim().toLowerCase(),st=$("#taskStatus").value,pr=$("#taskPriority").value,dt=$("#taskDateFilter").value;let ts=data.tasks.filter(t=>(!q||t.title.toLowerCase().includes(q))&&(st==="all"||t.status===st)&&(pr==="all"||t.priority===pr)&&(!dt||t.date===dt));ts.sort((a,b)=>a.date.localeCompare(b.date)||({urgent:0,important:1,normal:2}[a.priority]-({urgent:0,important:1,normal:2}[b.priority])));$("#taskList").innerHTML=ts.length?ts.map(taskMarkup).join(""):empty("لا توجد مهام مطابقة","جرّب تغيير التصفية أو أضف مهمة جديدة.");const done=data.tasks.filter(t=>t.status==="done").length;$("#taskSummary").innerHTML=`<span class="summary-chip">الإجمالي <b>${data.tasks.length}</b></span><span class="summary-chip">مكتملة <b>${done}</b></span><span class="summary-chip">متبقية <b>${data.tasks.length-done}</b></span><span class="summary-chip">الإنجاز <b>${data.tasks.length?Math.round(done/data.tasks.length*100):0}%</b></span>`}
-function renderNotes(){const q=$("#noteSearch").value.trim().toLowerCase(),df=$("#noteDateFilter").value;let ns=data.notes.filter(n=>(!q||(n.title+" "+n.body).toLowerCase().includes(q))&&(df==="all"||(df==="today"&&n.date===today())||(df==="dated"&&!!n.date)));ns.sort((a,b)=>b.updatedAt-a.updatedAt);$("#notesGrid").innerHTML=ns.length?ns.map(n=>`<article class="note-card" data-edit-note="${n.id}"><div class="note-card-head"><span class="note-mark">▤</span><span class="note-date-tag">${n.date?dateLabel(n.date,{day:"numeric",month:"short"}):"بلا تاريخ"}</span></div><h3>${escapeHTML(n.title||"ملاحظة بدون عنوان")}</h3><p>${escapeHTML(n.body||"لا توجد تفاصيل")}</p><div class="note-card-foot"><span>آخر تعديل ${new Date(n.updatedAt).toLocaleDateString("ar-QA",{day:"numeric",month:"short"})}</span><span class="note-card-actions"><button class="small-action" data-delete-note="${n.id}" aria-label="حذف الملاحظة">حذف ×</button><span>فتح ←</span></span></div></article>`).join(""):empty("لا توجد ملاحظات هنا","دوّن فكرة أو ابحث بكلمة مختلفة.")}
-function renderCalendar(){const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth();$("#monthLabel").textContent=new Date(y,m,1).toLocaleDateString("ar-QA",{month:"long",year:"numeric"});const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate();let html="";for(let i=0;i<42;i++){let num,dt,other=false;if(i<first){num=prevDays-first+i+1;dt=new Date(y,m-1,num);other=true}else if(i>=first+days){num=i-first-days+1;dt=new Date(y,m+1,num);other=true}else{num=i-first+1;dt=new Date(y,m,num)}const key=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;const hasT=data.tasks.some(t=>t.date===key),hasN=data.notes.some(n=>n.date===key);html+=`<button class="calendar-day ${other?"outside":""} ${key===today()?"today":""} ${key===selectedDate?"selected":""}" data-day="${key}"><span>${num}</span><span class="day-dots">${hasT?"<i></i>":""}${hasN?"<i class='note-dot'></i>":""}</span></button>`}$("#calendarDays").innerHTML=html;renderCalendarDay()}
-function renderCalendarDay(){const ds=data.tasks.filter(t=>t.date===selectedDate),ns=data.notes.filter(n=>n.date===selectedDate);$("#selectedDateLabel").textContent=dateLabel(selectedDate,{weekday:"long",day:"numeric",month:"long"});$("#calendarDayContent").innerHTML=`<div class="day-section"><h3>المهام · ${ds.length}</h3>${ds.length?ds.map(t=>`<div class="day-entry"><span>☑</span><div class="task-main">${escapeHTML(t.title)}<div class="task-meta"><span class="status status-${t.status}">${statusName[t.status]}</span><span>${priorityName[t.priority]}</span></div></div><button class="small-action" data-edit-task="${t.id}">✎</button></div>`).join(""):empty("لا توجد مهام","")}</div><div class="day-section"><h3>الملاحظات · ${ns.length}</h3>${ns.length?ns.map(n=>`<div class="day-entry" data-edit-note="${n.id}" style="cursor:pointer"><span>▤</span><div>${escapeHTML(n.title||"ملاحظة بدون عنوان")}<div class="task-meta">${escapeHTML((n.body||"").slice(0,80))}</div></div></div>`).join(""):empty("لا توجد ملاحظات","")}</div>`}
-function renderVault(){const q=$("#vaultSearch").value.trim().toLowerCase(),type=$("#vaultType").value,groups={};if(type!=="notes")data.tasks.filter(t=>!q||t.title.toLowerCase().includes(q)).forEach(t=>(groups[t.date]??=[]).push({type:"task",item:t}));if(type!=="tasks")data.notes.filter(n=>!q||(n.title+" "+n.body).toLowerCase().includes(q)).forEach(n=>(groups[n.date||"بدون تاريخ"]??=[]).push({type:"note",item:n}));const keys=Object.keys(groups).sort((a,b)=>b.localeCompare(a));$("#vaultContent").innerHTML=keys.length?keys.map(k=>`<article class="vault-day"><div class="vault-day-head"><h2>${k==="بدون تاريخ"?k:dateLabel(k)}</h2><span>${groups[k].length} عناصر</span></div>${groups[k].map(e=>e.type==="task"?`<div class="vault-entry"><span class="entry-symbol">☑</span><div class="task-main">${escapeHTML(e.item.title)}<small>مهمة · ${statusName[e.item.status]} · ${priorityName[e.item.priority]}</small></div><button class="small-action" data-edit-task="${e.item.id}">✎</button></div>`:`<div class="vault-entry"><span class="entry-symbol">▤</span><div class="task-main">${escapeHTML(e.item.title||"ملاحظة بدون عنوان")}<small>ملاحظة · ${escapeHTML((e.item.body||"").slice(0,90))}</small></div><button class="small-action" data-edit-note="${e.item.id}">✎</button></div>`).join("")}</article>`).join(""):empty("القاعدة فارغة","ستظهر هنا المهام والملاحظات المرتبطة بالتواريخ.")}
-function renderStats(){const ts=data.tasks,done=ts.filter(t=>t.status==="done").length,doing=ts.filter(t=>t.status==="doing").length,neu=ts.filter(t=>t.status==="new").length,todayTasks=ts.filter(t=>t.date===today()),todayDone=todayTasks.filter(t=>t.status==="done").length,rate=todayTasks.length?Math.round(todayDone/todayTasks.length*100):0;$("#statTotal").textContent=ts.length;$("#statDone").textContent=done;$("#statRemaining").textContent=ts.length-done;$("#statNotes").textContent=data.notes.length;const max=Math.max(1,done,doing,neu);$("#statusChart").innerHTML=[["مكتملة",done,"donebar"],["قيد التنفيذ",doing,"doingbar"],["جديد",neu,""]].map(x=>`<div class="bar-row"><label>${x[0]}</label><div class="track"><i class="${x[2]}" style="width:${x[1]/max*100}%"></i></div><b>${x[1]}</b></div>`).join("");$("#statsDate").textContent=dateLabel(today());$("#todayRate").textContent=rate+"%";$("#todayDonut").style.background=`conic-gradient(var(--primary) ${rate}%,var(--surface2) ${rate}% 100%)`;$("#todayLegend").innerHTML=`<span><i></i> مكتملة (${todayDone})</span><span><i class="pending"></i> متبقية (${todayTasks.length-todayDone})</span>`;
-const wd=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;wd.push({key,label:d.toLocaleDateString("ar-QA",{weekday:"short"}),n:ts.filter(t=>t.date===key&&t.status==="done").length})}const maxW=Math.max(1,...wd.map(x=>x.n));$("#weeklyChart").innerHTML=wd.map(x=>`<div class="week-col"><strong>${x.n}</strong><div class="week-bar-wrap"><div class="week-bar" style="height:${x.n/maxW*100}%"></div></div><small>${x.label}</small></div>`).join("")}
-function renderAll(){applyTheme();$("#navTasks").textContent=data.tasks.filter(t=>t.status!=="done").length;$("#navNotes").textContent=data.notes.length;renderHome();renderTasks();renderNotes();renderCalendar();renderVault();renderStats()}
-function updateClock(){const d=new Date(),opts={hour:"2-digit",minute:"2-digit",hour12:data.settings.timeFormat==="12"};if(data.settings.showSeconds)opts.second="2-digit";$("#clock").innerHTML=d.toLocaleTimeString("en-GB",opts).replace(/(\d{2}:\d{2})(?::(\d{2}))?/,(_,hm,ss)=>`${hm}${ss?`<span>:${ss}</span>`:""}`);$("#clockDate").textContent=d.toLocaleDateString("ar-QA",{weekday:"long",day:"numeric",month:"long"});$("#todayChip").textContent=d.toLocaleDateString("ar-QA",{day:"numeric",month:"short",weekday:"short"});$("#focusDate").textContent=d.toLocaleDateString("ar-QA",{day:"numeric",month:"short"});const mins=d.getHours()*60+d.getMinutes(),pct=Math.floor((mins*60+d.getSeconds())/86400*100);$("#dayPercent").textContent=pct+"%";$("#dayProgress").style.width=pct+"%";const remain=86399-(d.getHours()*3600+d.getMinutes()*60+d.getSeconds());$("#remaining").textContent=`متبقٍ ${Math.floor(remain/3600)} س ${Math.floor(remain%3600/60)} د`;$("#clockFormat").textContent=data.settings.timeFormat==="12"?"12 ساعة":"24 ساعة";$("#greeting").textContent=(d.getHours()<12?"صباح الخير":d.getHours()<17?"نهارك سعيد":"مساء الخير")+" 👋";try{$("#hijriDate").textContent=data.settings.showHijri?new Intl.DateTimeFormat("ar-QA-u-ca-islamic",{day:"numeric",month:"long",year:"numeric"}).format(d):""}catch{$("#hijriDate").textContent=""}$("#hijriDate").style.visibility=data.settings.showHijri?"visible":"hidden"}
-function goto(p){page=p;$$(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+p));$$(".nav-item[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));$("#pageTitle").textContent=({home:"الرئيسية",tasks:"إدارة المهام",notes:"الملاحظات",calendar:"التقويم",vault:"القاعدة الرئيسية",stats:"الإحصائيات",settings:"الإعدادات"})[p];$(".sidebar").classList.remove("open");window.scrollTo({top:0,behavior:"smooth"});if(p==="calendar")renderCalendar()}
-function openEditor(type,item=null){editorType=type;$("#editorForm").reset();$("#editId").value=item?.id||"";$("#modalTitle").textContent=type==="task"?(item?"تعديل المهمة":"مهمة جديدة"):(item?"تعديل الملاحظة":"ملاحظة جديدة");$("#titleLabel").firstChild.textContent=type==="task"?"عنوان المهمة":"عنوان الملاحظة";$("#itemTitle").value=item?.title||"";$("#itemDate").value=item?.date||selectedDate||today();$("#noteDate").value=item?.date||selectedDate||today();$("#itemBody").value=item?.body||"";$("#itemPriority").value=item?.priority||"normal";$("#itemStatus").value=item?.status||"new";$("#taskFields").hidden=type!=="task";$("#noteFields").hidden=type!=="note";$("#bodyLabel").hidden=type!=="note";$("#itemTitle").placeholder=type==="task"?"ما الذي تريد إنجازه؟":"عنوان يلخّص الفكرة";$("#modalBackdrop").hidden=false;setTimeout(()=>$("#itemTitle").focus(),50)}
-function closeEditor(){$("#modalBackdrop").hidden=true}
-function saveEditor(e){e.preventDefault();const id=$("#editId").value,now=Date.now(),title=$("#itemTitle").value.trim();if(!title){notify("أدخل عنوانًا أولًا.");return}if(editorType==="task"){const old=data.tasks.find(t=>t.id===id);const item={id:id||uid(),title,date:$("#itemDate").value||today(),priority:$("#itemPriority").value,status:$("#itemStatus").value,createdAt:old?.createdAt||now,updatedAt:now};if(old)data.tasks=data.tasks.map(t=>t.id===id?item:t);else data.tasks.push(item)}else{const old=data.notes.find(n=>n.id===id);const item={id:id||uid(),title,body:$("#itemBody").value,date:$("#noteDate").value||"",createdAt:old?.createdAt||now,updatedAt:now};if(old)data.notes=data.notes.map(n=>n.id===id?item:n);else data.notes.push(item)}closeEditor();persist();notify("تم الحفظ بنجاح.");}
-function exportData(){const payload={app:"LUBB",schemaVersion:1,exportedAt:new Date().toISOString(),tasks:data.tasks,notes:data.notes,settings:data.settings};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`lubb-backup-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify("تم تجهيز النسخة الاحتياطية.")}
-async function importData(file){if(!file)return;try{if(file.size>10*1024*1024)throw Error("حجم الملف أكبر من 10 ميغابايت.");const obj=JSON.parse(await file.text());if(!obj||obj.app!=="LUBB"||!Array.isArray(obj.tasks)||!Array.isArray(obj.notes))throw Error("هذا الملف ليس نسخة احتياطية صالحة من لُبّ.");const validDate=s=>typeof s==="string"&&(/^\d{4}-\d{2}-\d{2}$/.test(s)||s==="");if(obj.tasks.some(t=>!t||typeof t.title!=="string"||!validDate(t.date)||!["new","doing","done"].includes(t.status)||!["normal","important","urgent"].includes(t.priority))||obj.notes.some(n=>!n||typeof n.title!=="string"||typeof n.body!=="string"||!validDate(n.date)))throw Error("تحتوي النسخة على بيانات غير متوافقة.");if(!confirm("سيتم استبدال البيانات الحالية بمحتويات النسخة الاحتياطية. هل تريد المتابعة؟"))return;data.tasks=obj.tasks.map(t=>({...t,id:String(t.id||uid()),title:t.title.slice(0,140),updatedAt:Number(t.updatedAt)||Date.now(),createdAt:Number(t.createdAt)||Date.now()}));data.notes=obj.notes.map(n=>({...n,id:String(n.id||uid()),title:n.title.slice(0,140),body:n.body.slice(0,10000),updatedAt:Number(n.updatedAt)||Date.now(),createdAt:Number(n.createdAt)||Date.now()}));data.settings={...defaultSettings,...(obj.settings||{})};if(!["auto","light","dark"].includes(data.settings.theme))data.settings.theme="auto";if(!["12","24"].includes(String(data.settings.timeFormat)))data.settings.timeFormat="24";persist();notify("تمت استعادة النسخة الاحتياطية.");}catch(e){notify("تعذر الاستيراد: "+e.message)}finally{$("#importData").value=""}}
-function deleteTask(id){if(!confirm("هل تريد حذف هذه المهمة؟"))return;data.tasks=data.tasks.filter(t=>t.id!==id);persist();notify("تم حذف المهمة.")}
-function deleteNote(id){if(!confirm("هل تريد حذف هذه الملاحظة؟"))return;data.notes=data.notes.filter(n=>n.id!==id);persist();notify("تم حذف الملاحظة.")}
-$("#nav").addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b)goto(b.dataset.page)});
-document.addEventListener("click",e=>{const go=e.target.closest("[data-goto]");if(go)goto(go.dataset.goto);const delNote=e.target.closest("[data-delete-note]");if(delNote){e.preventDefault();e.stopPropagation();deleteNote(delNote.dataset.deleteNote);return}const et=e.target.closest("[data-edit-task]");if(et){const t=data.tasks.find(x=>x.id===et.dataset.editTask);if(t)openEditor("task",t)}const en=e.target.closest("[data-edit-note]");if(en){const n=data.notes.find(x=>x.id===en.dataset.editNote);if(n)openEditor("note",n)}const del=e.target.closest("[data-delete-task]");if(del)deleteTask(del.dataset.deleteTask);const day=e.target.closest("[data-day]");if(day){selectedDate=day.dataset.day;calendarCursor=dateObj(selectedDate);renderCalendar()}});
-document.addEventListener("change",e=>{const c=e.target.closest("[data-check]");if(c){const id=c.dataset.check;data.tasks=data.tasks.map(t=>t.id===id?{...t,status:c.checked?"done":"new",updatedAt:Date.now()}:t);persist();notify(c.checked?"أحسنت! تم إكمال المهمة.":"تم تحديث حالة المهمة.")}});
-$("#addTask").onclick=()=>openEditor("task");$("#quickAdd").onclick=()=>openEditor("task");$("#addNote").onclick=()=>openEditor("note");$("#quickNote").onclick=()=>openEditor("note");$("#dayAddTask").onclick=()=>{openEditor("task");$("#itemDate").value=selectedDate};$("#closeModal").onclick=closeEditor;$("#cancelModal").onclick=closeEditor;$("#modalBackdrop").addEventListener("click",e=>{if(e.target===$("#modalBackdrop"))closeEditor()});$("#editorForm").addEventListener("submit",saveEditor);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeEditor();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();goto("tasks");$("#taskSearch").focus()}if(!e.ctrlKey&&!e.metaKey&&!e.altKey&&e.key.toLowerCase()==="n"&&$("#modalBackdrop").hidden){if(!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openEditor("task")}});
-["taskSearch","taskStatus","taskPriority","taskDateFilter"].forEach(id=>$("#"+id).addEventListener("input",renderTasks));$("#clearTaskFilters").onclick=()=>{$("#taskSearch").value="";$("#taskStatus").value="all";$("#taskPriority").value="all";$("#taskDateFilter").value="";renderTasks()};["noteSearch","noteDateFilter"].forEach(id=>$("#"+id).addEventListener("input",renderNotes));["vaultSearch","vaultType"].forEach(id=>$("#"+id).addEventListener("input",renderVault));$("#prevMonth").onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);renderCalendar()};$("#nextMonth").onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);renderCalendar()};$("#calendarToday").onclick=()=>{selectedDate=today();calendarCursor=new Date();renderCalendar()};
-$("#themeSetting").onchange=e=>{data.settings.theme=e.target.value;persist()};$("#timeFormat").onchange=e=>{data.settings.timeFormat=e.target.value;persist();updateClock()};$("#showSeconds").onchange=e=>{data.settings.showSeconds=e.target.checked;persist();updateClock()};$("#showHijri").onchange=e=>{data.settings.showHijri=e.target.checked;persist();updateClock()};$("#themeQuick").onclick=()=>{data.settings.theme=document.body.classList.contains("dark")?"light":"dark";persist();notify("تم تغيير المظهر.")};matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(data.settings.theme==="auto")applyTheme()});
-$("#exportData").onclick=exportData;$("#importData").onchange=e=>importData(e.target.files[0]);$("#clearData").onclick=()=>{if(!confirm("تحذير: سيتم حذف كل المهام والملاحظات والإعدادات المحلية. لا يمكن التراجع. هل أنت متأكد؟"))return;if(!confirm("تأكيد أخير: مسح جميع بيانات لُبّ من هذا الجهاز؟"))return;data={tasks:[],notes:[],settings:{...defaultSettings}};persist();notify("تم مسح البيانات.")};$("#menuToggle").onclick=()=>$(".sidebar").classList.toggle("open");$("#connectionText").textContent=navigator.onLine?"جاهز — التخزين محلي":"غير متصل — بياناتك المحلية متاحة";window.addEventListener("online",()=>$("#connectionText").textContent="متصل — التخزين محلي");window.addEventListener("offline",()=>$("#connectionText").textContent="غير متصل — بياناتك المحلية متاحة");
-load();renderAll();updateClock();setInterval(updateClock,1000);if("serviceWorker"in navigator&&location.protocol!=="file:")window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+
+(function(){
+  const $ = s => document.querySelector(s);
+  const STATUS = ['جديد','قيد التنفيذ','مكتمل'];
+  const PRIO = ['عادية','مهمة','عاجلة'];
+  const KEY = 'plan-state-v2', OLD_KEY = 'plan-state-v1';
+  const uid = () => Math.random().toString(36).slice(2,9);
+  const pad = n => String(n).padStart(2,'0');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dkey = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const dparse = k => new Date(k+'T00:00:00');
+  const todayKey = () => dkey(new Date());
+
+  /* ---------- التخزين: يعمل داخل Claude وخارجه ---------- */
+  const store = {
+    async get(k){
+      try{ if(window.storage){ const r = await window.storage.get(k); if(r && r.value != null) return r.value; } }catch(e){}
+      try{ return localStorage.getItem(k); }catch(e){ return null; }
+    },
+    async set(k,v){
+      try{ if(window.storage){ await window.storage.set(k,v); return true; } }catch(e){}
+      try{ localStorage.setItem(k,v); return true; }catch(e){ return false; }
+    }
+  };
+
+  let state = {tasks:[], notes:[], base:[], mainTasks:[]};
+  const DEFAULTS = {clockFmt:'12', theme:'auto', weekStart:'0', showSec:true, showHijri:true};
+  let settings = Object.assign({}, DEFAULTS);
+  let ui = {sel: todayKey(), calY:0, calM:0, calExpanded:false, filter:'all', noteView:'day', noteQ:'', editing:null, view:'table', q:'', st:'all'};
+  { const t = new Date(); ui.calY = t.getFullYear(); ui.calM = t.getMonth(); }
+  let saveTimer;
+
+  async function load(){
+    let raw = await store.get(KEY);
+    if(raw){
+      try{ const s = JSON.parse(raw); if(s && Array.isArray(s.tasks)){ state = {tasks:s.tasks, notes:s.notes||[], base:s.base||[], mainTasks:s.mainTasks||[]}; return; } }catch(e){}
+    }
+    // ترحيل بيانات النسخة الأولى
+    raw = await store.get(OLD_KEY);
+    if(raw){
+      try{
+        const s = JSON.parse(raw), t = todayKey();
+        state.tasks = (s.tasks||[]).map(x=>Object.assign({date:t}, x));
+        state.base = s.base || []; state.mainTasks = s.mainTasks || [];
+        if(s.note && String(s.note).trim()) state.notes.push({id:uid(), title:'', text:String(s.note), date:t, created:Date.now()});
+        save();
+      }catch(e){}
+    }
+  }
+  function renderStats(){
+    const total = state.tasks.length, done = state.tasks.filter(t=>t.done).length;
+    const dayTasks = state.tasks.filter(t=>t.date===ui.sel), dayDone = dayTasks.filter(t=>t.done).length;
+    $('#statTasks').textContent = dayTasks.length;
+    $('#statDone').textContent = (dayTasks.length ? Math.round(dayDone/dayTasks.length*100) : 0) + '%';
+    $('#statNotes').textContent = state.notes.filter(n=>n.date===ui.sel).length;
+    $('#statBase').textContent = state.base.length;
+  }
+  function save(){
+    renderStats();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>{ store.set(KEY, JSON.stringify(state)); }, 250);
+  }
+
+  /* ---------- الإعدادات ---------- */
+  async function loadSettings(){
+    try{
+      const raw = await store.get('plan-settings-v1');
+      if(raw){ settings = Object.assign({}, DEFAULTS, JSON.parse(raw)); return; }
+      const old = await store.get('plan-h24');
+      if(old !== null) settings.clockFmt = old==='1' ? '24' : '12';
+    }catch(e){}
+  }
+  function saveSettings(){ store.set('plan-settings-v1', JSON.stringify(settings)); }
+  function applySettings(){
+    const r = document.documentElement;
+    if(settings.theme==='auto'){ r.setAttribute('data-theme', window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } else { r.setAttribute('data-theme', settings.theme); }
+    document.querySelectorAll('#settings [data-setting]').forEach(g=>{
+      const k = g.dataset.setting;
+      if(g.classList.contains('sw')) g.setAttribute('aria-checked', String(!!settings[k]));
+      else g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(String(settings[k])===b.dataset.val)));
+    });
+    tick(); renderCal();
+  }
+  // Keep the automatic theme synchronized with the device while Auto is selected.
+  if(window.matchMedia){
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSystemThemeChange = ()=>{ if(settings.theme==='auto') applySettings(); };
+    if(systemTheme.addEventListener) systemTheme.addEventListener('change', onSystemThemeChange);
+    else if(systemTheme.addListener) systemTheme.addListener(onSystemThemeChange);
+  }
+  let opener = null;
+  function openSettings(){
+    const panel=$('#settings'); if(!panel.hidden) return;
+    opener = document.activeElement;
+    panel.hidden = false; document.body.style.overflow = 'hidden';
+    const closeButton = $('#setClose');
+    if(closeButton) closeButton.focus({preventScroll:true});
+  }
+  function closeSettings(){
+    $('#settings').hidden = true; document.body.style.overflow = '';
+    if(opener && opener.focus) opener.focus();
+  }
+  // الإعدادات تستخدم نفس آلية استجابة أزرار الواجهة: نقرة واحدة واضحة ومتوافقة مع اللمس والماوس ولوحة المفاتيح.
+  const settingsButton = $('#openSettings');
+  settingsButton.addEventListener('click', openSettings);
+  $('#setClose').addEventListener('click', closeSettings);
+  document.querySelector('.side-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const target=document.getElementById(b.dataset.jump);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
+  document.getElementById('homeBrand')?.addEventListener('click',()=>{const home=document.querySelector('.hero')||document.querySelector('.wrap');if(home){home.scrollIntoView({behavior:'smooth',block:'start'});window.scrollTo({top:0,behavior:'smooth'});}});
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#settings').hidden) closeSettings(); });
+  $('#settings').addEventListener('click', e=>{
+    if(e.target.id==='settings'){ closeSettings(); return; }
+    const sw = e.target.closest('.sw');
+    if(sw){ const k = sw.dataset.setting; settings[k] = !settings[k]; saveSettings(); applySettings(); return; }
+    const b = e.target.closest('.seg button'); if(!b) return;
+    const g = b.closest('[data-setting]'); if(!g) return;
+    settings[g.dataset.setting] = b.dataset.val; saveSettings(); applySettings();
+  });
+
+  /* ---------- الساعة والتاريخ ---------- */
+  const fWk = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{weekday:'long'});
+  const fGr = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
+  let fH; try{ fH = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}); }catch(e){}
+  let lastDay = -1;
+  function tick(){
+    const d = new Date(), h = d.getHours(), m = d.getMinutes(), sc = d.getSeconds();
+    const h24 = settings.clockFmt==='24';
+    $('#hh').textContent = h24 ? pad(h) : String(h%12||12);
+    $('#mm').textContent = pad(m);
+    $('#sec').textContent = pad(sc);
+    $('#sec').hidden = !settings.showSec;
+    $('#ap').textContent = h24 ? '' : (h<12 ? 'ص' : 'م');
+    $('#hij').hidden = !settings.showHijri || !fH;
+    const secs = h*3600+m*60+sc;
+    $('#dayFill').style.width = (secs/864)+'%';
+    $('#dayPct').textContent = Math.round(secs/864)+'%';
+    const rem = 86400-secs;
+    $('#left').textContent = Math.floor(rem/3600)+' س '+pad(Math.floor(rem%3600/60))+' د';
+    if(lastDay !== d.getDate()){
+      lastDay = d.getDate();
+      $('#greetText').textContent = h<5 ? 'ليلة هادئة' : h<12 ? 'صباح الخير' : h<17 ? 'نهارك سعيد' : h<21 ? 'مساء الخير' : 'ليلة سعيدة';
+      $('#wk').textContent = fWk.format(d);
+      $('#gr').textContent = fGr.format(d);
+      $('#hij').textContent = fH ? fH.format(d) : '';
+      renderCal();
+    }
+  }
+
+  /* ---------- التقويم ---------- */
+  const WD = ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{month:'long',year:'numeric'});
+  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{weekday:'long',day:'numeric',month:'long'});
+  function dayInfo(){
+    const m = {};
+    state.tasks.forEach(t=>{ const o = m[t.date] || (m[t.date]={open:0,done:0,notes:0}); t.done ? o.done++ : o.open++; });
+    state.notes.forEach(n=>{ const o = m[n.date] || (m[n.date]={open:0,done:0,notes:0}); o.notes++; });
+    return m;
+  }
+  function renderCal(){
+    const y = ui.calY, mo = ui.calM, info = dayInfo(), tk = todayKey();
+    $('#calTitle').textContent = fMonth.format(new Date(y,mo,1));
+    const ws = Number(settings.weekStart)||0;
+    let dates = [], h = '';
+    if(ui.calExpanded){
+      const first = (new Date(y,mo,1).getDay()-ws+7)%7, days = new Date(y,mo+1,0).getDate();
+      h = [0,1,2,3,4,5,6].map(i=>'<div class="wd" role="columnheader">'+WD[(ws+i)%7]+'</div>').join('');
+      for(let i=0;i<first;i++) h += '<div class="cell blank" aria-hidden="true"></div>';
+      for(let d=1;d<=days;d++) dates.push(dkey(new Date(y,mo,d)));
+    }else{
+      const selected = dparse(ui.sel), offset = (selected.getDay()-ws+7)%7;
+      for(let i=0;i<7;i++){ const d=new Date(selected); d.setDate(selected.getDate()-offset+i); dates.push(dkey(d)); }
+      h = dates.map(k=>'<div class="wd" role="columnheader">'+WD[dparse(k).getDay()]+'</div>').join('');
+    }
+    dates.forEach(k=>{
+      const o=info[k], d=dparse(k).getDate();
+      const cls='cell'+(k===tk?' today':'')+(k===ui.sel?' sel':''); let dots='';
+      if(o){if(o.open)dots+='<i></i>';else if(o.done)dots+='<i class="ok"></i>';if(o.notes)dots+='<i class="n"></i>';}
+      h+='<button class="'+cls+'" data-d="'+k+'" role="gridcell" aria-selected="'+(k===ui.sel)+'" aria-label="'+fDay.format(dparse(k))+'"><span>'+d+'</span><span class="dots">'+dots+'</span></button>';
+    });
+    $('#calGrid').classList.toggle('compact',!ui.calExpanded);
+    $('#calGrid').innerHTML=h;
+    $('#toggleCal').textContent=ui.calExpanded?'إخفاء الشهر':'عرض الشهر';
+    $('#toggleCal').setAttribute('aria-expanded',String(ui.calExpanded));
+  }
+  $('#calGrid').addEventListener('click', e=>{
+    const c = e.target.closest('[data-d]'); if(!c) return;
+    ui.sel = c.dataset.d; const picked=dparse(ui.sel); ui.calY=picked.getFullYear(); ui.calM=picked.getMonth(); renderAll();
+  });
+  $('#prevM').onclick = ()=>{ ui.calExpanded=true; ui.calM--; if(ui.calM<0){ui.calM=11;ui.calY--;} renderCal(); };
+  $('#nextM').onclick = ()=>{ ui.calExpanded=true; ui.calM++; if(ui.calM>11){ui.calM=0;ui.calY++;} renderCal(); };
+  $('#goToday').onclick = ()=>{ const t=new Date(); ui.sel=dkey(t); ui.calY=t.getFullYear(); ui.calM=t.getMonth(); renderAll(); };
+  $('#toggleCal').onclick = ()=>{ ui.calExpanded=!ui.calExpanded; renderCal(); };
+  const selLabel = () => (ui.sel===todayKey() ? 'اليوم، ' : '') + fDay.format(dparse(ui.sel));
+
+  /* ---------- المهام ---------- */
+  function renderTasks(){
+    const day = state.tasks.filter(t=>t.date===ui.sel);
+    const total = day.length, done = day.filter(t=>t.done).length;
+    $('#tasksTitle').textContent = ui.sel===todayKey() ? 'مهام اليوم' : 'مهام اليوم المحدد';
+    $('#tasksSub').textContent = selLabel() + (total ? ' • متبقي '+(total-done) : '');
+    $('#progFill').style.width = (total ? Math.round(done/total*100) : 0)+'%';
+    $('#progTxt').textContent = done+' من '+total;
+    let items = day.filter(t => ui.filter==='all' || (ui.filter==='done'?t.done:!t.done));
+    items = items.slice().sort((a,b)=> a.done-b.done || (Number(b.prio)||0)-(Number(a.prio)||0));
+    if(!items.length){
+      $('#taskList').innerHTML = '<li class="empty">'+(total?'لا توجد مهام في هذا العرض.':'لا توجد مهام لهذا اليوم. اكتب أول مهمة في الحقل أعلاه.')+'</li>';
+      return;
+    }
+    $('#taskList').innerHTML = items.map(t=>`
+      <li class="task ${t.done?'done':''}" data-id="${t.id}">
+        <button class="check" role="checkbox" aria-checked="${t.done}" aria-label="إنجاز: ${esc(t.text)}" data-a="toggle">✓</button>
+        <span class="t-text">${esc(t.text)}</span>
+        <button class="icon-btn" data-a="edit" aria-label="تعديل المهمة">✎</button>
+        <button class="chip ${t.prio?'p'+t.prio:''}" data-a="prio" title="غيّر الأولوية">${PRIO[Number.isInteger(t.prio)&&t.prio>=0&&t.prio<=2?t.prio:0]}</button>
+        <button class="icon-btn" data-a="del" aria-label="حذف المهمة">✕</button>
+      </li>`).join('');
+  }
+  function addTask(){
+    const el = $('#taskInput'), text = el.value.trim();
+    if(!text){ el.focus(); return; }
+    state.tasks.push({id:uid(), text, done:false, prio:0, date:ui.sel});
+    el.value=''; el.focus(); renderTasks(); renderCal(); renderBase(); save();
+  }
+  $('#taskAdd').onclick = addTask;
+  $('#taskInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
+  $('#taskFilter').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    ui.filter = b.dataset.f;
+    document.querySelectorAll('#taskFilter button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderTasks();
+  });
+  $('#taskList').addEventListener('click', e=>{
+    const btn = e.target.closest('[data-a]'); if(!btn) return;
+    const li = btn.closest('[data-id]'); const t = state.tasks.find(x=>x.id===li.dataset.id); if(!t) return;
+    if(btn.dataset.a==='toggle') t.done = !t.done;
+    if(btn.dataset.a==='edit'){ const next = window.prompt('تعديل نص المهمة', t.text); if(next===null) return; if(!next.trim()){ window.alert('لا يمكن أن تكون المهمة فارغة.'); return; } t.text=next.trim(); }
+    if(btn.dataset.a==='prio') t.prio = (t.prio+1)%3;
+    if(btn.dataset.a==='del'){
+      // المهمة المرتبطة بالقائمة الرئيسية تُحذف من كل الأيام، لا من اليوم الحالي فقط.
+      if(t.mainId){ state.tasks = state.tasks.filter(x=>x.mainId!==t.mainId); }
+      else { state.tasks = state.tasks.filter(x=>x!==t); }
+    }
+    renderTasks(); renderCal(); renderBase(); save();
+  });
+
+  /* ---------- الملاحظات ---------- */
+  const fTime = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{hour:'numeric',minute:'2-digit'});
+  const fShort = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'});
+  let msgTimer;
+  function flash(msg){
+    $('#noteMsg').textContent = msg; $('#setMsg').textContent = msg; clearTimeout(msgTimer);
+    msgTimer = setTimeout(()=>{ $('#noteMsg').textContent=''; $('#setMsg').textContent=''; }, 2500);
+  }
+  function renderNotes(){
+    const all = ui.noteView==='all';
+    $('#noteSearchWrap').hidden = !all;
+    let items;
+    if(all){
+      const q = ui.noteQ.trim().toLowerCase();
+      items = state.notes.filter(n=>!q || n.text.toLowerCase().includes(q) || (n.title||'').toLowerCase().includes(q));
+      items.sort((a,b)=> b.date.localeCompare(a.date) || b.created-a.created);
+      $('#notesSub').textContent = state.notes.length ? state.notes.length+' ملاحظة محفوظة' : '';
+    }else{
+      items = state.notes.filter(n=>n.date===ui.sel).sort((a,b)=>b.created-a.created);
+      $('#notesSub').textContent = selLabel();
+    }
+    $('#noteWhere').textContent = ui.editing ? 'أنت تعدّل ملاحظة محفوظة' : 'ستُحفظ في: ' + selLabel();
+    $('#noteSave').textContent = ui.editing ? 'حفظ التعديل' : 'حفظ الملاحظة';
+    $('#noteCancel').hidden = !ui.editing;
+    if(!items.length){
+      $('#noteList').innerHTML = '<li class="empty">'+(all ? (state.notes.length?'لا توجد نتائج مطابقة.':'لا توجد ملاحظات محفوظة بعد.') : 'لا توجد ملاحظات محفوظة لهذا اليوم.')+'</li>';
+      return;
+    }
+    $('#noteList').innerHTML = items.map(n=>`
+      <li class="ncard ${ui.editing===n.id?'editing':''}" data-id="${n.id}">
+        <div class="nhead">
+          <span class="ntitle">${esc(n.title || 'بدون عنوان')}</span>
+          ${all ? '<button class="chip" data-a="goto" title="افتح هذا اليوم">'+fShort.format(dparse(n.date))+'</button>' : ''}
+        </div>
+        <p class="nbody">${esc(n.text)}</p>
+        <div class="nfoot">
+          <span>${fTime.format(new Date(n.created))}</span>
+          <span><button class="link" data-a="nedit">تعديل</button><button class="link danger" data-a="ndel">حذف</button></span>
+        </div>
+      </li>`).join('');
+  }
+  function clearEditor(){ $('#noteTitle').value=''; $('#noteText').value=''; ui.editing=null; }
+  $('#noteSave').onclick = ()=>{
+    const text = $('#noteText').value.trim(), title = $('#noteTitle').value.trim();
+    if(!text){ $('#noteText').focus(); flash('اكتب نص الملاحظة أولًا'); return; }
+    if(ui.editing){
+      const n = state.notes.find(x=>x.id===ui.editing);
+      if(n){ n.text = text; n.title = title; }
+    }else{
+      state.notes.push({id:uid(), title, text, date:ui.sel, created:Date.now()});
+    }
+    const wasEditing = !!ui.editing;
+    clearEditor(); renderNotes(); renderCal(); renderBase(); save();
+    flash(wasEditing ? 'تم حفظ التعديل ✓' : 'تم حفظ الملاحظة ✓');
+  };
+  $('#noteCancel').onclick = ()=>{ clearEditor(); renderNotes(); };
+  $('#noteView').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    ui.noteView = b.dataset.n;
+    document.querySelectorAll('#noteView button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderNotes();
+  });
+  $('#noteSearch').addEventListener('input', e=>{ ui.noteQ = e.target.value; renderNotes(); });
+  const armed = new Map();
+  $('#noteList').addEventListener('click', e=>{
+    const btn = e.target.closest('[data-a]'); if(!btn) return;
+    const li = btn.closest('[data-id]'); const n = state.notes.find(x=>x.id===li.dataset.id); if(!n) return;
+    const a = btn.dataset.a;
+    if(a==='goto'){
+      const d = dparse(n.date); ui.sel = n.date; ui.calY = d.getFullYear(); ui.calM = d.getMonth();
+      renderAll(); window.scrollTo({top:0,behavior:'smooth'}); return;
+    }
+    if(a==='nedit'){
+      ui.editing = n.id; $('#noteTitle').value = n.title||''; $('#noteText').value = n.text;
+      renderNotes(); $('#noteText').focus(); return;
+    }
+    if(a==='ndel'){
+      if(!armed.get(n.id)){
+        armed.set(n.id,true); btn.textContent = 'تأكيد الحذف؟';
+        setTimeout(()=>{ armed.delete(n.id); if(btn.isConnected) btn.textContent='حذف'; }, 3000);
+        return;
+      }
+      state.notes = state.notes.filter(x=>x!==n);
+      if(ui.editing===n.id) clearEditor();
+      renderNotes(); renderCal(); renderBase(); save();
+    }
+  });
+
+  /* ---------- القاعدة الرئيسية ---------- */
+  const fD = v => v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short'}).format(dparse(v)) : '—';
+  function renderBase(){
+    const q = ui.q.trim().toLowerCase();
+    const items = state.base.filter(b =>
+      (ui.st==='all' || String(b.status)===ui.st) &&
+      (!q || String(b.name||'').toLowerCase().includes(q) || String(b.cat||'').toLowerCase().includes(q)));
+    $('#baseSub').textContent = (new Set([...state.tasks.map(t=>t.date),...state.notes.map(n=>n.date)]).size)+' يوم • '+state.tasks.length+' مهمة • '+state.notes.length+' ملاحظة';
+    $('#cats').innerHTML = [...new Set(state.base.map(b=>b.cat).filter(Boolean))].map(c=>'<option value="'+esc(c)+'">').join('');
+    // القاعدة الرئيسية تعرض البيانات الأصلية نفسها، ولا تنشئ نسخًا منفصلة منها.
+    const days = [...new Set([...state.tasks.map(t=>t.date), ...state.notes.map(n=>n.date)])].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    const matchedDays = days.map(date=>({date,tasks:state.tasks.filter(t=>t.date===date),notes:state.notes.filter(n=>n.date===date)})).filter(d=>{
+      if(!q) return true;
+      return d.date.includes(q) || fShortBase(d.date).toLowerCase().includes(q) || d.tasks.some(t=>String(t.text||'').toLowerCase().includes(q)) || d.notes.some(n=>String(n.title||'').toLowerCase().includes(q)||String(n.text||'').toLowerCase().includes(q));
+    });
+    let html = '<h3 style="margin:14px 0 8px">الأيام والمهام والملاحظات المرتبطة</h3>';
+    if(!matchedDays.length) html += '<div class="empty">'+(days.length?'لا توجد أيام أو مهام أو ملاحظات مطابقة للبحث.':'لا توجد بيانات يومية بعد.')+'</div>';
+    else html += '<div class="base-table-wrap"><table class="base-day-table"><thead><tr><th scope="col">التاريخ</th><th scope="col">المهام</th><th scope="col">الملاحظات</th><th scope="col">التفاصيل</th></tr></thead><tbody>'+matchedDays.map(d=>'<tr><td class="date-cell">'+esc(fShortBase(d.date))+'<br><span class="muted-cell">'+esc(d.date)+'</span></td><td class="content-cell">'+(d.tasks.length?d.tasks.map(t=>'<span class="task-line">'+(t.done?'☑ ':'◻ ')+esc(t.text)+'</span>').join(''):'<span class="muted-cell">لا توجد مهام</span>')+'</td><td class="content-cell">'+(d.notes.length?d.notes.map(n=>'<span class="note-line">'+esc(n.title||n.text).slice(0,240)+'</span>').join(''):'<span class="muted-cell">لا توجد ملاحظات</span>')+'</td><td class="open-cell"><button class="chip" data-central-date="'+esc(d.date)+'">فتح اليوم</button></td></tr>').join('')+'</tbody></table></div>';
+    html += '<h3 style="margin:18px 0 8px">عناصر القاعدة الإضافية</h3>';
+    if(!items.length) html += '<div class="empty">'+(state.base.length?'لا توجد عناصر مطابقة.':'لا توجد عناصر إضافية في القاعدة.')+'</div>';
+    else if(ui.view==='table') html += '<div class="rows-head"><span>الاسم</span><span>التصنيف</span><span>التاريخ</span><span>الحالة</span><span></span></div><div class="rows">'+items.map(b=>'<div class="row" data-id="'+esc(b.id)+'"><span class="r-name">'+esc(b.name)+'</span><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+'</span><span class="r-meta">'+fD(b.date)+'</span><button class="chip s'+b.status+'" data-a="status">'+STATUS[b.status]+'</button><button class="icon-btn" data-a="bdel" aria-label="حذف العنصر">✕</button></div>').join('')+'</div>';
+    else html += '<div class="board">'+STATUS.map((st,i)=>'<div class="col"><h3>'+st+'<span>'+items.filter(b=>b.status===i).length+'</span></h3>'+items.filter(b=>b.status===i).map(b=>'<div class="kcard" data-id="'+esc(b.id)+'"><b>'+esc(b.name)+'</b><span class="r-meta">'+esc(b.cat||'بدون تصنيف')+' • '+fD(b.date)+'</span><div class="kfoot"><button class="chip" data-a="status">نقل للحالة التالية</button><button class="icon-btn" data-a="bdel">✕</button></div></div>').join('')+'</div>').join('')+'</div>';
+    $('#baseView').innerHTML = html;
+  }
+  function fShortBase(v){ return v ? new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric'}).format(dparse(v)) : ''; }
+  function addBase(){
+    const n = $('#bName'), name = n.value.trim();
+    if(!name){ n.focus(); return; }
+    state.base.push({id:uid(), name, cat:$('#bCat').value.trim(), status:0, date:$('#bDate').value});
+    n.value=''; $('#bCat').value=''; $('#bDate').value=''; n.focus();
+    renderBase(); save();
+  }
+  $('#bAdd').onclick = addBase;
+  $('#bName').addEventListener('keydown', e=>{ if(e.key==='Enter') addBase(); });
+  $('#search').addEventListener('input', e=>{ ui.q = e.target.value; renderBase(); });
+  $('#statusFilter').addEventListener('change', e=>{ ui.st = e.target.value; renderBase(); });
+  $('#viewSwitch').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    ui.view = b.dataset.v;
+    document.querySelectorAll('#viewSwitch button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderBase();
+  });
+  $('#baseView').addEventListener('click', e=>{
+    const btn = e.target.closest('[data-a]'); if(!btn) return;
+    const el = btn.closest('[data-id]'); if(!el) return;
+    if(btn.dataset.a==='open-record'){
+      const [type, id] = el.dataset.id.split(':');
+      const record = type==='task' ? state.tasks.find(x=>String(x.id)===id) : type==='note' ? state.notes.find(x=>String(x.id)===id) : null;
+      const date = record && record.date;
+      if(date){ ui.sel=date; renderCal(); renderTasks(); renderNotes(); renderStats(); const target=document.getElementById(type==='task'?'tasks':type==='note'?'notes':'calendar'); if(target) target.scrollIntoView({behavior:'smooth',block:'start'}); }
+      return;
+    }
+    const b = state.base.find(x=>String(x.id)===el.dataset.id); if(!b) return;
+    if(btn.dataset.a==='status') b.status = (b.status+1)%3;
+    if(btn.dataset.a==='bdel') state.base = state.base.filter(x=>x!==b);
+    renderBase(); save();
+  });
+
+  /* ---------- المهام الرئيسية ---------- */
+  function renderMainTasks(){
+    const list=$('#mainTaskList'); if(!state.mainTasks.length){list.innerHTML='<div class="sub">لا توجد مهام رئيسية بعد.</div>';return;}
+    list.innerHTML=state.mainTasks.map(t=>'<div class="main-task" data-main-id="'+t.id+'"><span>'+esc(t.name)+'</span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><select class="select main-scope" aria-label="نطاق إضافة '+esc(t.name)+'" style="min-height:34px;padding:4px 6px;width:auto;max-width:125px;font-size:.8rem"><option value="day">هذا اليوم</option><option value="month">الشهر المعروض</option></select><button class="chip" data-main-action="add">إضافة</button><button class="link danger" data-main-action="delete">حذف</button></span></div>').join('');
+  }
+  $('#mainTaskAdd').onclick=()=>{const input=$('#mainTaskInput'),name=input.value.trim();if(!name){input.focus();return;}state.mainTasks=state.mainTasks||[];state.mainTasks.push({id:uid(),name});input.value='';renderMainTasks();save();};
+  $('#mainTaskInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#mainTaskAdd').click();});
+  $('#mainTaskList').addEventListener('click',e=>{
+    const b=e.target.closest('[data-main-action]');if(!b)return;const el=b.closest('[data-main-id]'),t=(state.mainTasks||[]).find(x=>x.id===el.dataset.mainId);if(!t)return;
+    if(b.dataset.mainAction==='delete'){
+      // حذف المهمة الرئيسية يزيل كذلك كل نسخها المضافة إلى الأيام المختلفة.
+      state.tasks=state.tasks.filter(x=>x.mainId!==t.id);
+      state.mainTasks=state.mainTasks.filter(x=>x.id!==t.id);
+      renderAll();save();flash('تم حذف المهمة الرئيسية وجميع نسخها من الأيام');return;
+    }
+    const scope=el.querySelector('.main-scope')?.value||'day';
+    const dates=[];
+    if(scope==='month'){
+      const yy=ui.calY, mm=ui.calM, days=new Date(yy,mm+1,0).getDate();
+      for(let d=1;d<=days;d++) dates.push(dkey(new Date(yy,mm,d)));
+    }else dates.push(ui.sel);
+    let added=0;
+    dates.forEach(date=>{if(!state.tasks.some(x=>x.date===date&&x.mainId===t.id)){state.tasks.push({id:uid(),mainId:t.id,text:t.name,date,done:false,prio:1});added++;}});
+    renderAll();save();flash(added ? (scope==='month'?'أُضيفت المهمة إلى '+added+' يومًا في الشهر المعروض':'أُضيفت المهمة إلى '+selLabel()) : 'المهمة موجودة بالفعل في النطاق المحدد');
+  });
+
+  /* ---------- نسخ احتياطي ومسح ---------- */
+  $('#export').onclick = ()=>{
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'plan-backup.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  };
+  $('#importBtn').onclick = ()=> $('#importFile').click();
+  $('#importFile').addEventListener('change', async e=>{
+    const f = e.target.files[0]; if(!f) return;
+    try{
+      const s = JSON.parse(await f.text());
+      if(!s || !Array.isArray(s.tasks)) throw new Error('bad');
+      const t = todayKey();
+      state = {
+        tasks: s.tasks.map(x=>Object.assign({date:t}, x)),
+        notes: Array.isArray(s.notes) ? s.notes : [],
+        base: Array.isArray(s.base) ? s.base : [],
+        mainTasks: Array.isArray(s.mainTasks) ? s.mainTasks : []
+      };
+      clearEditor(); renderAll(); save(); flash('تمت استعادة النسخة ✓');
+    }catch(err){ flash('الملف غير صالح'); }
+    e.target.value = '';
+  });
+  let rArmed = false;
+  $('#reset').onclick = function(){
+    if(!rArmed){ rArmed = true; this.textContent = 'تأكيد المسح'; setTimeout(()=>{ rArmed=false; this.textContent='مسح'; },4000); return; }
+    state = {tasks:[],notes:[],base:[],mainTasks:[]}; clearEditor();
+    rArmed=false; this.textContent='مسح'; renderAll(); save(); flash('تم مسح البيانات');
+  };
+
+  function renderAll(){ renderCal(); renderTasks(); renderNotes(); renderBase(); renderStats(); renderMainTasks(); }
+
+  /* ---------- بدء التشغيل ---------- */
+  (async function init(){
+    tick(); setInterval(tick, 1000);
+    await load(); await loadSettings();
+    applySettings(); renderAll();
+  })();
+})();
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+
+/* أدوات PWA: حالة الاتصال والتثبيت */
+(function(){
+  const badge=document.getElementById('netStatus');
+  const label=document.getElementById('netStatusText');
+  const install=document.getElementById('installApp');
+  function updateConnection(){
+    const online=navigator.onLine;
+    badge.classList.toggle('offline',!online);
+    label.textContent=online?'متصل بالإنترنت':'وضع عدم الاتصال';
+    badge.setAttribute('aria-label',label.textContent);
+  }
+  window.addEventListener('online',updateConnection);
+  window.addEventListener('offline',updateConnection);
+  updateConnection();
+  let installPrompt=null;
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault(); installPrompt=event; install.hidden=false;
+  });
+  install.addEventListener('click',async()=>{
+    if(!installPrompt)return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt=null; install.hidden=true;
+  });
+  window.addEventListener('appinstalled',()=>{
+    install.hidden=true; installPrompt=null;
+    if(typeof flash==='function') flash('تم تثبيت نكسورا بنجاح ✓');
+  });
 })();
