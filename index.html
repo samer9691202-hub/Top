@@ -737,37 +737,79 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 @media(prefers-reduced-motion:reduce){:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{transition:none}}
 
 
-/* LUBB — Liquid Glass clock card inspired by the supplied reference */
+/* LUBB — redesigned “Orbit / Time Capsule” clock card */
 .hero{
+  --orbit-violet:#9b8cff;--orbit-cyan:#5be7df;--orbit-blue:#79a9ff;
   position:relative;isolation:isolate;overflow:hidden;
-  color:#fff;
-  background:linear-gradient(135deg,rgba(122,104,184,.72) 0%,rgba(103,155,194,.54) 45%,rgba(91,211,201,.48) 100%) !important;
-  border:1px solid rgba(255,255,255,.58) !important;
-  border-radius:30px !important;
-  box-shadow:0 24px 48px rgba(72,77,116,.20),inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(255,255,255,.22) !important;
-  -webkit-backdrop-filter:blur(24px) saturate(155%);backdrop-filter:blur(24px) saturate(155%);
+  display:grid;grid-template-areas:"main" "date" "prog";
+  gap:22px;padding:clamp(22px,3.2vw,38px);
+  color:#f7f8ff;border:1px solid rgba(205,221,255,.24)!important;
+  border-radius:32px!important;
+  background:
+    radial-gradient(ellipse at 82% 12%,rgba(93,220,228,.23),transparent 29%),
+    radial-gradient(ellipse at 12% 88%,rgba(143,101,255,.24),transparent 32%),
+    linear-gradient(135deg,#11182f 0%,#1b2450 48%,#172e4b 100%)!important;
+  box-shadow:0 28px 65px -30px rgba(30,42,91,.72),inset 0 1px 0 rgba(255,255,255,.15)!important;
 }
 .hero::before{
-  content:"";position:absolute;z-index:-1;inset:-25%;pointer-events:none;
-  background:radial-gradient(ellipse at 15% 20%,rgba(255,255,255,.42),transparent 32%),radial-gradient(ellipse at 88% 28%,rgba(104,255,232,.42),transparent 29%),radial-gradient(ellipse at 70% 100%,rgba(255,132,218,.40),transparent 35%),radial-gradient(ellipse at 35% 90%,rgba(153,122,255,.36),transparent 34%);
-  filter:blur(8px);
+  content:"";position:absolute;z-index:-1;pointer-events:none;
+  width:clamp(250px,42vw,470px);aspect-ratio:1;inset-block-start:-34%;inset-inline-end:-9%;
+  border-radius:50%;border:1px solid rgba(155,140,255,.25);
+  box-shadow:0 0 0 22px rgba(155,140,255,.035),0 0 0 54px rgba(91,231,223,.025),inset 0 0 65px rgba(91,231,223,.09);
+  background:radial-gradient(circle at 35% 38%,rgba(91,231,223,.15),transparent 60%);
 }
-.hero .greet,.hero .hero-top,.hero .hero-main,.hero .datepanel,.hero .dayprog{position:relative;z-index:1}
+.hero::after{
+  content:"";position:absolute;z-index:-1;pointer-events:none;
+  width:210px;height:210px;inset-block-end:-125px;inset-inline-start:28%;border-radius:50%;
+  background:rgba(121,169,255,.15);filter:blur(38px);
+}
+.hero>*{position:relative;z-index:1}
+.hero-main{grid-area:main;min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.hero-top{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:10px}
+.greet{display:flex;align-items:center;gap:10px;font-size:.96rem;font-weight:600;color:rgba(237,242,255,.88)}
+.greet .brand{padding:5px 12px;border-radius:999px;background:linear-gradient(135deg,rgba(155,140,255,.25),rgba(91,231,223,.12));border:1px solid rgba(201,215,255,.25);font-size:.72rem;font-weight:800;letter-spacing:.15em;color:#fff}
 .hero .clock{
-  display:inline-flex;align-items:center;gap:14px;margin-top:16px;padding:13px 18px 13px 20px;
-  border:1px solid rgba(255,255,255,.62) !important;border-radius:24px !important;
-  background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.10)) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 12px 28px rgba(45,48,91,.13) !important;
-  -webkit-backdrop-filter:blur(22px) saturate(175%);backdrop-filter:blur(22px) saturate(175%);
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:12px;
+  width:clamp(238px,29vw,330px);aspect-ratio:1;margin:8px auto 2px;padding:28px;
+  border:1px solid rgba(207,224,255,.52)!important;border-radius:50%!important;
+  background:radial-gradient(circle at 32% 25%,rgba(255,255,255,.16),transparent 28%),radial-gradient(circle at 60% 70%,rgba(91,231,223,.18),transparent 46%),linear-gradient(145deg,rgba(92,100,188,.38),rgba(19,31,66,.76))!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.22),inset 0 -22px 45px rgba(4,10,29,.24),0 20px 42px rgba(2,7,24,.28),0 0 38px rgba(121,169,255,.13)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
 }
-.hero .hm{text-shadow:0 2px 18px rgba(43,39,87,.15);letter-spacing:-.045em}
-.hero .clock .sec{background:linear-gradient(145deg,rgba(180,150,255,.46),rgba(92,232,220,.30)) !important;border:1px solid rgba(255,255,255,.60) !important;border-radius:14px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 5px 12px rgba(69,66,123,.10)}
-.hero .clock .ap{background:rgba(255,255,255,.22) !important;border:1px solid rgba(255,255,255,.46) !important;border-radius:999px !important}
-.hero .datepanel{background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.09)) !important;border:1px solid rgba(255,255,255,.48) !important;border-radius:22px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.60),0 10px 22px rgba(47,50,91,.10) !important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.hero .day-track{background:rgba(255,255,255,.22) !important;border:1px solid rgba(255,255,255,.32)}
-.hero .day-fill{background:linear-gradient(90deg,#c6a5ff 0%,#9e8aff 42%,#72f0df 100%) !important;box-shadow:0 0 16px rgba(122,237,225,.42)}
-.hero .ticks{color:rgba(255,255,255,.78)}
-@media(max-width:560px){.hero{border-radius:24px !important}.hero .clock{border-radius:20px !important}}
+.hero .clock::before{content:"";position:absolute;z-index:-1;inset:9px;border:1px solid rgba(219,231,255,.22);border-radius:50%;background:repeating-conic-gradient(from -3deg,rgba(226,236,255,.54) 0deg 1deg,transparent 1deg 15deg);mask:radial-gradient(circle,transparent 65%,#000 66%,#000 68%,transparent 69%);-webkit-mask:radial-gradient(circle,transparent 65%,#000 66%,#000 68%,transparent 69%)}
+.hero .clock::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid transparent;border-top-color:rgba(91,231,223,.85);border-left-color:rgba(155,140,255,.75);transform:rotate(-32deg);filter:drop-shadow(0 0 7px rgba(91,231,223,.45));pointer-events:none}
+.hero .hm{font-size:clamp(2.7rem,6.4vw,4.5rem);font-weight:700;line-height:1;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 3px 22px rgba(151,171,255,.24)}
+.hero .colon{opacity:.58;margin:0 .015em}
+.hero .clock .side{display:grid;gap:8px;justify-items:center;direction:rtl}
+.hero .clock .sec{display:grid;place-items:center;min-width:39px;min-height:34px;padding:4px 8px;border-radius:11px!important;background:linear-gradient(145deg,rgba(155,140,255,.34),rgba(91,231,223,.17))!important;border:1px solid rgba(220,232,255,.34)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)!important;color:#eafaff;font-size:1.08rem;font-weight:750}
+.hero .clock .ap{padding:3px 10px;border-radius:999px!important;background:rgba(236,243,255,.09)!important;border:1px solid rgba(220,232,255,.22)!important;color:#dfe8ff;font-size:.72rem;font-weight:800}
+.hero .datepanel{grid-area:date;align-self:center;min-width:0;min-height:180px;padding:24px;border-radius:25px!important;display:grid;align-content:center;gap:7px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035))!important;border:1px solid rgba(210,225,255,.19)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 35px rgba(3,8,26,.13)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.hero .datepanel::before{content:"التاريخ اليوم";display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:4px 10px;border-radius:999px;background:rgba(91,231,223,.10);border:1px solid rgba(91,231,223,.19);color:#9df4ed;font-size:.73rem;font-weight:700}
+.hero .wk{font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:800;line-height:1.25;color:#fff}
+.hero .gr{font-size:1rem;color:rgba(237,242,255,.84)}
+.hero .hij{margin-top:6px;padding-top:10px;border-top:1px solid rgba(221,232,255,.16);font-size:.86rem;color:rgba(220,231,255,.68)}
+.hero .dayprog{grid-area:prog;padding:17px 19px 14px;border-radius:20px;background:rgba(4,11,32,.26);border:1px solid rgba(207,224,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
+.hero .day-label{display:flex;justify-content:space-between;gap:12px;font-size:.82rem;color:rgba(228,236,255,.75);margin-bottom:11px}
+.hero .day-label b{color:#fff;font-variant-numeric:tabular-nums}
+.hero .day-track{height:8px;border-radius:999px;background:rgba(225,235,255,.12)!important;border:1px solid rgba(225,235,255,.09);overflow:hidden}
+.hero .day-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#a18bff 0%,#7da9ff 48%,#5be7df 100%)!important;box-shadow:0 0 18px rgba(91,231,223,.35);transition:width 1s linear}
+.hero .ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:.67rem;color:rgba(221,232,255,.52)}
+@media(min-width:760px){
+  .hero{grid-template-columns:minmax(0,1.15fr) minmax(230px,.85fr);grid-template-areas:"main date" "prog prog";gap:22px 34px;padding:34px 38px}
+  .hero-main{align-items:stretch}
+  .hero .clock{margin-inline:auto}
+  .hero .datepanel{min-height:230px}
+}
+@media(max-width:759px){
+  .hero{gap:17px;padding:23px 18px;border-radius:27px!important}
+  .hero-main{align-items:center}
+  .hero-top{justify-content:center;margin-bottom:6px}
+  .hero .clock{width:clamp(230px,72vw,300px);margin-top:12px}
+  .hero .datepanel{min-height:0;padding:19px 20px}
+  .hero .dayprog{padding:15px 14px 12px}
+}
+@media(max-width:360px){.hero .clock{width:218px;padding:20px}.hero .hm{font-size:2.55rem}.hero .clock .sec{min-width:33px;min-height:30px;font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){.hero .day-fill{transition:none}}
 
 </style>
 </head>
