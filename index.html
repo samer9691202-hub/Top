@@ -1042,7 +1042,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
     <p class="setmsg" id="setMsg" aria-live="polite"></p>
     <p class="about">LUBB • تُحفظ بياناتك تلقائيًا على هذا الجهاز.</p>
-    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 58">الإصدار V58</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
+    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 59">الإصدار V59</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
   </div>
 </div>
 </div>
@@ -1956,7 +1956,8 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
  function readImage(file,cb){if(!file)return;if(!file.type.startsWith('image/'))return alert('يرجى اختيار ملف صورة.');const reader=new FileReader();reader.onload=()=>{cb(String(reader.result));persist();apply();refreshEditor()};reader.readAsDataURL(file)}
  const logoDialog=$('#logoActionDialog');
  function openLogoDialog(){if(logoDialog?.showModal)logoDialog.showModal();else{const choice=prompt('اكتب 1 لاختيار صورة، أو 2 لإزالة الشعار:');if(choice==='1')$('#logoFile').click();if(choice==='2'){cfg.logo='';persist();apply()}}}
- $$('.nav-brand-mark .lubb-exact-logo,.brand-symbol .lubb-exact-logo').forEach(el=>{el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openLogoDialog()});el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLogoDialog()}});el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','تغيير أو إزالة شعار LUBB')});
+ // V59: الشعار للهوية فقط؛ الضغط على علامة LUBB يتبع زر الصفحة الرئيسية ولا يفتح أدوات تغيير الشعار.
+ $$('.nav-brand-mark .lubb-exact-logo,.brand-symbol .lubb-exact-logo').forEach(el=>{el.style.pointerEvents='none';el.removeAttribute('tabindex');el.removeAttribute('role');el.removeAttribute('aria-label')});
  $('#logoChoose')?.addEventListener('click',()=>$('#logoFile').click());
  $('#logoFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.logo=v);e.target.value=''});
  $('#logoDialogChoose')?.addEventListener('click',()=>{logoDialog.close();$('#logoFile').click()});
@@ -1978,7 +1979,7 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
  function openClockEditor(){refreshEditor();if(editor?.showModal)editor.showModal();else alert('متصفحك لا يدعم نافذة تخصيص الساعة.');}
  $('#openClockEditor')?.addEventListener('click',openClockEditor);
  const liveHero=$('.hero');
- if(liveHero){liveHero.style.cursor='pointer';liveHero.setAttribute('tabindex','0');liveHero.setAttribute('role','button');liveHero.setAttribute('aria-label','اضغط لتخصيص بطاقة الساعة');liveHero.addEventListener('click',e=>{if(e.target.closest('a,button,input,select,textarea'))return;openClockEditor()});liveHero.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===liveHero){e.preventDefault();openClockEditor()}})}
+ if(liveHero){liveHero.style.cursor='default';liveHero.removeAttribute('tabindex');liveHero.removeAttribute('role');liveHero.removeAttribute('aria-label');/* V59: بطاقة الساعة للعرض فقط ولا تستجيب للنقر */}
  $('#closeClockEditor')?.addEventListener('click',()=>editor.close());
  $('#editorHeroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply();refreshEditor()});
  $('#editorHeroBgFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.heroBg=v);e.target.value=''});
@@ -1992,5 +1993,7 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 </html>
 
 <style>
-.lubb-exact-logo{display:block;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:inherit;} .nav-brand-mark:has(.lubb-exact-logo),.brand-symbol:has(.lubb-exact-logo){overflow:hidden;background:transparent!important;padding:0!important;} .nav-brand-mark .lubb-exact-logo{width:100%;height:100%;} .brand-symbol .lubb-exact-logo{width:100%;height:100%;}
+.lubb-exact-logo{display:block;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:inherit;} .nav-brand-mark:has(.lubb-exact-logo),.brand-symbol:has(.lubb-exact-logo){overflow:hidden;background:transparent!important;padding:0!important;} .nav-brand-mark .lubb-exact-logo{width:100%;height:100%;pointer-events:none!important;cursor:inherit!important;} .brand-symbol .lubb-exact-logo{width:100%;height:100%;pointer-events:none!important;cursor:inherit!important;}
 </style>
+
+<style id="lubb-v59-noninteractive-brand-clock">.nav-brand-mark,.brand-symbol,.nav-brand-mark .lubb-exact-logo,.brand-symbol .lubb-exact-logo{cursor:inherit!important}.hero{cursor:default!important}</style>

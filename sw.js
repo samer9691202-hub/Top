@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v58-clean-settings';
+const CACHE = 'lubb-v59-static-brand-clock';
 const BASE = self.registration.scope;
 const FILES = [
   './',
