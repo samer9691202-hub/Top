@@ -735,6 +735,40 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
  :root:not([data-theme="dark"]) .clock .sec{min-width:37px;min-height:32px;font-size:1rem}
 }
 @media(prefers-reduced-motion:reduce){:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{transition:none}}
+
+
+/* LUBB — Liquid Glass clock card inspired by the supplied reference */
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  color:#fff;
+  background:linear-gradient(135deg,rgba(122,104,184,.72) 0%,rgba(103,155,194,.54) 45%,rgba(91,211,201,.48) 100%) !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  border-radius:30px !important;
+  box-shadow:0 24px 48px rgba(72,77,116,.20),inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(255,255,255,.22) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(155%);backdrop-filter:blur(24px) saturate(155%);
+}
+.hero::before{
+  content:"";position:absolute;z-index:-1;inset:-25%;pointer-events:none;
+  background:radial-gradient(ellipse at 15% 20%,rgba(255,255,255,.42),transparent 32%),radial-gradient(ellipse at 88% 28%,rgba(104,255,232,.42),transparent 29%),radial-gradient(ellipse at 70% 100%,rgba(255,132,218,.40),transparent 35%),radial-gradient(ellipse at 35% 90%,rgba(153,122,255,.36),transparent 34%);
+  filter:blur(8px);
+}
+.hero .greet,.hero .hero-top,.hero .hero-main,.hero .datepanel,.hero .dayprog{position:relative;z-index:1}
+.hero .clock{
+  display:inline-flex;align-items:center;gap:14px;margin-top:16px;padding:13px 18px 13px 20px;
+  border:1px solid rgba(255,255,255,.62) !important;border-radius:24px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.10)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 12px 28px rgba(45,48,91,.13) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(175%);backdrop-filter:blur(22px) saturate(175%);
+}
+.hero .hm{text-shadow:0 2px 18px rgba(43,39,87,.15);letter-spacing:-.045em}
+.hero .clock .sec{background:linear-gradient(145deg,rgba(180,150,255,.46),rgba(92,232,220,.30)) !important;border:1px solid rgba(255,255,255,.60) !important;border-radius:14px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 5px 12px rgba(69,66,123,.10)}
+.hero .clock .ap{background:rgba(255,255,255,.22) !important;border:1px solid rgba(255,255,255,.46) !important;border-radius:999px !important}
+.hero .datepanel{background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.09)) !important;border:1px solid rgba(255,255,255,.48) !important;border-radius:22px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.60),0 10px 22px rgba(47,50,91,.10) !important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.hero .day-track{background:rgba(255,255,255,.22) !important;border:1px solid rgba(255,255,255,.32)}
+.hero .day-fill{background:linear-gradient(90deg,#c6a5ff 0%,#9e8aff 42%,#72f0df 100%) !important;box-shadow:0 0 16px rgba(122,237,225,.42)}
+.hero .ticks{color:rgba(255,255,255,.78)}
+@media(max-width:560px){.hero{border-radius:24px !important}.hero .clock{border-radius:20px !important}}
+
 </style>
 </head>
 <body>
