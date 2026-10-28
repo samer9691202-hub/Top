@@ -1,7 +1,7 @@
 {
   "name": "LUBB — لُبّ",
   "short_name": "لُبّ",
-  "description": "مساحة هادئة لتنظيم يومك ومهامك وأفكارك",
+  "description": "لُبّ — مساحة إنتاجية عربية متكاملة لتنظيم المهام والملاحظات والوقت",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./index.html",
@@ -22,5 +22,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "version": "1.1.0"
 }
