@@ -754,6 +754,55 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .colon{color:rgba(255,255,255,.9) !important;}
 @media(max-width:560px){.clock{padding:10px 13px 10px 15px !important;border-radius:20px !important;}}
 
+
+
+/* =========================================================
+   LUBB v5.3 — Sidebar polish: fluid motion + premium glass
+   ========================================================= */
+.side-nav{
+  --nav-glow: color-mix(in srgb,var(--accent) 25%,transparent);
+  isolation:isolate;
+  overflow:visible;
+  background:linear-gradient(155deg,color-mix(in srgb,var(--surface) 86%,white 14%),color-mix(in srgb,var(--surface-2) 88%,transparent))!important;
+  border:1px solid color-mix(in srgb,var(--line-2) 68%,white 32%)!important;
+  box-shadow:0 24px 65px -30px rgba(22,34,75,.42),0 7px 20px -12px rgba(45,61,115,.25),inset 0 1px 0 rgba(255,255,255,.78),inset 0 -1px 0 rgba(255,255,255,.18)!important;
+  backdrop-filter:blur(28px) saturate(175%)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(175%)!important;
+  transition:box-shadow .35s ease,border-color .35s ease,background .35s ease!important;
+}
+.side-nav::before{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;z-index:-1;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 38%,color-mix(in srgb,var(--accent) 7%,transparent));}
+.side-nav>button{position:relative;isolation:isolate;overflow:hidden;border-radius:17px!important;outline:none;will-change:transform,background;transition:transform .28s cubic-bezier(.2,.8,.2,1),color .25s ease,background .28s ease,box-shadow .28s ease!important;}
+.side-nav>button:not(.nav-brand)::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.42),transparent 55%);opacity:0;transition:opacity .25s ease;pointer-events:none;z-index:-1;}
+.side-nav>button:not(.nav-brand):hover{transform:translateX(-3px);background:color-mix(in srgb,var(--accent-soft) 82%,white 18%)!important;color:var(--accent)!important;box-shadow:0 5px 16px -12px var(--nav-glow),inset 0 1px 0 rgba(255,255,255,.6);}
+.side-nav>button:not(.nav-brand):hover::before{opacity:1}
+.side-nav>button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.side-nav>button:active{transform:scale(.96)!important;transition-duration:.08s!important}
+.side-nav>button[aria-current="page"],.side-nav>button.active{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 17%,white 83%),color-mix(in srgb,var(--accent-2) 18%,var(--surface)))!important;color:var(--accent)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),0 7px 18px -14px var(--nav-glow),inset 0 1px 0 rgba(255,255,255,.8)!important;}
+.side-nav>button[aria-current="page"]::after,.side-nav>button.active::after{content:"";position:absolute;inset-block:23%;inset-inline-start:0;width:3px;border-radius:0 5px 5px 0;background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 0 12px var(--nav-glow);}
+.side-nav>button svg{flex-shrink:0;transition:transform .28s cubic-bezier(.2,.8,.2,1),filter .28s ease;}
+.side-nav>button:hover svg{transform:translateY(-1px) scale(1.06);filter:drop-shadow(0 2px 5px var(--nav-glow));}
+.side-nav .nav-brand{margin-bottom:5px!important;padding:7px 3px!important;gap:7px!important;}
+.side-nav .nav-brand-mark{position:relative;width:43px!important;height:43px!important;border-radius:15px!important;background:linear-gradient(145deg,#f8fbff 0%,#cfe5ff 28%,#718eff 58%,#6948e8 100%)!important;box-shadow:0 8px 22px -10px rgba(74,102,230,.78),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -2px 5px rgba(33,47,120,.2)!important;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease!important;}
+.side-nav .nav-brand-mark::after{content:"";position:absolute;inset:2px;border:1px solid rgba(255,255,255,.6);border-radius:13px;pointer-events:none;}
+.side-nav .nav-brand-mark svg{width:31px;height:31px;filter:drop-shadow(0 1px 2px rgba(27,39,98,.2));}
+.side-nav .nav-brand:hover .nav-brand-mark{transform:translateY(-2px) rotate(-3deg);box-shadow:0 12px 25px -10px rgba(74,102,230,.8),inset 0 1px 0 rgba(255,255,255,.95)!important;}
+.side-nav .nav-brand-name{font-size:.68rem!important;letter-spacing:.16em!important;font-weight:800!important;color:var(--ink)!important;}
+.side-nav .nav-divider{opacity:.65}
+@media(min-width:901px){
+ .side-nav{width:82px!important;padding:13px 9px!important;gap:7px!important;border-radius:27px!important;}
+ .side-nav>button{min-height:61px!important;border-radius:18px!important;}
+ .side-nav .nav-brand{min-height:80px!important;}
+ .side-nav button span:not(.nav-brand-mark){font-size:.68rem;letter-spacing:-.01em}
+}
+@media(max-width:900px){
+ .side-nav{padding:8px 9px!important;gap:5px!important;border-radius:24px!important;bottom:max(12px,env(safe-area-inset-bottom))!important;}
+ .side-nav>button{min-height:51px!important;border-radius:16px!important;}
+ .side-nav .nav-brand-mark{width:35px!important;height:35px!important;border-radius:12px!important;}
+ .side-nav .nav-brand-mark svg{width:26px;height:26px;}
+ .side-nav>button:not(.nav-brand):hover{transform:translateY(-2px)!important;}
+}
+@media(prefers-reduced-motion:reduce){.side-nav,.side-nav *{transition:none!important;scroll-behavior:auto!important;}}
+
 </style>
 </head>
 <body>
