@@ -813,6 +813,20 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .brand-symbol .lubb-exact-logo{width:48px!important;height:48px!important;border-radius:14px;}
 @media(max-width:900px){.side-nav .nav-brand-mark .lubb-exact-logo{width:34px!important;height:34px!important;}}
 </style>
+
+<style>
+/* تخصيص الشعار وبطاقة الساعة من الإعدادات */
+#settings input[type="color"]{border-radius:10px;overflow:hidden;cursor:pointer}
+#settings input[type="range"]{accent-color:var(--accent);width:130px}
+.hero{background-color:var(--hero-custom-bg,#312E81);background-image:var(--hero-custom-image,linear-gradient(125deg,var(--hero-a),var(--hero-b)))}
+.hero .hero-main,.hero .datepanel,.hero .dayprog{transform:scale(var(--hero-scale,1));transform-origin:center}
+.hero .clock{justify-content:var(--clock-justify,flex-end)}
+.hero .datepanel{text-align:var(--date-align,right)}
+.hero .hero-main{justify-self:var(--clock-self,end);width:100%}
+.hero .datepanel{justify-self:var(--date-self,start)}
+.brand .settings-logo{height:1.4em;width:1.4em;object-fit:contain;vertical-align:middle;border-radius:7px;margin-inline-end:5px}
+</style>
+
 </head>
 <body>
 <div class="app-tools" aria-label="حالة التطبيق">
@@ -1026,6 +1040,21 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>المظهر</b></div>
       <div class="seg" data-setting="theme" role="group" aria-label="المظهر"><button type="button" data-val="auto">تلقائي</button><button type="button" data-val="light">فاتح</button><button type="button" data-val="dark">داكن</button></div></div>
 
+
+    <h3>تخصيص الهوية</h3>
+    <div class="srow"><div><b>صورة شعار LUBB</b><p class="sub">اختر صورة من جهازك لتظهر بدل الشعار النصي</p></div><button type="button" class="abtn" id="logoChoose">اختيار صورة</button></div>
+    <input type="file" id="logoFile" accept="image/*" hidden>
+    <div class="srow" id="logoActions" hidden><div><b>الشعار الحالي</b></div><button type="button" class="abtn danger" id="logoRemove">إزالة</button></div>
+
+    <h3>تخصيص بطاقة الساعة</h3>
+    <div class="srow"><div><b>لون خلفية البطاقة</b><p class="sub">اختر لونًا أو استخدم صورة كخلفية</p></div><input type="color" id="heroColor" value="#312E81" aria-label="لون خلفية بطاقة الساعة" style="width:54px;height:38px;border:0;background:transparent"></div>
+    <div class="srow"><div><b>صورة خلفية البطاقة</b></div><button type="button" class="abtn" id="heroBgChoose">اختيار صورة</button></div>
+    <input type="file" id="heroBgFile" accept="image/*" hidden>
+    <div class="srow"><div><b>تكبير أو تصغير عناصر البطاقة</b><p class="sub">حجم الساعة والتاريخ وبقية العناصر</p></div><input type="range" id="heroScale" min="75" max="125" value="100" step="5" aria-label="حجم عناصر البطاقة" style="max-width:130px"></div>
+    <div class="srow"><div><b>موضع الساعة</b></div><div class="seg" id="clockPosition"><button type="button" data-pos="start">يمين</button><button type="button" data-pos="center">وسط</button><button type="button" data-pos="end">يسار</button></div></div>
+    <div class="srow"><div><b>موضع التاريخ</b></div><div class="seg" id="datePosition"><button type="button" data-pos="start">يمين</button><button type="button" data-pos="center">وسط</button><button type="button" data-pos="end">يسار</button></div></div>
+    <div class="srow"><div><b>إعادة ضبط بطاقة الساعة</b><p class="sub">إرجاع الألوان والأحجام والمواضع الافتراضية</p></div><button type="button" class="abtn" id="heroReset">إعادة ضبط</button></div>
+
     <h3>البيانات</h3>
     <div class="srow"><div><b>نسخة احتياطية</b><p class="sub" id="lastBackupTxt">تحميل ملف ببياناتك</p></div><button type="button" class="abtn" id="export">تحميل</button></div>
     <div class="srow"><div><b>استعادة نسخة</b><p class="sub">من ملف حفظته سابقًا</p></div><button type="button" class="abtn" id="importBtn">اختيار ملف</button></div>
@@ -1033,7 +1062,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
     <p class="setmsg" id="setMsg" aria-live="polite"></p>
     <p class="about">LUBB • تُحفظ بياناتك تلقائيًا على هذا الجهاز.</p>
-    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 52">الإصدار V52</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
+    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 56">الإصدار V56</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
   </div>
 </div>
 </div>
@@ -1895,6 +1924,52 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 (function(){
   const home = document.getElementById('brandHome');
   home?.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); });
+})();
+</script>
+
+
+<script>
+/* LUBB — أدوات تخصيص الشعار وبطاقة الساعة */
+(function(){
+ const $=s=>document.querySelector(s);
+ const KEY='lubb-visual-settings-v1';
+ const defaults={heroColor:'#312E81',heroBg:'',heroScale:100,clockPosition:'start',datePosition:'end',logo:''};
+ let cfg={...defaults};
+ try{cfg={...cfg,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){}
+ function persist(){try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}}
+ function apply(){
+   const hero=$('.hero'); if(!hero)return;
+   hero.style.setProperty('--hero-custom-bg',cfg.heroColor||defaults.heroColor);
+   hero.style.setProperty('--hero-custom-image',cfg.heroBg?'linear-gradient(0deg,rgba(10,12,25,.18),rgba(10,12,25,.18)),url("'+cfg.heroBg+'")':'linear-gradient(125deg,var(--hero-a),var(--hero-b))');
+   hero.style.backgroundSize=cfg.heroBg?'cover':'auto';
+   hero.style.backgroundPosition='center';
+   hero.style.setProperty('--hero-scale',(Number(cfg.heroScale)||100)/100);
+   const cp={start:'flex-end',center:'center',end:'flex-start'}[cfg.clockPosition]||'flex-end';
+   hero.style.setProperty('--clock-justify',cp);
+   hero.style.setProperty('--clock-self',({start:'end',center:'center',end:'start'}[cfg.clockPosition]||'end'));
+   hero.style.setProperty('--date-align',({start:'right',center:'center',end:'left'}[cfg.datePosition]||'right'));
+   hero.style.setProperty('--date-self',({start:'end',center:'center',end:'start'}[cfg.datePosition]||'start'));
+   document.querySelectorAll('.brand').forEach(el=>{
+     let img=el.querySelector('.settings-logo');
+     if(cfg.logo){if(!img){img=document.createElement('img');img.className='settings-logo';img.alt='شعار LUBB';el.prepend(img)}img.src=cfg.logo;img.hidden=false}
+     else if(img)img.remove();
+   });
+   if($('#heroColor'))$('#heroColor').value=cfg.heroColor||defaults.heroColor;
+   if($('#heroScale'))$('#heroScale').value=cfg.heroScale||100;
+   if($('#logoActions'))$('#logoActions').hidden=!cfg.logo;
+   ['clockPosition','datePosition'].forEach(id=>{const value=cfg[id==='clockPosition'?'clockPosition':'datePosition'];$('#'+id)?.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pos===value)))});
+ }
+ function readImage(file,cb){if(!file)return; if(!file.type.startsWith('image/'))return alert('يرجى اختيار ملف صورة.');const reader=new FileReader();reader.onload=()=>{cb(String(reader.result));persist();apply()};reader.readAsDataURL(file)}
+ $('#logoChoose')?.addEventListener('click',()=>$('#logoFile').click());
+ $('#logoFile')?.addEventListener('change',e=>readImage(e.target.files[0],v=>cfg.logo=v));
+ $('#logoRemove')?.addEventListener('click',()=>{cfg.logo='';persist();apply()});
+ $('#heroBgChoose')?.addEventListener('click',()=>$('#heroBgFile').click());
+ $('#heroBgFile')?.addEventListener('change',e=>readImage(e.target.files[0],v=>cfg.heroBg=v));
+ $('#heroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply()});
+ $('#heroScale')?.addEventListener('input',e=>{cfg.heroScale=+e.target.value;persist();apply()});
+ [['clockPosition','clockPosition'],['datePosition','datePosition']].forEach(([id,key])=>$('#'+id)?.addEventListener('click',e=>{const b=e.target.closest('button[data-pos]');if(!b)return;cfg[key]=b.dataset.pos;persist();apply()}));
+ $('#heroReset')?.addEventListener('click',()=>{cfg={...defaults};persist();apply();if($('#logoFile'))$('#logoFile').value='';if($('#heroBgFile'))$('#heroBgFile').value=''});
+ apply();
 })();
 </script>
 

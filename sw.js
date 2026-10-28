@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v55-logo-visible-fix';
+const CACHE = 'lubb-v56-customizable-clock';
 const BASE = self.registration.scope;
 const FILES = [
   './',
