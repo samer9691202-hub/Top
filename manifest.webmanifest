@@ -7,8 +7,8 @@
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6fa",
-  "theme_color": "#111c31",
+  "background_color": "#eaf1f5",
+  "theme_color": "#e8b91e",
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -23,5 +23,5 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

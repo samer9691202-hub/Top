@@ -16,3 +16,29 @@
 .mobile-brand img{border-radius:8px}.about-logo{border-radius:18px;background:#111c31;box-shadow:0 10px 25px #111c3120}
 button,.nav-item,.metric-card,.panel,.note-card,.task-row{transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* LUBB 1.2 — Frosted pearl & saffron visual direction, inspired by the supplied reference */
+:root{--bg:#eaf1f5;--surface:rgba(255,255,255,.76);--surface2:rgba(244,248,250,.86);--text:#23384a;--muted:#7d909e;--border:rgba(160,181,195,.34);--primary:#e8b91e;--primary2:#f4ce4e;--navy:#24394c;--shadow:0 16px 42px rgba(66,94,112,.10);--radius:22px;color-scheme:light}
+body{background:radial-gradient(ellipse at 12% 8%,rgba(255,255,255,.95),transparent 34%),radial-gradient(ellipse at 88% 22%,rgba(187,211,224,.5),transparent 36%),linear-gradient(135deg,#e7eff4 0%,#f4f7f8 48%,#e3edf2 100%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 6% 92%,rgba(255,255,255,.85),transparent 28%),radial-gradient(ellipse at 92% 100%,rgba(174,202,216,.38),transparent 31%)}
+.sidebar{background:rgba(255,255,255,.64);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%);border-left-color:rgba(255,255,255,.8);box-shadow:8px 0 35px rgba(68,98,115,.035)}
+.topbar{background:rgba(255,255,255,.56);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom-color:rgba(255,255,255,.8)}
+.brand img,.about-logo{background:linear-gradient(145deg,#fff,#eaf1f5);border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(53,83,103,.13)}
+.brand strong span{color:#d6a90b}.side-label,.breadcrumb span{color:#8497a5}
+.nav-item{border-radius:13px}.nav-item.active{background:linear-gradient(110deg,rgba(244,202,57,.25),rgba(244,202,57,.08));color:#9b7800;box-shadow:inset -3px 0 #e7b91d}.nav-item.active b{background:#f6d95d;color:#5d4a00}
+.primary-btn{background:linear-gradient(135deg,#f6d64f,#e8b91e);color:#4e430f;box-shadow:0 8px 20px rgba(214,174,20,.24)}.primary-btn:hover{background:linear-gradient(135deg,#ffe575,#efc52e)}
+.text-btn,.eyebrow{color:#b28b09}.spark{background:#f0c52e}.icon-btn{background:rgba(255,255,255,.72);border-color:rgba(174,195,207,.45)}.avatar{background:#f7dc70;color:#79600a}
+.focus-card,.metric-card,.panel,.note-card,.task-row,.calendar-day,.vault-day{background:rgba(255,255,255,.68);backdrop-filter:blur(15px) saturate(135%);-webkit-backdrop-filter:blur(15px) saturate(135%);border-color:rgba(255,255,255,.86);box-shadow:0 12px 32px rgba(65,94,110,.075),inset 0 1px rgba(255,255,255,.8)}
+.focus-card,.panel{border-radius:22px}.metric-card{border-radius:18px}.task-row,.note-mini{background:rgba(255,255,255,.48);border-color:rgba(172,194,206,.34)}
+.metric-icon.amber,.amber{color:#b58a00}.purple{background:rgba(243,203,53,.18);color:#aa8500}.track.tall i{background:linear-gradient(90deg,#e9bb22,#ffe98c)}.bar-row .track i{background:linear-gradient(90deg,#e6b51a,#f6d96c)}
+body:not(.dark) .clock-card{color:#253c4f;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(223,237,244,.74));border:1px solid rgba(255,255,255,.95);box-shadow:0 18px 42px rgba(60,91,110,.13),inset 0 1px rgba(255,255,255,.95);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
+body:not(.dark) .clock-card:before{background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.68) 43%,transparent 66%)}
+body:not(.dark) .clock-card:after{border-color:rgba(103,143,164,.12);box-shadow:0 0 0 25px rgba(255,255,255,.16),0 0 0 55px rgba(255,255,255,.1)}
+body:not(.dark) .clock{color:#23394b;text-shadow:0 2px 18px rgba(76,112,132,.12);font-weight:700}
+body:not(.dark) .clock-head,body:not(.dark) .clock-footer,body:not(.dark) .progress-label,body:not(.dark) .progress-label.subtle{color:#6f8797}
+body:not(.dark) .clock-card .track{background:rgba(105,138,157,.13);border:1px solid rgba(255,255,255,.7)}body:not(.dark) .clock-card .track i{background:linear-gradient(90deg,#e8b91e,#ffe995);box-shadow:0 0 12px rgba(232,185,30,.24)}body:not(.dark) .progress-label b{color:#344e60}
+.secondary-btn{background:rgba(255,255,255,.64);border-color:rgba(169,191,204,.42)}.secondary-btn:hover{background:rgba(255,255,255,.95)}
+.note-mini:hover,.note-card:hover,.task-row:hover{border-color:rgba(226,184,31,.65);box-shadow:0 12px 28px rgba(65,94,110,.10)}
+.modal{background:rgba(250,253,254,.96);border-color:rgba(255,255,255,.95);backdrop-filter:blur(24px);box-shadow:0 28px 90px rgba(36,62,78,.24)}.toast{background:#263f51;color:white}
+@media(max-width:760px){.sidebar{background:rgba(246,250,252,.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}.topbar{background:rgba(255,255,255,.72)}}
+@media(prefers-reduced-motion:reduce){body{background-attachment:initial}}
