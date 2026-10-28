@@ -884,7 +884,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .hero-top{grid-area:top!important;align-self:end!important;justify-content:flex-start!important;width:100%!important;margin:0!important}
 .greet{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important;color:rgba(255,255,255,.96)!important;text-shadow:0 1px 8px rgba(17,55,91,.25)!important;font-size:clamp(.9rem,1.7vw,1.08rem)!important}
 .greet .brand{display:inline-flex!important;align-items:center!important;gap:7px!important;padding:5px 10px!important;border-radius:999px!important;background:rgba(255,255,255,.17)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32)!important;backdrop-filter:blur(14px) saturate(145%)!important;-webkit-backdrop-filter:blur(14px) saturate(145%)!important;letter-spacing:.13em!important;font-size:.68rem!important;color:#fff!important}
-.greet .brand::before{content:"";display:inline-block;width:18px;height:18px;background:url('icons/lubb-mark.svg?v=3') center/contain no-repeat;filter:drop-shadow(0 1px 3px rgba(38,75,150,.2))}
+.greet .brand::before{content:"";display:inline-block;width:18px;height:18px;background:url('icons/lubb-mark-exact.png?v=5') center/contain no-repeat;filter:drop-shadow(0 1px 3px rgba(38,75,150,.2))}
 .hero .clock{grid-area:clock!important;align-self:center!important;justify-self:stretch!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;width:100%!important;min-width:0!important;aspect-ratio:auto!important;margin:0!important;padding:clamp(20px,3vw,34px) clamp(14px,2vw,25px)!important;direction:ltr!important;border:1px solid var(--glass-edge)!important;border-radius:30px!important;background:linear-gradient(135deg,rgba(255,255,255,.31),rgba(230,246,255,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(255,255,255,.14),0 18px 35px rgba(20,64,103,.15)!important;-webkit-backdrop-filter:blur(24px) saturate(155%)!important;backdrop-filter:blur(24px) saturate(155%)!important}
 .hero .clock::before,.hero .clock::after{display:none!important;content:none!important}
 .hero .hm{font-size:clamp(3.2rem,7.8vw,6rem)!important;font-weight:350!important;letter-spacing:-.065em!important;line-height:1!important;color:#fff!important;text-shadow:0 2px 16px rgba(21,72,118,.2)!important;white-space:nowrap!important}
@@ -908,6 +908,36 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 @media(max-width:600px){.hero{padding:18px!important;gap:14px!important;border-radius:24px!important}.hero-main{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"top" "clock" "date"!important;gap:8px!important}.hero-top{justify-content:flex-start!important}.hero .clock{padding:20px 15px!important;border-radius:24px!important}.hero .hm{font-size:clamp(3.2rem,14vw,4.7rem)!important}.hero .datepanel{padding:5px 2px 8px!important;text-align:left!important;justify-items:start!important}.hero .wk{font-size:1.65rem!important}.hero .dayprog{padding:12px 13px 10px!important}}
 @media(max-width:360px){.hero .hm{font-size:2.85rem!important}.hero .clock{gap:8px!important}}
 
+
+/* Final refinement: vivid alpine glass and the supplied logo artwork used without redrawing. */
+.brand-logo-exact{display:block;width:76px;height:88px;object-fit:contain;flex:none;filter:drop-shadow(0 4px 12px rgba(76,103,255,.22))}
+.brand-lockup{gap:14px!important}
+.brand-copy{align-self:center!important}
+.brand-copy small{font-size:.78rem!important;color:var(--muted)!important}
+.nav-brand-mark,.brand-symbol{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(228,239,255,.74))!important}
+.nav-brand-mark img,.brand-symbol img{padding:0!important;object-fit:contain!important}
+.hero{
+ background-image:linear-gradient(115deg,rgba(9,73,128,.10),rgba(20,104,157,.04)),url('icons/clock-sky.svg?v=5')!important;
+ background-size:cover!important;background-position:center 54%!important;
+ border-color:rgba(255,255,255,.68)!important;
+ box-shadow:0 24px 58px rgba(13,64,108,.28),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+.hero::before{background:linear-gradient(110deg,rgba(12,83,139,.10),rgba(255,255,255,.015) 48%,rgba(11,72,125,.12))!important}
+.hero .clock{
+ background:linear-gradient(135deg,rgba(255,255,255,.36),rgba(116,190,228,.22) 52%,rgba(20,83,137,.13))!important;
+ border:1px solid rgba(255,255,255,.70)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(255,255,255,.22),0 18px 36px rgba(10,54,96,.22)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(175%)!important;backdrop-filter:blur(18px) saturate(175%)!important;
+}
+.hero .hm{font-weight:420!important;text-shadow:0 2px 18px rgba(8,48,89,.34),0 0 1px rgba(255,255,255,.8)!important;color:#fff!important}
+.hero .wk,.hero .gr{color:#fff!important;text-shadow:0 2px 12px rgba(8,48,89,.42)!important}
+.hero .hij{color:rgba(255,255,255,.96)!important;text-shadow:0 1px 8px rgba(8,48,89,.35)!important}
+.hero .dayprog{background:rgba(12,71,119,.25)!important;border-color:rgba(255,255,255,.56)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 26px rgba(8,49,88,.20)!important}
+.hero .day-track{background:rgba(10,63,107,.25)!important;border-color:rgba(255,255,255,.58)!important;height:13px!important}
+.hero .day-fill{background:linear-gradient(90deg,#62e6f7 0%,#7c9dff 42%,#bd7bff 74%,#ffb8e8 100%)!important;box-shadow:0 0 18px rgba(107,224,255,.72)!important}
+.hero .day-label,.hero .ticks{color:rgba(255,255,255,.98)!important;text-shadow:0 1px 7px rgba(5,44,80,.38)!important}
+@media(max-width:600px){.brand-logo-exact{width:65px;height:76px}.brandbar{align-items:center!important}.brand-copy small{font-size:.7rem!important}}
+
 </style>
 </head>
 <body>
@@ -916,7 +946,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <button class="install-app" id="installApp" type="button" hidden>تثبيت التطبيق</button>
 </div>
 <nav class="side-nav" aria-label="التنقل السريع">
-  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><img src="icons/lubb-mark.svg?v=3" alt=""></span><span class="nav-brand-name">LUBB</span></button>
+  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><img src="icons/lubb-mark-exact.png?v=5" alt=""></span><span class="nav-brand-name">LUBB</span></button>
   <button type="button" data-jump="dayZone" aria-label="التاريخ" title="التاريخ"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3.5v4M16 3.5v4M4 9.5h16M8 13h2m4 0h2M8 16.5h2"/></svg><span>التاريخ</span></button>
   <button type="button" data-jump="tasks" aria-label="المهام" title="المهام"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="m7.5 9 1.7 1.7L12 8m2 1h2.5m-9 5 1.7 1.7L12 13m2 1h2.5"/></svg><span>المهام</span></button>
   <button type="button" data-jump="notes" aria-label="الملاحظات" title="الملاحظات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h9l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5a1.5 1.5 0 0 1 1-1.5Z"/><path d="M14.5 3.5V8H19M8 12h8M8 15.5h8"/></svg><span>الملاحظات</span></button>
@@ -927,8 +957,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <!-- هوية لُبّ وشريط الوصول السريع -->
   <header class="brandbar" aria-label="LUBB brand">
     <a class="brand-lockup" href="#" id="brandHome" aria-label="العودة إلى أعلى الصفحة">
-      <span class="brand-symbol" aria-hidden="true"><img src="icons/lubb-mark.svg?v=3" alt=""></span>
-      <span class="brand-copy"><strong>LUBB</strong><small>نظّم أفكارك · أنجز أهدافك</small></span>
+      <img class="brand-logo-exact" src="icons/lubb-logo-exact.png?v=5" alt="LUBB"><span class="brand-copy"><small>نظّم أفكارك · أنجز أهدافك</small></span>
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
       <button class="brand-action header-icon-btn theme-toggle" id="quickTheme" type="button" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>

@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v54-alpine-glass-clock';
+const CACHE = 'lubb-v55-vivid-clock-exact-logo';
 const BASE = self.registration.scope;
 const FILES = [
   './',
@@ -10,9 +10,12 @@ const FILES = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
-  './icons/lubb-mark.png',
-  './icons/lubb-mark.svg',
-  './icons/clock-sky.svg'
+  './icons/lubb-mark-exact.png?v=5',
+  './icons/lubb-logo-exact.png?v=5',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/clock-sky.svg?v=5'
 ].map(path => new URL(path, BASE).toString());
 
 self.addEventListener('install', event => {
