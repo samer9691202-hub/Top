@@ -1042,11 +1042,12 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 
 
     <h3>تخصيص الهوية</h3>
-    <div class="srow"><div><b>صورة شعار LUBB</b><p class="sub">اختر صورة من جهازك لتظهر بدل الشعار النصي</p></div><button type="button" class="abtn" id="logoChoose">اختيار صورة</button></div>
+    <div class="srow"><div><b>صورة شعار LUBB</b><p class="sub">اضغط على أي شعار في الصفحة لاختيار صورة أو إزالتها</p></div><button type="button" class="abtn" id="logoChoose">اختيار صورة</button></div>
     <input type="file" id="logoFile" accept="image/*" hidden>
     <div class="srow" id="logoActions" hidden><div><b>الشعار الحالي</b></div><button type="button" class="abtn danger" id="logoRemove">إزالة</button></div>
 
     <h3>تخصيص بطاقة الساعة</h3>
+    <div class="srow"><div><b>محرر بطاقة الساعة</b><p class="sub">افتح البطاقة واسحب عناصرها باللمس لتغيير أماكنها</p></div><button type="button" class="abtn" id="openClockEditor">فتح التخصيص</button></div>
     <div class="srow"><div><b>لون خلفية البطاقة</b><p class="sub">اختر لونًا أو استخدم صورة كخلفية</p></div><input type="color" id="heroColor" value="#312E81" aria-label="لون خلفية بطاقة الساعة" style="width:54px;height:38px;border:0;background:transparent"></div>
     <div class="srow"><div><b>صورة خلفية البطاقة</b></div><button type="button" class="abtn" id="heroBgChoose">اختيار صورة</button></div>
     <input type="file" id="heroBgFile" accept="image/*" hidden>
@@ -1062,7 +1063,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="srow"><div><b>مسح كل البيانات</b><p class="sub">المهام والملاحظات والقاعدة</p></div><button type="button" class="abtn danger" id="reset">مسح</button></div>
     <p class="setmsg" id="setMsg" aria-live="polite"></p>
     <p class="about">LUBB • تُحفظ بياناتك تلقائيًا على هذا الجهاز.</p>
-    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 56">الإصدار V56</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
+    <div class="srow" style="justify-content:center;border-top:1px solid var(--line);padding-top:14px;margin-top:10px"><span class="version-badge" aria-label="رقم الإصدار 57">الإصدار V57</span><span class="sub">يدعم العمل دون اتصال بعد تحميله أول مرة</span></div>
   </div>
 </div>
 </div>
@@ -1928,47 +1929,78 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 </script>
 
 
+<style>
+/* V57: محرر مرئي باللمس وتزامن الشعار */
+#logoActionDialog,#clockEditorDialog{border:1px solid var(--line);border-radius:22px;padding:18px;background:var(--panel,#fff);color:var(--text);box-shadow:0 24px 80px #0005;max-width:min(94vw,760px);width:calc(100% - 28px)}
+#logoActionDialog::backdrop,#clockEditorDialog::backdrop{background:#080b19a8;backdrop-filter:blur(5px)}
+.logo-dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.logo-dialog-actions button{flex:1;min-width:110px}
+#clockEditorPreview{position:relative;min-height:300px;overflow:hidden;border-radius:22px;margin:14px 0;touch-action:pan-y;isolation:isolate}
+#clockEditorPreview .hero{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:300px!important;margin:0!important;display:block!important;overflow:hidden!important}
+#clockEditorPreview .hero-main,#clockEditorPreview .datepanel,#clockEditorPreview .dayprog{position:absolute!important;width:max-content!important;max-width:90%!important;z-index:2;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;padding:10px;border:1px dashed transparent;border-radius:12px}
+#clockEditorPreview .hero-main:active,#clockEditorPreview .datepanel:active,#clockEditorPreview .dayprog:active{cursor:grabbing;border-color:#fff9;background:#ffffff12}
+#clockEditorPreview .dayprog{max-width:85%!important}
+.clock-editor-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.clock-editor-controls label{display:flex;align-items:center;gap:8px;font-size:.9rem}.clock-editor-hint{font-size:.85rem;opacity:.75}
+.brand-symbol .lubb-exact-logo,.nav-brand-mark .lubb-exact-logo{cursor:pointer;pointer-events:auto}
+</style>
+<dialog id="logoActionDialog" aria-label="خيارات الشعار"><h3 style="margin:0">تخصيص شعار LUBB</h3><p class="sub">سيتم تحديث الشعار في المكانين مباشرة.</p><div class="logo-dialog-actions"><button type="button" class="abtn" id="logoDialogChoose">اختيار صورة</button><button type="button" class="abtn danger" id="logoDialogRemove">إزالة الشعار</button><button type="button" class="abtn" id="logoDialogCancel">إلغاء</button></div></dialog>
+<dialog id="clockEditorDialog" aria-label="محرر بطاقة الساعة"><h3 style="margin:0">تخصيص بطاقة الساعة</h3><p class="clock-editor-hint">المس الساعة أو التاريخ أو شريط التقدم واسحب العنصر إلى المكان الذي تريده.</p><div id="clockEditorPreview"></div><div class="clock-editor-controls"><label>لون الخلفية <input type="color" id="editorHeroColor" value="#312E81" aria-label="لون الخلفية"></label><label>صورة خلفية <input type="file" id="editorHeroBgFile" accept="image/*" aria-label="اختيار صورة خلفية"></label><button type="button" class="abtn" id="editorClearBg">إزالة الصورة</button><button type="button" class="abtn" id="editorResetPositions">إعادة مواضع العناصر</button><button type="button" class="abtn" id="closeClockEditor">تم</button></div></dialog>
 <script>
-/* LUBB — أدوات تخصيص الشعار وبطاقة الساعة */
+/* LUBB V57 — مزامنة الشعار ومحرر بطاقة الساعة باللمس */
 (function(){
- const $=s=>document.querySelector(s);
+ const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
  const KEY='lubb-visual-settings-v1';
- const defaults={heroColor:'#312E81',heroBg:'',heroScale:100,clockPosition:'start',datePosition:'end',logo:''};
- let cfg={...defaults};
- try{cfg={...cfg,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){}
- function persist(){try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}}
+ const defaults={heroColor:'#312E81',heroBg:'',heroScale:100,clockPosition:'start',datePosition:'end',logo:'',elementPositions:{}};
+ let cfg={...defaults,elementPositions:{}};
+ try{const saved=JSON.parse(localStorage.getItem(KEY)||'{}');cfg={...cfg,...saved,elementPositions:{...(saved.elementPositions||{})}}}catch(e){}
+ function persist(){try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){alert('مساحة التخزين ممتلئة. اختر صورة أصغر حجمًا.')}}
+ function setLogo(img){$$('.nav-brand-mark .lubb-exact-logo,.brand-symbol .lubb-exact-logo').forEach(el=>{if(img){el.src=img;el.hidden=false}else{el.src='icons/lubb-logo-original.png';el.hidden=false}})}
+ function positionElement(el,key){const pos=cfg.elementPositions&&cfg.elementPositions[key];if(!pos)return;el.style.position='absolute';el.style.left=pos.x+'%';el.style.top=pos.y+'%';el.style.transform='translate(-50%,-50%)';el.style.right='auto';el.style.bottom='auto';el.style.margin='0'}
  function apply(){
-   const hero=$('.hero'); if(!hero)return;
+   const hero=$('.hero');if(!hero)return;
    hero.style.setProperty('--hero-custom-bg',cfg.heroColor||defaults.heroColor);
    hero.style.setProperty('--hero-custom-image',cfg.heroBg?'linear-gradient(0deg,rgba(10,12,25,.18),rgba(10,12,25,.18)),url("'+cfg.heroBg+'")':'linear-gradient(125deg,var(--hero-a),var(--hero-b))');
-   hero.style.backgroundSize=cfg.heroBg?'cover':'auto';
-   hero.style.backgroundPosition='center';
+   hero.style.backgroundSize=cfg.heroBg?'cover':'auto';hero.style.backgroundPosition='center';
    hero.style.setProperty('--hero-scale',(Number(cfg.heroScale)||100)/100);
-   const cp={start:'flex-end',center:'center',end:'flex-start'}[cfg.clockPosition]||'flex-end';
-   hero.style.setProperty('--clock-justify',cp);
+   hero.style.setProperty('--clock-justify',({start:'flex-end',center:'center',end:'flex-start'}[cfg.clockPosition]||'flex-end'));
    hero.style.setProperty('--clock-self',({start:'end',center:'center',end:'start'}[cfg.clockPosition]||'end'));
    hero.style.setProperty('--date-align',({start:'right',center:'center',end:'left'}[cfg.datePosition]||'right'));
    hero.style.setProperty('--date-self',({start:'end',center:'center',end:'start'}[cfg.datePosition]||'start'));
-   document.querySelectorAll('.brand').forEach(el=>{
-     let img=el.querySelector('.settings-logo');
-     if(cfg.logo){if(!img){img=document.createElement('img');img.className='settings-logo';img.alt='شعار LUBB';el.prepend(img)}img.src=cfg.logo;img.hidden=false}
-     else if(img)img.remove();
-   });
+   setLogo(cfg.logo);
+   [['.hero-main','clock'],['.datepanel','date'],['.dayprog','progress']].forEach(([sel,key])=>{const el=hero.querySelector(sel);if(el)positionElement(el,key)});
    if($('#heroColor'))$('#heroColor').value=cfg.heroColor||defaults.heroColor;
    if($('#heroScale'))$('#heroScale').value=cfg.heroScale||100;
    if($('#logoActions'))$('#logoActions').hidden=!cfg.logo;
-   ['clockPosition','datePosition'].forEach(id=>{const value=cfg[id==='clockPosition'?'clockPosition':'datePosition'];$('#'+id)?.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pos===value)))});
+   if($('#editorHeroColor'))$('#editorHeroColor').value=cfg.heroColor||defaults.heroColor;
+   ['clockPosition','datePosition'].forEach(id=>{const value=cfg[id];$('#'+id)?.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pos===value)))});
  }
- function readImage(file,cb){if(!file)return; if(!file.type.startsWith('image/'))return alert('يرجى اختيار ملف صورة.');const reader=new FileReader();reader.onload=()=>{cb(String(reader.result));persist();apply()};reader.readAsDataURL(file)}
+ function readImage(file,cb){if(!file)return;if(!file.type.startsWith('image/'))return alert('يرجى اختيار ملف صورة.');const reader=new FileReader();reader.onload=()=>{cb(String(reader.result));persist();apply();refreshEditor()};reader.readAsDataURL(file)}
+ const logoDialog=$('#logoActionDialog');
+ function openLogoDialog(){if(logoDialog?.showModal)logoDialog.showModal();else{const choice=prompt('اكتب 1 لاختيار صورة، أو 2 لإزالة الشعار:');if(choice==='1')$('#logoFile').click();if(choice==='2'){cfg.logo='';persist();apply()}}}
+ $$('.nav-brand-mark .lubb-exact-logo,.brand-symbol .lubb-exact-logo').forEach(el=>{el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openLogoDialog()});el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLogoDialog()}});el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','تغيير أو إزالة شعار LUBB')});
  $('#logoChoose')?.addEventListener('click',()=>$('#logoFile').click());
- $('#logoFile')?.addEventListener('change',e=>readImage(e.target.files[0],v=>cfg.logo=v));
+ $('#logoFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.logo=v);e.target.value=''});
+ $('#logoDialogChoose')?.addEventListener('click',()=>{logoDialog.close();$('#logoFile').click()});
+ $('#logoDialogRemove')?.addEventListener('click',()=>{cfg.logo='';persist();apply();logoDialog.close()});
+ $('#logoDialogCancel')?.addEventListener('click',()=>logoDialog.close());
  $('#logoRemove')?.addEventListener('click',()=>{cfg.logo='';persist();apply()});
  $('#heroBgChoose')?.addEventListener('click',()=>$('#heroBgFile').click());
- $('#heroBgFile')?.addEventListener('change',e=>readImage(e.target.files[0],v=>cfg.heroBg=v));
- $('#heroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply()});
- $('#heroScale')?.addEventListener('input',e=>{cfg.heroScale=+e.target.value;persist();apply()});
- [['clockPosition','clockPosition'],['datePosition','datePosition']].forEach(([id,key])=>$('#'+id)?.addEventListener('click',e=>{const b=e.target.closest('button[data-pos]');if(!b)return;cfg[key]=b.dataset.pos;persist();apply()}));
- $('#heroReset')?.addEventListener('click',()=>{cfg={...defaults};persist();apply();if($('#logoFile'))$('#logoFile').value='';if($('#heroBgFile'))$('#heroBgFile').value=''});
+ $('#heroBgFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.heroBg=v);e.target.value=''});
+ $('#heroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply();refreshEditor()});
+ $('#heroScale')?.addEventListener('input',e=>{cfg.heroScale=+e.target.value;persist();apply();refreshEditor()});
+ [['clockPosition','clockPosition'],['datePosition','datePosition']].forEach(([id,key])=>$('#'+id)?.addEventListener('click',e=>{const b=e.target.closest('button[data-pos]');if(!b)return;cfg[key]=b.dataset.pos;persist();apply();refreshEditor()}));
+ $('#heroReset')?.addEventListener('click',()=>{cfg={...defaults,elementPositions:{}};persist();apply();refreshEditor();if($('#logoFile'))$('#logoFile').value='';if($('#heroBgFile'))$('#heroBgFile').value=''});
+ const editor=$('#clockEditorDialog'),preview=$('#clockEditorPreview');
+ function refreshEditor(){if(!preview)return;preview.innerHTML='';const source=$('.hero');if(!source)return;const clone=source.cloneNode(true);clone.removeAttribute('aria-label');clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));clone.querySelectorAll('[aria-live]').forEach(el=>el.removeAttribute('aria-live'));clone.style.width='100%';clone.style.height='100%';clone.style.minHeight='300px';preview.appendChild(clone);
+  [['.hero-main','clock'],['.datepanel','date'],['.dayprog','progress']].forEach(([sel,key],i)=>{const el=clone.querySelector(sel);if(!el)return;el.dataset.dragKey=key;el.style.position='absolute';el.style.width='max-content';el.style.maxWidth='88%';el.style.cursor='grab';const pos=cfg.elementPositions[key]||({clock:{x:72,y:36},date:{x:26,y:35},progress:{x:50,y:83}}[key]);el.style.left=pos.x+'%';el.style.top=pos.y+'%';el.style.right='auto';el.style.bottom='auto';el.style.transform='translate(-50%,-50%)';el.style.margin='0';el.style.zIndex=3;el.style.touchAction='none';el.style.border='1px dashed #ffffff66';el.style.borderRadius='12px';el.style.padding='8px';});
+  clone.querySelectorAll('button,a,input').forEach(el=>{el.style.pointerEvents='none'});}
+ function enableDrag(){preview?.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-drag-key]');if(!el)return;e.preventDefault();const box=preview.getBoundingClientRect();el.setPointerCapture?.(e.pointerId);const move=ev=>{const x=Math.max(5,Math.min(95,(ev.clientX-box.left)/box.width*100));const y=Math.max(8,Math.min(92,(ev.clientY-box.top)/box.height*100));el.style.left=x+'%';el.style.top=y+'%';cfg.elementPositions[el.dataset.dragKey]={x:Math.round(x*10)/10,y:Math.round(y*10)/10};persist();apply()};const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up)};el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)});}
+ enableDrag();
+ $('#openClockEditor')?.addEventListener('click',()=>{refreshEditor();if(editor?.showModal)editor.showModal();else alert('يمكنك تغيير لون وخلفية البطاقة من إعدادات تخصيص بطاقة الساعة.');});
+ $('#closeClockEditor')?.addEventListener('click',()=>editor.close());
+ $('#editorHeroColor')?.addEventListener('input',e=>{cfg.heroColor=e.target.value;persist();apply();refreshEditor()});
+ $('#editorHeroBgFile')?.addEventListener('change',e=>{readImage(e.target.files[0],v=>cfg.heroBg=v);e.target.value=''});
+ $('#editorClearBg')?.addEventListener('click',()=>{cfg.heroBg='';persist();apply();refreshEditor()});
+ $('#editorResetPositions')?.addEventListener('click',()=>{cfg.elementPositions={};persist();apply();refreshEditor()});
  apply();
 })();
 </script>

@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v56-customizable-clock';
+const CACHE = 'lubb-v57-touch-clock-editor';
 const BASE = self.registration.scope;
 const FILES = [
   './',
