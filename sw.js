@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v53-offline-1';
+const CACHE = 'lubb-v52-glass-logo-2';
 const BASE = self.registration.scope;
 const FILES = [
   './',

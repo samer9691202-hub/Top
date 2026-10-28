@@ -8,7 +8,8 @@
 <meta name="color-scheme" content="light dark">
 <title>LUBB</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icons/lubb-logo.svg">
+<link rel="alternate icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -736,24 +737,22 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 }
 @media(prefers-reduced-motion:reduce){:root:not([data-theme="dark"]) .header-icon-btn#quickSettings{transition:none}}
 
-/* LUBB v53 — true white-glass clock + unified premium identity */
+/* LUBB v52 original project: consistent white-glass clock treatment */
 .clock{
-  display:inline-flex !important; align-items:center !important; gap:12px !important;
-  margin-top:12px !important; padding:12px 18px !important; border-radius:22px !important;
-  color:#fff !important; background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.075)) !important;
-  border:1px solid rgba(255,255,255,.58) !important;
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.62),inset 0 -1px 0 rgba(255,255,255,.10),0 10px 28px rgba(4,10,35,.18) !important;
-  -webkit-backdrop-filter:blur(22px) saturate(165%) !important; backdrop-filter:blur(22px) saturate(165%) !important;
-  position:relative; isolation:isolate;
+  position:relative; isolation:isolate; overflow:hidden;
+  padding:14px 18px 14px 20px !important;
+  border:1px solid rgba(255,255,255,.48) !important;
+  border-radius:24px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.10) 55%,rgba(220,242,255,.18)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.58),inset 0 -1px 0 rgba(255,255,255,.12),0 12px 32px rgba(5,10,30,.16) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%) !important; backdrop-filter:blur(22px) saturate(155%) !important;
 }
-.clock::before{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;border:1px solid rgba(255,255,255,.14);background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 42%,rgba(255,255,255,.035));z-index:-1}
-.clock .hm,.clock .colon,.clock .sec,.clock .ap{color:rgba(255,255,255,.98) !important;text-shadow:0 1px 16px rgba(255,255,255,.24) !important}
-.clock .sec{background:rgba(255,255,255,.17) !important;border:1px solid rgba(255,255,255,.38) !important;border-radius:12px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32) !important}
-.clock .ap{background:rgba(255,255,255,.15) !important;border:1px solid rgba(255,255,255,.36) !important;border-radius:999px !important}
-.brand-symbol,.nav-brand-mark{display:inline-flex;align-items:center;justify-content:center}
-.brand-symbol svg{width:44px;height:44px;filter:drop-shadow(0 4px 10px rgba(12,18,48,.18))}
-.nav-brand-mark svg{width:36px;height:36px;filter:drop-shadow(0 2px 6px rgba(12,18,48,.16))}
-@media(max-width:560px){.clock{gap:9px !important;padding:10px 13px !important;border-radius:18px !important}.clock .hm{font-size:clamp(3rem,14vw,4.4rem) !important}}
+.clock::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.24),transparent 38%,rgba(255,255,255,.05) 72%,rgba(255,255,255,.16));}
+.hm{color:#fff !important;text-shadow:0 1px 2px rgba(255,255,255,.22),0 3px 18px rgba(0,0,0,.18) !important;font-weight:700 !important;}
+.clock .sec{color:#fff !important;background:rgba(255,255,255,.19) !important;border:1px solid rgba(255,255,255,.36) !important;text-shadow:0 1px 8px rgba(0,0,0,.16);}
+.clock .ap{color:#fff !important;background:rgba(255,255,255,.14) !important;border:1px solid rgba(255,255,255,.34) !important;}
+.colon{color:rgba(255,255,255,.9) !important;}
+@media(max-width:560px){.clock{padding:10px 13px 10px 15px !important;border-radius:20px !important;}}
 
 </style>
 </head>
@@ -763,7 +762,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <button class="install-app" id="installApp" type="button" hidden>تثبيت التطبيق</button>
 </div>
 <nav class="side-nav" aria-label="التنقل السريع">
-  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="lubbMarkNew" x1="5" y1="3" x2="43" y2="45"><stop stop-color="#FFFFFF"/><stop offset=".5" stop-color="#DDEBFF"/><stop offset="1" stop-color="#8DE7FF"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="#10172E"/><circle cx="24" cy="24" r="19" stroke="#A78BFA" stroke-width="1.2"/><path d="M16 11v26h18" stroke="url(#lubbMarkNew)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 11v13l10 6" stroke="#8DE7FF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="11" r="2.4" fill="#fff"/></svg></span><span class="nav-brand-name">LUBB</span></button>
+  <button type="button" class="nav-brand" id="homeBrand" aria-label="العودة إلى الواجهة الرئيسية" title="الواجهة الرئيسية"><span class="nav-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><defs><linearGradient id="lubbMarkGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#A855F7"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M11 12a7 7 0 0 1 7-7h5v24H17a6 6 0 0 1-6-6V12Z" fill="url(#lubbMarkGrad)"/><path d="M23 29V14a7 7 0 0 1 14 0v4L23 29Z" fill="url(#lubbMarkGrad)"/><path d="M23 29 35 22v8a7 7 0 0 1-7 7H17a6 6 0 0 1-6-6v-3l12 1Z" fill="url(#lubbMarkGrad)"/><circle cx="37" cy="7" r="5" fill="#38BDF8"/></svg></span><span class="nav-brand-name">LUBB</span></button>
   <button type="button" data-jump="dayZone" aria-label="التاريخ" title="التاريخ"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3.5v4M16 3.5v4M4 9.5h16M8 13h2m4 0h2M8 16.5h2"/></svg><span>التاريخ</span></button>
   <button type="button" data-jump="tasks" aria-label="المهام" title="المهام"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="m7.5 9 1.7 1.7L12 8m2 1h2.5m-9 5 1.7 1.7L12 13m2 1h2.5"/></svg><span>المهام</span></button>
   <button type="button" data-jump="notes" aria-label="الملاحظات" title="الملاحظات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h9l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5a1.5 1.5 0 0 1 1-1.5Z"/><path d="M14.5 3.5V8H19M8 12h8M8 15.5h8"/></svg><span>الملاحظات</span></button>
@@ -774,7 +773,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   <!-- هوية لُبّ وشريط الوصول السريع -->
   <header class="brandbar" aria-label="LUBB brand">
     <a class="brand-lockup" href="#" id="brandHome" aria-label="العودة إلى أعلى الصفحة">
-      <span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="lubbMarkNew" x1="5" y1="3" x2="43" y2="45"><stop stop-color="#FFFFFF"/><stop offset=".5" stop-color="#DDEBFF"/><stop offset="1" stop-color="#8DE7FF"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="#10172E"/><circle cx="24" cy="24" r="19" stroke="#A78BFA" stroke-width="1.2"/><path d="M16 11v26h18" stroke="url(#lubbMarkNew)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 11v13l10 6" stroke="#8DE7FF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="11" r="2.4" fill="#fff"/></svg></span>
+      <span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><defs><linearGradient id="lubbLogoGrad" x1="5" y1="3" x2="42" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#A855F7"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M8 14a8 8 0 0 1 8-8h7v27h-7a8 8 0 0 1-8-8V14Z" fill="url(#lubbLogoGrad)"/><path d="M23 33V15a8 8 0 0 1 16 0v6L23 33Z" fill="url(#lubbLogoGrad)"/><path d="M23 33 39 24v7a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8v-2l15 4Z" fill="url(#lubbLogoGrad)"/><circle cx="39" cy="7" r="5" fill="#38BDF8"/></svg></span>
       <span class="brand-copy"><strong>LUBB</strong><small>نظّم أفكارك · أنجز أهدافك</small></span>
     </a>
     <div class="brand-actions" aria-label="أدوات الواجهة">
