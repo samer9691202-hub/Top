@@ -1,4 +1,4 @@
-const CACHE = 'lubb-v52-offline-1';
+const CACHE = 'lubb-v53-brandmark-1';
 const BASE = self.registration.scope;
 const FILES = [
   './',
@@ -9,7 +9,8 @@ const FILES = [
   './app.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/icon-maskable-512.png'
+  './icons/icon-maskable-512.png',
+  './icons/lubb-mark.png'
 ].map(path => new URL(path, BASE).toString());
 
 self.addEventListener('install', event => {
