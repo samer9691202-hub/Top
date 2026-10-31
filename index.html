@@ -6,6 +6,19 @@
 <meta name="theme-color" content="#0B1020">
 <meta name="description" content="LUBB — مساحة ذكية لتنظيم المهام والملاحظات ومتابعة الإنتاجية، مع دعم العمل دون اتصال.">
 <meta name="color-scheme" content="light dark">
+<meta name="application-version" content="61.0.0">
+<script>
+/* LUBB v61 diagnostics: bounded, local-only error log */
+(function(){
+  const KEY='lubb-error-log-v1', MAX=30;
+  function record(kind,message,source,line){
+    try{const old=JSON.parse(localStorage.getItem(KEY)||'[]');const rows=Array.isArray(old)?old:[];rows.push({at:new Date().toISOString(),kind:String(kind).slice(0,24),message:String(message||'').slice(0,500),source:String(source||'').slice(0,240),line:Number(line)||0});localStorage.setItem(KEY,JSON.stringify(rows.slice(-MAX)));}catch(_){}
+  }
+  window.addEventListener('error',e=>record('error',e.message,e.filename,e.lineno));
+  window.addEventListener('unhandledrejection',e=>record('rejection',e.reason&&e.reason.message||e.reason,'',0));
+  window.LUBBDiagnostics={read:()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return[]}},clear:()=>localStorage.removeItem(KEY)};
+})();
+</script>
 <title>LUBB</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
@@ -860,28 +873,29 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     <div class="bb-actions"><button type="button" class="btn" id="bbDownload">تحميل النسخة</button><button type="button" class="btn ghost" id="bbLater">لاحقًا</button></div>
   </div>
 
-  <!-- الساعة والتاريخ -->
-  <header class="hero" aria-label="الوقت والتاريخ">
+  <!-- بطاقة الساعة الزجاجية -->
+  <header class="hero clock-card-v61" aria-label="Clock and date">
     <div class="hero-main">
-      <div class="hero-top">
-        <p class="greet" id="greet"><span class="brand">LUBB</span> <span id="greetText"></span></p>
-
-      </div>
-      <div class="clock" role="timer" aria-live="off" aria-label="الوقت الآن">
+      <div class="hero-top"><p class="greet" id="greet"><span class="brand">LUBB</span> <span id="greetText"></span></p></div>
+      <div class="clock" role="timer" aria-live="off" aria-label="Current time">
         <span class="hm"><span id="hh">--</span><span class="colon">:</span><span id="mm">--</span></span>
-        <span class="side"><span class="sec" id="sec">00</span><span class="ap" id="ap"></span></span>
+        <span class="side"><span class="sec" id="sec">00</span><span class="ap" id="ap">AM</span></span>
+      </div>
+      <div class="datepanel" aria-label="Date">
+        <div class="gr" id="gr"></div><span class="date-separator" aria-hidden="true"></span>
+        <div class="hij" id="hij"></div><span class="date-separator" aria-hidden="true"></span>
+        <div class="wk" id="wk"></div>
       </div>
     </div>
-    <div class="datepanel" aria-label="التاريخ">
-      <div class="wk" id="wk"></div>
-      <div class="gr" id="gr"></div>
-      <div class="hij" id="hij"></div>
-    </div>
-    <div class="dayprog">
-      <div class="day-label"><span>مضى <b id="dayPct">0%</b></span><span>تبقّى <b id="left"></b></span></div>
-      <div class="day-track" aria-hidden="true"><div class="day-fill" id="dayFill"></div></div>
-      <div class="ticks" aria-hidden="true"><span>12 ص</span><span>6 ص</span><span>12 م</span><span>6 م</span><span>12 ص</span></div>
-    </div>
+    <aside class="hero-side" aria-label="Notifications and daily progress">
+      <div class="clock-bell" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></div>
+      <div class="dayprog">
+        <div class="day-label"><span>Day progress</span><b id="dayPct">0%</b></div>
+        <div class="day-track" aria-hidden="true"><div class="day-fill" id="dayFill"></div></div>
+        <div class="ticks" aria-hidden="true"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
+        <span id="left" class="sr-only"></span>
+      </div>
+    </aside>
   </header>
 
   <div id="dayZone">
@@ -1140,7 +1154,7 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   function save(){
     renderStats();
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(()=>{ store.set(KEY, JSON.stringify(state)); }, 250);
+    saveTimer = setTimeout(async ()=>{ const ok = await store.set(KEY, JSON.stringify(state)); if(!ok) flash('تعذر حفظ البيانات. صدّر نسخة احتياطية لتجنب فقدانها.'); }, 250);
   }
 
   /* ---------- الإعدادات ---------- */
@@ -1209,9 +1223,9 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   });
 
   /* ---------- الساعة والتاريخ ---------- */
-  const fWk = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{weekday:'long'});
-  const fGr = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-  let fH; try{ fH = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}); }catch(e){}
+  const fWk = new Intl.DateTimeFormat('en-US',{weekday:'short'});
+  const fGr = new Intl.DateTimeFormat('en-US',{month:'2-digit',day:'2-digit'});
+  let fH; try{ fH = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura-nu-latn',{month:'2-digit',day:'2-digit'}); }catch(e){}
   let lastDay = -1;
   function tick(){
     const d = new Date(), h = d.getHours(), m = d.getMinutes(), sc = d.getSeconds();
@@ -1220,13 +1234,13 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     $('#mm').textContent = pad(m);
     $('#sec').textContent = pad(sc);
     $('#sec').hidden = !settings.showSec;
-    $('#ap').textContent = h24 ? '' : (h<12 ? 'ص' : 'م');
+    $('#ap').textContent = h24 ? '' : (h<12 ? 'AM' : 'PM');
     $('#hij').hidden = !settings.showHijri || !fH;
     const secs = h*3600+m*60+sc;
     $('#dayFill').style.width = (secs/864)+'%';
     $('#dayPct').textContent = Math.round(secs/864)+'%';
     const rem = 86400-secs;
-    $('#left').textContent = Math.floor(rem/3600)+' س '+pad(Math.floor(rem%3600/60))+' د';
+    $('#left').textContent = Math.floor(rem/3600)+'h '+pad(Math.floor(rem%3600/60))+'m';
     if(lastDay !== d.getDate()){
       lastDay = d.getDate();
       $('#greetText').textContent = h<5 ? 'ليلة هادئة' : h<12 ? 'صباح الخير' : h<17 ? 'نهارك سعيد' : h<21 ? 'مساء الخير' : 'ليلة سعيدة';
@@ -1826,14 +1840,17 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
       ? 'آخر نسخة: ' + new Intl.DateTimeFormat('ar-EG-u-nu-latn',{dateStyle:'medium',timeStyle:'short'}).format(new Date(bk.lastTs))
       : 'تحميل ملف ببياناتك';
   }
-  function doExport(){
-    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'LUBB-backup-' + todayKey() + '.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
-    bk.lastDay = todayKey(); bk.lastTs = Date.now(); bk.snoozeUntil = 0;
-    saveBackupMeta(); updateBackupUI(); flash('تم تحميل نسخة اليوم ✓');
+  async function doExport(){
+    try{
+      const visual = (()=>{try{return JSON.parse(localStorage.getItem('lubb-visual-settings-v1')||'null')}catch(_){return null}})();
+      const payload = {format:'lubb-backup', schemaVersion:2, appVersion:'61.0.0', exportedAt:new Date().toISOString(), state, settings, visualSettings:visual};
+      const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+      const a = document.createElement('a'); const url=URL.createObjectURL(blob);
+      a.href=url; a.download = 'LUBB-backup-v61-' + todayKey() + '.json';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
+      bk.lastDay = todayKey(); bk.lastTs = Date.now(); bk.snoozeUntil = 0;
+      saveBackupMeta(); updateBackupUI(); flash('تم تحميل النسخة الاحتياطية ✓');
+    }catch(err){console.error('LUBB export failed',err);flash('تعذر إنشاء النسخة الاحتياطية');}
   }
   $('#export').onclick = doExport;
   $('#bbDownload').onclick = doExport;
@@ -1844,12 +1861,29 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
   $('#importFile').addEventListener('change', async e=>{
     const f = e.target.files[0]; if(!f) return;
     try{
-      const s = JSON.parse(await f.text());
-      if(!s || !Array.isArray(s.tasks)) throw new Error('bad');
-      state = clean(s);
-      clearEditor(); renderAll(); save(); flash('تمت استعادة النسخة ✓');
-    }catch(err){ flash('الملف غير صالح'); }
-    e.target.value = '';
+      if(f.size > 15*1024*1024) throw new Error('size');
+      const parsed = JSON.parse(await f.text());
+      const payload = parsed && parsed.format==='lubb-backup' ? parsed : {state:parsed};
+      const incoming = payload.state;
+      if(!incoming || typeof incoming!=='object' || !Array.isArray(incoming.tasks) ||
+         (incoming.notes!==undefined && !Array.isArray(incoming.notes)) ||
+         (incoming.base!==undefined && !Array.isArray(incoming.base)) ||
+         (incoming.mainTasks!==undefined && !Array.isArray(incoming.mainTasks))) throw new Error('schema');
+      // Validate and prepare everything before changing live data.
+      const nextState = clean(incoming);
+      const nextSettings = payload.settings && typeof payload.settings==='object' && !Array.isArray(payload.settings)
+        ? Object.assign({}, DEFAULTS, payload.settings) : null;
+      const confirmText = 'سيتم استبدال بيانات التطبيق الحالية بالنسخة المختارة. هل تريد المتابعة؟';
+      if(!window.confirm(confirmText)) return;
+      state = nextState;
+      if(nextSettings){ settings = nextSettings; saveSettings(); applySettings(); }
+      if(payload.visualSettings && typeof payload.visualSettings==='object'){
+        try{localStorage.setItem('lubb-visual-settings-v1',JSON.stringify(payload.visualSettings));}catch(_){}
+      }
+      clearEditor(); renderAll(); save(); flash('تم التحقق من النسخة واستعادتها ✓');
+      if(payload.visualSettings) setTimeout(()=>location.reload(),250);
+    }catch(err){ console.error('LUBB import rejected',err); flash(err.message==='size'?'حجم الملف أكبر من الحد المسموح':'الملف غير صالح أو لا يتوافق مع تنسيق النسخ الاحتياطي؛ لم تتغير بياناتك.'); }
+    finally{ e.target.value = ''; }
   });
   let rArmed = false;
   $('#reset').onclick = function(){
@@ -1867,7 +1901,16 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
     applySettings(); renderAll(); updateBackupUI();
   })();
 })();
-if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async ()=>{
+    try{
+      const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+      reg.update().catch(()=>{});
+      let refreshing=false;
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;window.location.reload();});
+    }catch(err){console.warn('LUBB offline update registration failed',err);}
+  });
+}
 
 /* أدوات PWA: حالة الاتصال والتثبيت */
 (function(){
@@ -2006,6 +2049,37 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
 :root:not([data-theme="dark"]) .hero .datepanel{background:rgba(255,255,255,.34)!important;border-color:rgba(100,116,139,.17)!important}
 </style>
 </body>
+
+<style id="lubb-v61-reference-clock-card">
+/* Horizontal glass clock card inspired by the supplied reference */
+.clock-card-v61{box-sizing:border-box;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(210px,28%);grid-template-areas:"main side";align-items:center;gap:0!important;min-height:210px;padding:28px 34px!important;border-radius:34px!important;background:linear-gradient(115deg,rgba(255,255,255,.94),rgba(246,247,252,.88))!important;border:1px solid rgba(255,255,255,.95)!important;box-shadow:0 22px 44px rgba(32,38,55,.15),inset 0 2px 0 #fff!important;color:#17191f!important;-webkit-backdrop-filter:blur(22px) saturate(135%)!important;backdrop-filter:blur(22px) saturate(135%)!important}
+.clock-card-v61::before,.clock-card-v61::after{display:none!important}
+.clock-card-v61 .hero-main{grid-area:main;min-width:0;padding-inline-end:28px}
+.clock-card-v61 .greet{display:none!important}
+.clock-card-v61 .clock{justify-content:flex-start!important;align-items:baseline!important;gap:14px!important;margin:0!important;white-space:nowrap}
+.clock-card-v61 .hm{font-size:clamp(4rem,11vw,7.2rem)!important;line-height:.98!important;font-weight:650!important;letter-spacing:-.055em!important;color:#101116!important}
+.clock-card-v61 .colon{opacity:1!important}
+.clock-card-v61 .clock .side{display:flex!important;align-items:baseline!important;gap:8px!important;direction:ltr!important}
+.clock-card-v61 .clock .sec{display:none!important}
+.clock-card-v61 .clock .ap{padding:0!important;border:0!important;background:transparent!important;color:#17191f!important;font-size:clamp(1.45rem,3.6vw,2.8rem)!important;font-weight:750!important}
+.clock-card-v61 .datepanel{grid-area:auto!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:clamp(14px,3vw,34px)!important;min-width:0!important;margin-top:12px!important;padding:0!important;border:0!important;background:transparent!important;backdrop-filter:none!important;white-space:nowrap}
+.clock-card-v61 .datepanel .gr,.clock-card-v61 .datepanel .hij,.clock-card-v61 .datepanel .wk{margin:0!important;padding:0!important;border:0!important;background:none!important;color:#343943!important;font-size:clamp(1.15rem,3.4vw,2.3rem)!important;font-weight:450!important;line-height:1.2!important}
+.clock-card-v61 .date-separator{height:1.55em;width:2px;flex:none;background:#aeb2bd}
+.clock-card-v61 .hero-side{grid-area:side;align-self:stretch;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:26px;padding-inline-start:26px;border-inline-start:2px solid #c4c7d0}
+.clock-card-v61 .clock-bell{position:relative;width:78px;height:78px;display:grid;place-items:center}
+.clock-card-v61 .clock-bell svg{width:64px;height:64px;fill:#272a32;stroke:#272a32;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.clock-card-v61 .clock-bell i{position:absolute;top:2px;right:1px;width:17px;height:17px;border-radius:50%;background:#e11d48;border:3px solid #f8f8fb}
+.clock-card-v61 .dayprog{width:100%;min-width:0;display:flex;align-items:center;gap:12px}
+.clock-card-v61 .day-label{display:flex!important;justify-content:flex-end!important;align-items:center!important;order:2;flex:none;margin:0!important;color:#252832!important;font-size:.82rem!important}
+.clock-card-v61 .day-label span{display:none!important}
+.clock-card-v61 .day-label b{font-size:1.35rem!important;color:#252832!important}
+.clock-card-v61 .day-track{order:1;flex:1;height:12px!important;background:#c9cbd2!important;border-radius:99px!important}
+.clock-card-v61 .day-fill{background:linear-gradient(90deg,#79002f,#9b174b)!important;box-shadow:none!important}
+.clock-card-v61 .ticks{display:none!important}
+@media(max-width:620px){.clock-card-v61{grid-template-columns:minmax(0,1fr) 88px;min-height:164px;padding:20px 16px!important;border-radius:25px!important}.clock-card-v61 .hero-main{padding-inline-end:12px}.clock-card-v61 .hm{font-size:clamp(3.25rem,12vw,4.7rem)!important}.clock-card-v61 .clock .ap{font-size:1.25rem!important}.clock-card-v61 .datepanel{gap:9px!important;margin-top:12px!important}.clock-card-v61 .datepanel .gr,.clock-card-v61 .datepanel .hij,.clock-card-v61 .datepanel .wk{font-size:clamp(.88rem,3.2vw,1.2rem)!important}.clock-card-v61 .date-separator{width:1px}.clock-card-v61 .hero-side{padding-inline-start:12px;gap:20px}.clock-card-v61 .clock-bell{width:52px;height:52px}.clock-card-v61 .clock-bell svg{width:46px;height:46px}.clock-card-v61 .clock-bell i{width:12px;height:12px;right:0}.clock-card-v61 .day-label b{font-size:1rem!important}.clock-card-v61 .day-track{height:9px!important}}
+@media(max-width:380px){.clock-card-v61{grid-template-columns:minmax(0,1fr) 72px;padding:17px 12px!important}.clock-card-v61 .hm{font-size:3rem!important}.clock-card-v61 .datepanel{gap:6px!important}.clock-card-v61 .datepanel .gr,.clock-card-v61 .datepanel .hij,.clock-card-v61 .datepanel .wk{font-size:.78rem!important}.clock-card-v61 .hero-side{padding-inline-start:8px}}
+</style>
+
 </html>
 
 <style>
