@@ -840,6 +840,64 @@ button.chip:hover{border-color:var(--line-2);color:var(--ink)}
 .brand .settings-logo{height:1.4em;width:1.4em;object-fit:contain;vertical-align:middle;border-radius:7px;margin-inline-end:5px}
 </style>
 
+<style id="lubb-v61-premium-clock">
+
+/* LUBB v61 — redesigned premium clock card */
+.clock-card-v61{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(220px,29%);grid-template-areas:"main side"!important;
+  align-items:stretch;gap:0!important;padding:clamp(20px,3vw,38px)!important;
+  color:#111827!important;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(245,247,252,.94))!important;
+  border:1px solid rgba(255,255,255,.9);border-radius:clamp(24px,3vw,38px)!important;
+  box-shadow:0 26px 60px -34px rgba(22,30,52,.42),inset 0 1px 0 #fff!important;
+  overflow:hidden;isolation:isolate;
+}
+.clock-card-v61::before{width:420px;height:420px;inset:-230px auto auto -110px;background:radial-gradient(circle,rgba(255,255,255,.95),transparent 68%)!important;opacity:.9}
+.clock-card-v61::after{width:300px;height:300px;inset:auto -150px -210px auto;background:radial-gradient(circle,rgba(190,199,220,.22),transparent 70%)!important}
+.clock-card-v61 .hero-main{grid-area:main;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;align-content:center;min-width:0;padding-inline-end:clamp(18px,3vw,38px)}
+.clock-card-v61 .hero-top{display:none!important}
+.clock-card-v61 .clock{grid-row:1;justify-content:flex-start!important;align-items:baseline;gap:12px;margin:0 0 12px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;direction:ltr}
+.clock-card-v61 .hm{font-size:clamp(4.5rem,10vw,8.4rem)!important;line-height:.98;font-weight:650!important;letter-spacing:-.065em;color:#10131b!important;text-shadow:none!important}
+.clock-card-v61 .clock .side{display:flex;align-items:baseline;gap:0;direction:ltr}
+.clock-card-v61 .clock .sec{display:none!important}
+.clock-card-v61 .clock .ap{padding:0!important;border:0!important;background:transparent!important;color:#171b25!important;font-size:clamp(1.25rem,2.8vw,2.4rem)!important;font-weight:750!important}
+.clock-card-v61 .datepanel{grid-row:2;display:flex!important;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:0!important;min-width:0;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-align:left!important}
+.clock-card-v61 .datepanel .gr,.clock-card-v61 .datepanel .hij,.clock-card-v61 .datepanel .wk{margin:0!important;padding:0!important;border:0!important;color:#343945!important;font-size:clamp(.95rem,1.8vw,1.65rem)!important;font-weight:500!important;line-height:1.35;white-space:nowrap}
+.clock-card-v61 .datepanel .date-separator{display:block!important;width:2px;height:1.9em;margin:0 clamp(12px,2vw,26px);background:#b9bec9;border-radius:2px;opacity:.9}
+.clock-card-v61 .hero-side{grid-area:side;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(22px,3vw,38px);padding-inline-start:clamp(18px,3vw,38px);border-inline-start:2px solid #c6cad3}
+.clock-card-v61 .clock-bell{position:relative;display:grid;place-items:center;width:88px;height:88px;border-radius:26px;color:#202633;background:linear-gradient(145deg,#fff,#edf0f6);box-shadow:0 8px 20px -12px rgba(17,24,39,.3),inset 0 1px 0 #fff}
+.clock-card-v61 .clock-bell svg{width:43px;height:43px;fill:currentColor;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.clock-card-v61 .clock-bell i{position:absolute;inset:8px 7px auto auto;width:24px;height:24px;border:2px solid #fff;border-radius:50%;background:#e11d48;box-shadow:0 2px 7px rgba(225,29,72,.25)}
+.clock-card-v61 .clock-bell i::after{content:"";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-style:normal;font-size:13px;font-weight:800}
+.clock-card-v61 .dayprog{width:100%;max-width:300px}
+.clock-card-v61 .day-label{align-items:center;gap:12px;margin:0 0 10px;color:#5c6370;font-size:.9rem}
+.clock-card-v61 .day-label b{color:#161b27;font-size:1.35rem;font-weight:750}
+.clock-card-v61 .day-track{height:13px;background:#d9dce3;box-shadow:inset 0 2px 4px rgba(15,23,42,.09)}
+.clock-card-v61 .day-fill{background:linear-gradient(90deg,#850b3d,#b31250)!important;box-shadow:0 1px 7px rgba(139,12,65,.25)}
+.clock-card-v61 .ticks{display:none!important}
+:root[data-theme="dark"] .clock-card-v61{color:#f8fafc!important;background:linear-gradient(135deg,#202633,#111722)!important;border-color:rgba(255,255,255,.12);box-shadow:0 26px 60px -34px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.12)!important}
+:root[data-theme="dark"] .clock-card-v61 .hm,:root[data-theme="dark"] .clock-card-v61 .clock .ap{color:#f8fafc!important}
+:root[data-theme="dark"] .clock-card-v61 .datepanel .gr,:root[data-theme="dark"] .clock-card-v61 .datepanel .hij,:root[data-theme="dark"] .clock-card-v61 .datepanel .wk{color:#d8deea!important}
+:root[data-theme="dark"] .clock-card-v61 .hero-side{border-color:rgba(255,255,255,.2)}
+:root[data-theme="dark"] .clock-card-v61 .clock-bell{color:#f8fafc;background:linear-gradient(145deg,#30394a,#202838);box-shadow:0 8px 20px -12px #000,inset 0 1px 0 rgba(255,255,255,.1)}
+:root[data-theme="dark"] .clock-card-v61 .day-label{color:#c4ccda}
+:root[data-theme="dark"] .clock-card-v61 .day-label b{color:#fff}
+:root[data-theme="dark"] .clock-card-v61 .day-track{background:#3b4352}
+@media(max-width:700px){
+ .clock-card-v61{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"main" "side"!important;padding:22px 20px!important;gap:20px!important}
+ .clock-card-v61 .hero-main{padding:0!important}
+ .clock-card-v61 .hm{font-size:clamp(4rem,17vw,6rem)!important}
+ .clock-card-v61 .datepanel{gap:7px 0!important}
+ .clock-card-v61 .datepanel .gr,.clock-card-v61 .datepanel .hij,.clock-card-v61 .datepanel .wk{font-size:clamp(.82rem,3.5vw,1.05rem)!important}
+ .clock-card-v61 .datepanel .date-separator{margin:0 9px;height:1.5em}
+ .clock-card-v61 .hero-side{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:16px;padding:17px 0 0!important;border-inline-start:0;border-top:1px solid #c6cad3}
+ .clock-card-v61 .clock-bell{width:60px;height:60px;border-radius:19px}
+ .clock-card-v61 .clock-bell svg{width:31px;height:31px}
+ .clock-card-v61 .clock-bell i{width:20px;height:20px;inset:2px 0 auto auto}
+ .clock-card-v61 .dayprog{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){.clock-card-v61 *{transition:none!important}}
+
+</style>
 </head>
 <body>
 <div class="app-tools" aria-label="حالة التطبيق">
